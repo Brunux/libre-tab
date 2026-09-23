@@ -1,0 +1,4 @@
+/* Mensajes de permisos (docs/DESIGN.md). Mantener al día con Info.plist. */
+"NSMicrophoneUsageDescription" = "El afinador escucha tu guitarra para decirte si cada cuerda está afinada. No se graba ni se guarda nada.";
+"NSCameraUsageDescription" = "Toma una foto de una canción con acordes para agregarla a tu cancionero. La foto se queda en tu teléfono.";
+"NSPhotoLibraryUsageDescription" = "Elige una foto o captura de una canción con acordes para agregarla a tu cancionero. Solo se usa la foto que eliges, y se queda en tu teléfono.";

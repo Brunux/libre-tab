@@ -346,5 +346,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "searchSetlistsHint": "Search setlists"
 }

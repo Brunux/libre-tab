@@ -619,4 +619,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String diagramFrets(String frets) {
     return 'Frets from the thickest string: $frets';
   }
+
+  @override
+  String get searchSetlistsHint => 'Search setlists';
 }

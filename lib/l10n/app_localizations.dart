@@ -1081,6 +1081,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Frets from the thickest string: {frets}'**
   String diagramFrets(String frets);
+
+  /// No description provided for @searchSetlistsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search setlists'**
+  String get searchSetlistsHint;
 }
 
 class _AppLocalizationsDelegate

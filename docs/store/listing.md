@@ -113,8 +113,8 @@ CANCIONERO
   claro
 
 AGREGA TUS CANCIONES
-• Escanea un cancionero con la cámara o desde tus fotos — los acordes
-  quedan en la sílaba correcta, incluso en cancioneros impresos
+• Escanea una canción con acordes con la cámara o desde tus fotos — los
+  acordes quedan en la sílaba correcta, incluso en cancioneros impresos
 • Pega acordes sobre la letra desde donde sea; Libre Tab los acomoda
 • Abre archivos .cho, .chopro, .chordpro, .crd o .txt — directo desde
   Archivos, Mail, Safari o una app de chat

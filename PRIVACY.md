@@ -77,7 +77,8 @@ sigue funcionando.
 
 ## Cámara y fotos
 
-"Escanear foto" lee un cancionero a partir de una foto que tomas o eliges. El
+"Escanear foto" lee una canción con acordes a partir de una foto que tomas o
+eliges. El
 texto se reconoce en tu teléfono (el reconocimiento de texto integrado de
 Apple en iPhone, Tesseract incluido en la app en Android); la foto nunca se
 envía a ningún lado y no se guarda. Elegir una foto usa el selector de fotos

@@ -1,0 +1,4 @@
+/* Permission prompts (docs/DESIGN.md). Keep in step with Info.plist. */
+"NSMicrophoneUsageDescription" = "The tuner listens to your guitar to tell you if each string is in tune. Nothing is recorded or saved.";
+"NSCameraUsageDescription" = "Take a photo of a song sheet to add it to your songbook. The photo stays on your phone.";
+"NSPhotoLibraryUsageDescription" = "Choose a photo or screenshot of a song sheet to add it to your songbook. Only the photo you pick is used, and it stays on your phone.";

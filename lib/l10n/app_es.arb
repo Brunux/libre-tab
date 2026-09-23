@@ -163,5 +163,6 @@
   "startedOver": "Se vaciaron el título, el artista y el texto.",
   "fretMuted": "no se toca",
   "fretOpen": "al aire",
-  "diagramFrets": "Trastes desde la cuerda más gruesa: {frets}"
+  "diagramFrets": "Trastes desde la cuerda más gruesa: {frets}",
+  "searchSetlistsHint": "Buscar repertorios"
 }

@@ -612,4 +612,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String diagramFrets(String frets) {
     return 'Trastes desde la cuerda más gruesa: $frets';
   }
+
+  @override
+  String get searchSetlistsHint => 'Buscar repertorios';
 }

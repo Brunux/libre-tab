@@ -68,7 +68,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               onChanged: (value) => _filter.query = value,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
-                hintText: l10n.searchHint,
+                hintText: setlists ? l10n.searchSetlistsHint : l10n.searchHint,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: filter.query.isEmpty
                     ? null
