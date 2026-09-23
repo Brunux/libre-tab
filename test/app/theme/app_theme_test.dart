@@ -13,6 +13,12 @@ double contrast(Color a, Color b) {
 }
 
 void main() {
+  test('titles use Fraunces with its weight axis set to 600', () {
+    final style = buildTheme(AppThemeVariant.dark).textTheme.headlineLarge!;
+    expect(style.fontFamily, AppFonts.display);
+    expect(style.fontVariations, contains(const FontVariation.weight(600)));
+  });
+
   for (final variant in AppThemeVariant.values) {
     group(variant.name, () {
       final c = variant.colors;

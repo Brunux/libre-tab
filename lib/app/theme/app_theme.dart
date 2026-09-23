@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 
-/// Font families from docs/DESIGN.md. Until the font files are bundled,
-/// Flutter falls back to the platform font.
+/// Font families from docs/DESIGN.md, bundled under assets/fonts/.
 abstract final class AppFonts {
   static const body = 'AtkinsonHyperlegible';
   static const display = 'Fraunces';
   static const mono = 'JetBrainsMono';
+
+  /// Fraunces is a variable font: `fontWeight` alone doesn't move its
+  /// weight axis, so set it (and optical size) explicitly.
+  static TextStyle displayStyle(double size, Color color) => TextStyle(
+    fontFamily: display,
+    fontSize: size,
+    fontWeight: FontWeight.w600,
+    fontVariations: [
+      const FontVariation.weight(600),
+      FontVariation.opticalSize(size.clamp(9, 144)),
+    ],
+    color: color,
+  );
 }
 
 enum AppThemeVariant {
@@ -53,18 +65,13 @@ ThemeData buildTheme(AppThemeVariant variant) {
     extensions: [c],
   );
 
-  const display = TextStyle(
-    fontFamily: AppFonts.display,
-    fontWeight: FontWeight.w600,
-  );
   final textTheme = base.textTheme.copyWith(
-    headlineLarge: display.copyWith(
-      fontSize: 34,
-      letterSpacing: -0.5,
-      color: c.text,
-    ),
-    headlineMedium: display.copyWith(fontSize: 26, color: c.text),
-    headlineSmall: display.copyWith(fontSize: 24, color: c.text),
+    headlineLarge: AppFonts.displayStyle(
+      34,
+      c.text,
+    ).copyWith(letterSpacing: -0.5),
+    headlineMedium: AppFonts.displayStyle(26, c.text),
+    headlineSmall: AppFonts.displayStyle(24, c.text),
   );
 
   return base.copyWith(

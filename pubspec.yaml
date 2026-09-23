@@ -24,3 +24,23 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  # SIL Open Font License texts, shown on the in-app licenses page.
+  assets:
+    - assets/fonts/AtkinsonHyperlegible-OFL.txt
+    - assets/fonts/Fraunces-OFL.txt
+    - assets/fonts/JetBrainsMono-OFL.txt
+
+  fonts:
+    - family: AtkinsonHyperlegible
+      fonts:
+        - asset: assets/fonts/AtkinsonHyperlegible-Regular.ttf
+        - asset: assets/fonts/AtkinsonHyperlegible-Bold.ttf
+          weight: 700
+    # Variable fonts: weight and optical size are set with FontVariation.
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces-Variable.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Variable.ttf
