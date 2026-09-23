@@ -3,6 +3,7 @@
 Flutter app (iOS + Android): offline campfire songbook + acoustic guitar tuner.
 
 - Design and decisions: `docs/TECH_STACK.md`. Song format spec: `docs/SONG_FORMAT.md`.
+  UI (navigation, theme tokens, fonts, screens): `docs/DESIGN.md`.
   Follow them; update the docs in the same change when a decision changes.
 - Songs are stored as ChordPro text (source of truth). Display is chords above lyrics.
 - Fully offline: no network calls, no backend, no analytics.

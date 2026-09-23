@@ -34,6 +34,7 @@ flutter analyze
 |---|---|
 | [docs/TECH_STACK.md](docs/TECH_STACK.md) | Stack, packages, architecture, tuner pipeline, testing, milestones |
 | [docs/SONG_FORMAT.md](docs/SONG_FORMAT.md) | The ChordPro subset Libre Tab reads and writes, and how imports are converted |
+| [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes (dark / red night / light), fonts, screen specs |
 
 ## Project layout
 
