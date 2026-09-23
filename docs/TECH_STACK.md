@@ -199,7 +199,7 @@ so it's fast to unit test.
 ## 10. Milestones
 
 0. **Screen design** ✅ — done 2026-09-22, see [DESIGN.md](DESIGN.md).
-1. **Scaffold** — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
+1. **Scaffold** ✅ (font files still to bundle) — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
 2. **Music core** — Note/Chord model, ChordPro parser, transposer (+ tests).
 3. **Songbook** — Drift schema, library list, search, editor, import/export.
 4. **Campfire mode** — song view, auto-scroll, transpose/capo, chord diagrams, wakelock.

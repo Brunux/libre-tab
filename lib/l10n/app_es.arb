@@ -1,0 +1,18 @@
+{
+  "@@locale": "es",
+  "appTitle": "Libre Tab",
+  "tabSongbook": "Cancionero",
+  "tabTuner": "Afinador",
+  "settingsTitle": "Ajustes",
+  "addSong": "Agregar canción",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "emptySongbook": "Tu cancionero está vacío.\nAgrega tu primera canción.",
+  "songTitlePlaceholder": "Canción",
+  "comingSoon": "Llegará en una próxima etapa.",
+  "themeLabel": "Tema",
+  "themeDark": "Oscuro",
+  "themeRedNight": "Noche roja",
+  "themeLight": "Claro",
+  "switchTheme": "Cambiar tema"
+}

@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  "appTitle": "Libre Tab",
+  "tabSongbook": "Songbook",
+  "tabTuner": "Tuner",
+  "settingsTitle": "Settings",
+  "addSong": "Add song",
+  "cancel": "Cancel",
+  "save": "Save",
+  "emptySongbook": "Your songbook is empty.\nAdd your first song.",
+  "songTitlePlaceholder": "Song",
+  "comingSoon": "Coming in a later milestone.",
+  "themeLabel": "Theme",
+  "themeDark": "Dark",
+  "themeRedNight": "Red night",
+  "themeLight": "Light",
+  "switchTheme": "Switch theme"
+}

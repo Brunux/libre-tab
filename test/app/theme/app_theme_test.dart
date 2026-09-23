@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:libre_tab/app/theme/app_theme.dart';
+import 'package:libre_tab/app/theme/libre_colors.dart';
+
+/// WCAG contrast ratio between two opaque colors.
+double contrast(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final hi = la > lb ? la : lb;
+  final lo = la > lb ? lb : la;
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+void main() {
+  for (final variant in AppThemeVariant.values) {
+    group(variant.name, () {
+      final c = variant.colors;
+
+      test('theme carries its color tokens', () {
+        final theme = buildTheme(variant);
+        expect(theme.extension<LibreColors>(), c);
+        expect(theme.colorScheme.primary, c.accent);
+        expect(theme.colorScheme.brightness, variant.brightness);
+        expect(theme.scaffoldBackgroundColor, c.bg);
+      });
+
+      test('text, muted and chord colors are readable (≥ 4.5:1)', () {
+        for (final background in [c.bg, c.surface]) {
+          expect(contrast(c.text, background), greaterThanOrEqualTo(4.5));
+          expect(contrast(c.muted, background), greaterThanOrEqualTo(4.5));
+          expect(contrast(c.chord, background), greaterThanOrEqualTo(4.5));
+        }
+      });
+
+      test('text on accent buttons is readable (≥ 4.5:1)', () {
+        expect(contrast(c.onAccent, c.accent), greaterThanOrEqualTo(4.5));
+      });
+
+      test('"in tune" color stands out from the background (≥ 3:1)', () {
+        expect(contrast(c.good, c.bg), greaterThanOrEqualTo(3));
+      });
+    });
+  }
+}
