@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs><clipPath id="pick"><path d="M512 150 C600 252 778 420 770 566 C762 704 642 792 512 792 C382 792 262 704 254 566 C246 420 424 252 512 150 Z"/></clipPath></defs>
+  <!-- logs: back one darker, front one lighter, with cut ends -->
+  <g transform="rotate(-15 512 836)">
+    <rect x="232" y="800" width="560" height="72" rx="36" fill="#6B3F22"/>
+    <circle cx="756" cy="836" r="26" fill="#C98A55"/>
+  </g>
+  <g transform="rotate(15 512 836)">
+    <rect x="232" y="800" width="560" height="72" rx="36" fill="#9A5E36"/>
+    <circle cx="268" cy="836" r="26" fill="#C98A55"/>
+  </g>
+  <!-- flame tongues either side: angled flat planes -->
+  <polygon points="318,700 214,466 420,618" fill="#E4702A"/>
+  <polygon points="706,700 812,488 604,618" fill="#F7B548"/>
+  <!-- the pick-shaped flame, lit side and shadow side -->
+  <g clip-path="url(#pick)">
+    <rect x="200" y="120" width="312" height="700" fill="#F7B548"/>
+    <rect x="512" y="120" width="312" height="700" fill="#E4702A"/>
+    <!-- upper facets: a chevron fold from the tip, lighter on the lit side -->
+    <polygon points="512,140 512,600 230,380" fill="#FFCB63"/>
+    <polygon points="512,140 794,380 512,600" fill="#CF5A1E"/>
+  </g>
+  <!-- inner flame -->
+  <clipPath id="core"><path d="M512 420 C562 484 644 560 634 642 C626 712 572 748 512 748 C452 748 398 712 390 642 C380 560 462 484 512 420 Z"/></clipPath>
+  <g clip-path="url(#core)">
+    <rect x="380" y="400" width="132" height="360" fill="#FFE39E"/>
+    <rect x="512" y="400" width="132" height="360" fill="#FFC45A"/>
+  </g>
+  <rect x="200" y="598" width="624" height="11" rx="5.5" fill="#100D0A" clip-path="url(#pick)"/><rect x="200" y="640" width="624" height="11" rx="5.5" fill="#100D0A" clip-path="url(#pick)"/><rect x="200" y="682" width="624" height="11" rx="5.5" fill="#100D0A" clip-path="url(#pick)"/>
+  <!-- sparks: chords flying off the fire -->
+  <g fill="#FFD37A"><g transform="translate(772 262) rotate(12) scale(0.13772 -0.13772) translate(0 -334)"><path transform="translate(-360 0)" d="M352 -12Q254 -12 183.0 30.5Q112 73 73.5 151.5Q35 230 35 336Q35 442 78.0 519.0Q121 596 197.5 638.0Q274 680 375 680Q463 680 533.5 645.0Q604 610 644 542L508 486Q492 512 458.5 531.0Q425 550 373 550Q326 550 287.0 526.0Q248 502 225.0 454.5Q202 407 202 336Q202 231 250.0 174.5Q298 118 376 118Q413 118 447.0 128.5Q481 139 503.0 164.0Q525 189 525 231V250H375V378H683V0H579L557 74Q493 -12 352 -12Z"/></g></g><g fill="#FFD37A" opacity="0.95"><g transform="translate(268 318) rotate(-14) scale(0.11377 -0.11377) translate(0 -334)"><path transform="translate(-336 0)" d="M369 -12Q265 -12 190.0 30.0Q115 72 75.0 150.0Q35 228 35 334Q35 440 76.5 517.5Q118 595 194.0 637.5Q270 680 373 680Q468 680 538.5 638.0Q609 596 647 525L507 474Q485 515 447.0 532.5Q409 550 368 550Q322 550 284.0 524.5Q246 499 224.0 450.5Q202 402 202 334Q202 229 250.5 173.5Q299 118 370 118Q408 118 448.5 134.0Q489 150 512 193L651 142Q611 71 537.5 29.5Q464 -12 369 -12Z"/></g></g><g fill="#FFD37A" opacity="0.85"><g transform="translate(866 420) rotate(16) scale(0.08982 -0.08982) translate(0 -334)"><path transform="translate(-343 0)" d="M44 0V668H264Q346 668 416.5 651.5Q487 635 539.5 596.5Q592 558 621.5 493.5Q651 429 651 334Q651 238 621.5 174.0Q592 110 539.5 71.5Q487 33 416.5 16.5Q346 0 264 0ZM202 133H267Q310 133 349.5 140.0Q389 147 420.5 167.5Q452 188 470.0 228.0Q488 268 488 334Q488 400 470.0 440.5Q452 481 420.5 501.5Q389 522 349.5 529.5Q310 537 267 537H202Z"/></g></g><g fill="#FFD37A" opacity="0.8"><g transform="translate(318 142) rotate(-10) scale(0.08383 -0.08383) translate(0 -334)"><path transform="translate(-733 0)" d="M44 0V668H558V529H202V413H419V274H202V139H558V0Z"/><path transform="translate(-153 0)" d="M50 0V496H183L202 430Q219 458 258.0 484.0Q297 510 352 510Q411 510 446.5 489.0Q482 468 499 427Q528 468 572.5 489.0Q617 510 669 510Q764 510 800.0 456.5Q836 403 836 302V0H684V264Q684 299 680.0 328.0Q676 357 660.0 374.5Q644 392 607 392Q561 392 540.0 359.5Q519 327 519 262V0H366V264Q366 299 362.5 328.0Q359 357 343.5 374.5Q328 392 292 392Q245 392 223.5 358.0Q202 324 202 259V0Z"/></g></g><g fill="#FFD37A" opacity="0.7"><g transform="translate(694 92) rotate(9) scale(0.07186 -0.07186) translate(0 -334)"><path transform="translate(-788 0)" d="M5 0 258 668H432L685 0H513L473 119H217L177 0ZM260 247H430L344 501Z"/><path transform="translate(-98 0)" d="M50 0V496H183L202 430Q219 458 258.0 484.0Q297 510 352 510Q411 510 446.5 489.0Q482 468 499 427Q528 468 572.5 489.0Q617 510 669 510Q764 510 800.0 456.5Q836 403 836 302V0H684V264Q684 299 680.0 328.0Q676 357 660.0 374.5Q644 392 607 392Q561 392 540.0 359.5Q519 327 519 262V0H366V264Q366 299 362.5 328.0Q359 357 343.5 374.5Q328 392 292 392Q245 392 223.5 358.0Q202 324 202 259V0Z"/></g></g>
+</svg>
