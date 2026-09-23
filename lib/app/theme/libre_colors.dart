@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// The color tokens from docs/DESIGN.md, attached to [ThemeData] as an
@@ -111,6 +112,17 @@ class LibreColors extends ThemeExtension<LibreColors> {
       good: Color.lerp(good, other.good, t)!,
     );
   }
+
+  List<Color> get _tokens => [
+    bg, surface, surface2, line, text, muted, chord, accent, onAccent, good, //
+  ];
+
+  @override
+  bool operator ==(Object other) =>
+      other is LibreColors && listEquals(other._tokens, _tokens);
+
+  @override
+  int get hashCode => Object.hashAll(_tokens);
 }
 
 extension LibreColorsX on BuildContext {

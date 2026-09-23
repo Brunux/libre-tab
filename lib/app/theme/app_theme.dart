@@ -81,6 +81,10 @@ ThemeData buildTheme(AppThemeVariant variant) {
       foregroundColor: c.text,
       elevation: 0,
       scrolledUnderElevation: 0,
+      // iOS centers titles by default; the design is left-aligned everywhere.
+      centerTitle: false,
+      // Title sits close to the back/close button, as in the mockups.
+      titleSpacing: 4,
       titleTextStyle: textTheme.headlineSmall,
     ),
     navigationBarTheme: NavigationBarThemeData(

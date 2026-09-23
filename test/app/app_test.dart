@@ -1,36 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:libre_tab/app/app.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
 import 'package:libre_tab/features/editor/presentation/add_song_screen.dart';
+import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
 import 'package:libre_tab/features/tuner/presentation/tuner_screen.dart';
 
-Future<ProviderContainer> pumpApp(WidgetTester tester) async {
-  final container = ProviderContainer();
-  addTearDown(container.dispose);
-  await tester.pumpWidget(
-    UncontrolledProviderScope(
-      container: container,
-      child: const LibreTabApp(),
-    ),
-  );
-  await tester.pumpAndSettle();
-  return container;
-}
-
-String currentPath(ProviderContainer container) =>
-    container.read(routerProvider).routerDelegate.currentConfiguration.uri.path;
-
-Finder navItem(String label) =>
-    find.widgetWithText(NavigationDestination, label);
+import '../helpers/pump_app.dart';
 
 void main() {
+  testWidgets('back from Settings returns to the Songbook', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationBar), findsNothing);
+
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsNothing);
+    expect(find.byType(LibraryScreen), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
+  });
+
+  testWidgets('Save is disabled until the importer exists', (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.text('Add song'));
+    await tester.pumpAndSettle();
+
+    final save = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Save'),
+    );
+    expect(save.onPressed, isNull);
+  });
+
+  testWidgets('a theme picked in Settings applies everywhere', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Light'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+
+    final library = tester.element(find.byType(LibraryScreen));
+    expect(library.colors, LibreColors.light);
+    final scaffold = tester.widget<Scaffold>(
+      find.descendant(
+        of: find.byType(LibraryScreen),
+        matching: find.byType(Scaffold),
+      ),
+    );
+    expect(
+      scaffold.backgroundColor ?? Theme.of(library).scaffoldBackgroundColor,
+      LibreColors.light.bg,
+    );
+  });
+
+  testWidgets('Settings shows the theme chosen elsewhere', (tester) async {
+    final container = await pumpApp(tester);
+    container.read(themeVariantProvider.notifier).cycle(); // → Red night
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+
+    final picker = tester.widget<SegmentedButton<AppThemeVariant>>(
+      find.byType(SegmentedButton<AppThemeVariant>),
+    );
+    expect(picker.selected, {AppThemeVariant.redNight});
+  });
+
+  testWidgets('each tab keeps its place when switching', (tester) async {
+    final container = await pumpApp(tester);
+
+    await tester.tap(navItem('Tuner'));
+    await tester.pumpAndSettle();
+    await tester.tap(navItem('Songbook'));
+    await tester.pumpAndSettle();
+    await tester.tap(navItem('Tuner'));
+    await tester.pumpAndSettle();
+
+    expect(currentPath(container), Routes.tuner);
+    // Both tab screens stay alive (indexed stack), so state isn't lost.
+    expect(find.byType(TunerScreen), findsOneWidget);
+    expect(find.byType(LibraryScreen, skipOffstage: false), findsOneWidget);
+  });
+
   testWidgets('starts on the Songbook tab', (tester) async {
     final container = await pumpApp(tester);
 

@@ -68,5 +68,6 @@ void main() {
     const t = Transposition(semitones: 1, capo: 2);
     expect(t.copyWith(capo: 0).capo, 0);
     expect(t.copyWith(capo: 0).semitones, 1);
+    expect(t.copyWith(semitones: 5).capo, 2);
   });
 }
