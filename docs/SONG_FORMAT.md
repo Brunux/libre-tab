@@ -52,11 +52,14 @@ are lossless) but is ignored when rendering.
 |---|---|---|
 | `{start_of_verse}` … `{end_of_verse}` | `{sov}` … `{eov}` | Normal block |
 | `{start_of_chorus}` … `{end_of_chorus}` | `{soc}` … `{eoc}` | Indented with a side bar |
+| `{start_of_bridge}` … `{end_of_bridge}` | `{sob}` … `{eob}` | Normal block, labelled "Bridge" |
 | `{chorus}` | | Repeats the last chorus |
 | `{start_of_tab}` … `{end_of_tab}` | `{sot}` … `{eot}` | Monospace, no wrapping, horizontal scroll |
-| `{comment: …}` | `{c: …}` | Highlighted note, e.g. "Intro x2" |
+| `{comment: …}` | `{c: …}` | Highlighted note, e.g. "Intro x2"; allowed inside a section |
 
 A section directive may carry a label: `{start_of_verse: Verse 2}`.
+A section with no end directive ends at the next section or the end of the song.
+Lines outside any section form loose stanzas, separated by blank lines.
 
 ### Chords
 
@@ -87,6 +90,10 @@ Transposing changes only how the song is shown. The stored text keeps the
 original chords unless the user explicitly chooses "Save in this key".
 
 - Sharps vs flats follow the target key (e.g. transposing to F uses `Bb`, to E uses `F#`).
+  Flat keys: F, Bb, Eb, Ab, Db and Dm, Gm, Cm, Fm, Bbm, Ebm; all others use
+  sharps (so the six-accidental keys are F# major and Ebm).
+- With no `{key}`, the key is guessed from the first chord.
+- When the shift is zero (or a whole octave) chords are shown exactly as written.
 - Capo: with capo on fret *n*, shown chord shapes are shifted down *n* semitones
   so the player reads the shapes they actually finger.
 

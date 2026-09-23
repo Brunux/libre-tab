@@ -161,11 +161,12 @@ lib/
   app/                 router, theme (dark / red night), l10n setup
   core/
     database/          Drift schema, DAOs, migrations
-    music/             Note, Chord, transposer, tunings   ← pure Dart, no Flutter
+    music/             Note, Chord, MusicKey, Transposition   ← pure Dart, no Flutter
+    chordpro/          Song model + ChordPro parser          ← pure Dart, no Flutter
     widgets/           shared UI bits
   features/
     library/           song list, search, setlists, import/export
-    song_view/         ChordPro parser, renderer, auto-scroll, chord diagrams
+    song_view/         renderer, auto-scroll, chord diagrams
     editor/            create/edit song (ChordPro text + live preview)
     tuner/             audio capture, pitch detector isolate, tuner UI
     settings/
@@ -199,8 +200,8 @@ so it's fast to unit test.
 ## 10. Milestones
 
 0. **Screen design** ✅ — done 2026-09-22, see [DESIGN.md](DESIGN.md).
-1. **Scaffold** ✅ (font files still to bundle) — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
-2. **Music core** — Note/Chord model, ChordPro parser, transposer (+ tests).
+1. **Scaffold** ✅ — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
+2. **Music core** ✅ — Note/Chord/Key model, ChordPro parser, transposer (+ tests).
 3. **Songbook** — Drift schema, library list, search, editor, import/export.
 4. **Campfire mode** — song view, auto-scroll, transpose/capo, chord diagrams, wakelock.
 5. **Tuner** — mic permission, audio stream, MPM isolate, tuner UI, alternate tunings.

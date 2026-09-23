@@ -8,7 +8,7 @@ Flutter app (iOS + Android): offline campfire songbook + acoustic guitar tuner.
 - Songs are stored as ChordPro text (source of truth). Display is chords above lyrics.
 - Fully offline: no network calls, no backend, no analytics.
 - Structure: feature-first under `lib/features/<feature>/{data,application,presentation}`.
-  `lib/core/music` must stay pure Dart (no Flutter imports).
+  `lib/core/music` and `lib/core/chordpro` must stay pure Dart (no Flutter imports).
 - State: Riverpod. Routing: go_router. DB: Drift. UI strings go through l10n (ES + EN).
 - Parser, importer, transposer and pitch detector are written in-house and need
   unit tests.
