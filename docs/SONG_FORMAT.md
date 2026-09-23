@@ -132,8 +132,13 @@ is converted to ChordPro:
 4. **Review.** The result opens in the editor with a live preview; nothing is
    saved until the user confirms.
 
-For the future camera import, step 3 uses each word's x position (in pixels)
-from text recognition instead of character columns. Steps 1, 2 and 4 are the same.
+For camera import, step 3 uses each word's x position (in pixels) from text
+recognition instead of character columns: the lyric's letters share their
+word's box, and each chord goes over the letter under its left edge. The scan
+is then written out as chords-over-lyrics text and steps 1, 2 and 4 are the
+same. Also from the photo: a clearly bigger first line becomes the title, a
+smaller line right under it the artist, and a gap of about a line starts a
+new section.
 
 ## Files
 

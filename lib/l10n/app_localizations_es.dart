@@ -142,9 +142,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get openFile => 'Abrir archivo';
 
   @override
-  String get cameraLater => 'Cámara (pronto)';
-
-  @override
   String get notASongFile =>
       'Ese archivo no es una canción (.cho, .chopro, .chordpro, .crd, .txt).';
 
@@ -566,4 +563,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String addedOn(String date) {
     return 'Agregada el $date';
   }
+
+  @override
+  String get scanPhoto => 'Escanear foto';
+
+  @override
+  String get takePhoto => 'Tomar una foto';
+
+  @override
+  String get choosePhoto => 'Elegir de tus fotos';
+
+  @override
+  String get readingPhoto => 'Leyendo la foto…';
+
+  @override
+  String get noTextFound =>
+      'No se encontró texto en esa foto. Prueba una foto más cercana y nítida, con buena luz.';
+
+  @override
+  String get scanDone => 'Revisa los acordes contra la foto antes de guardar.';
+
+  @override
+  String get scanError => 'No se pudo leer esa foto.';
+
+  @override
+  String get cameraDenied =>
+      'Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes.';
 }

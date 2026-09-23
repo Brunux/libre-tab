@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
@@ -9,7 +10,10 @@ import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/chordpro/chord_sheet_importer.dart';
 import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/chordpro/song_header.dart';
+import 'package:libre_tab/core/files/photo_picker.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/core/ocr/ocr_layout.dart';
+import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
@@ -42,6 +46,7 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
   bool _missing = false;
   bool _saving = false;
   bool _showSource = false;
+  bool _scanning = false;
   String _savedState = _stateOf('', '', '');
 
   bool get _isNew => widget.songId == null;
@@ -141,9 +146,77 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     }
   }
 
-  void _snack(String message) => ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(message)));
+  /// Camera import: a photo from the camera or the library, read on the
+  /// device, laid out as chords-over-lyrics (lib/core/ocr/ocr_layout.dart)
+  /// and put in the text box for review, like Open file. A second scan is
+  /// added after the first, for songs that run over two pages.
+  Future<void> _scan() async {
+    final l10n = context.l10n;
+    final source = await showModalBottomSheet<PhotoSource>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(l10n.takePhoto),
+              onTap: () => Navigator.of(sheet).pop(PhotoSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(l10n.choosePhoto),
+              onTap: () => Navigator.of(sheet).pop(PhotoSource.library),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+    if (source == null || !mounted) return;
+
+    final String? path;
+    try {
+      path = await ref.read(photoPickerProvider).pick(source);
+    } on PlatformException {
+      // The camera was refused (or isn't there).
+      if (mounted) _snack(l10n.cameraDenied);
+      return;
+    }
+    if (path == null || !mounted) return;
+
+    setState(() => _scanning = true);
+    try {
+      final words = await ref.read(textRecognizerProvider).recognize(path);
+      if (!mounted) return;
+      final scanned = OcrLayout.read(words);
+      if (scanned.isEmpty) {
+        _snack(l10n.noTextFound);
+        return;
+      }
+      if (scanned.title case final title? when _title.text.trim().isEmpty) {
+        _title.text = title;
+      }
+      if (scanned.artist case final artist? when _artist.text.trim().isEmpty) {
+        _artist.text = artist;
+      }
+      final before = _content.text.trimRight();
+      _content.text = before.isEmpty
+          ? scanned.text
+          : '$before\n\n${scanned.text}';
+      _snack(l10n.scanDone);
+    } on TextRecognitionException {
+      if (mounted) _snack(l10n.scanError);
+    } finally {
+      if (mounted) setState(() => _scanning = false);
+    }
+  }
+
+  /// Replaces any message still showing, so the latest one is seen now.
+  void _snack(String message) => ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
 
   Future<void> _confirmDiscard() async {
     final l10n = context.l10n;
@@ -245,17 +318,33 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
           runSpacing: 8,
           children: [
             OutlinedButton.icon(
-              onPressed: _openFile,
+              onPressed: _scanning ? null : _openFile,
               icon: const Icon(Icons.file_open_outlined),
               label: Text(l10n.openFile),
             ),
             OutlinedButton.icon(
-              onPressed: null,
-              icon: const Icon(Icons.photo_camera_outlined),
-              label: Text(l10n.cameraLater),
+              onPressed: _scanning ? null : _scan,
+              icon: const Icon(Icons.document_scanner_outlined),
+              label: Text(l10n.scanPhoto),
             ),
           ],
         ),
+        if (_scanning) ...[
+          const SizedBox(height: 12),
+          Semantics(
+            liveRegion: true,
+            child: Row(
+              children: [
+                const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.readingPhoto),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 12),
         TextField(
           controller: _content,

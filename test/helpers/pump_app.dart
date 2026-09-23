@@ -11,7 +11,10 @@ import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
+import 'package:libre_tab/core/files/photo_picker.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/core/ocr/ocr_layout.dart';
+import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/tuner/data/pitch_source.dart';
 
@@ -28,6 +31,8 @@ Future<ProviderContainer> pumpApp(
   SettingsStore? settings,
   FakePitchSource? pitch,
   FakeIncomingFiles? incoming,
+  FakePhotoPicker? photos,
+  FakeTextRecognizer? recognizer,
   List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
@@ -43,6 +48,10 @@ Future<ProviderContainer> pumpApp(
       pitchSourceProvider.overrideWithValue(pitch ?? FakePitchSource()),
       incomingFilesProvider.overrideWithValue(
         incoming ?? FakeIncomingFiles(),
+      ),
+      photoPickerProvider.overrideWithValue(photos ?? FakePhotoPicker()),
+      textRecognizerProvider.overrideWithValue(
+        recognizer ?? FakeTextRecognizer(),
       ),
       ...overrides,
     ],
@@ -152,6 +161,42 @@ class FakeIncomingFiles implements IncomingFiles {
 
   void sendBytes(String name, Uint8List bytes) =>
       _onFile?.call((name: name, bytes: bytes));
+}
+
+/// A camera and photo library that return a preset photo path.
+class FakePhotoPicker implements PhotoPicker {
+  FakePhotoPicker({this.path = '/photos/song.jpg', this.error});
+
+  /// What picking returns; null means the user cancelled.
+  String? path;
+
+  /// Thrown instead, e.g. a PlatformException when the camera is refused.
+  Exception? error;
+
+  final picked = <PhotoSource>[];
+
+  @override
+  Future<String?> pick(PhotoSource source) async {
+    picked.add(source);
+    if (error case final Exception e) throw e;
+    return path;
+  }
+}
+
+/// Text recognition that "reads" preset words from any photo.
+class FakeTextRecognizer implements TextRecognizer {
+  FakeTextRecognizer({this.words = const [], this.error});
+
+  List<RecognizedWord> words;
+  TextRecognitionException? error;
+  final read = <String>[];
+
+  @override
+  Future<List<RecognizedWord>> recognize(String imagePath) async {
+    read.add(imagePath);
+    if (error case final e?) throw e;
+    return words;
+  }
 }
 
 /// A microphone that "hears" whatever the test plays.

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/router.dart';
+import 'package:libre_tab/core/files/photo_picker.dart';
+import 'package:libre_tab/core/ocr/ocr_layout.dart';
+import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
@@ -121,15 +125,137 @@ void main() {
     expect(field.spellCheckConfiguration?.spellCheckService, isNull);
   });
 
-  testWidgets('the camera button is shown but not usable yet', (tester) async {
-    await openEditor(tester);
-    final camera = tester.widget<ButtonStyleButton>(
-      find.ancestor(
-        of: find.text('Camera (later)'),
-        matching: find.bySubtype<ButtonStyleButton>(),
-      ),
-    );
-    expect(camera.onPressed, isNull);
+  group('Scan photo', () {
+    /// Words as Vision would return them for a printed song: a big title,
+    /// then a chord line over a lyric line.
+    List<RecognizedWord> photoOfGrace() {
+      RecognizedWord w(String t, double l, double top, double r, double h) =>
+          RecognizedWord(t, left: l, top: top, right: r, bottom: top + h);
+      return [
+        w('Amazing', 40, 0, 200, 40),
+        w('Grace', 215, 0, 330, 40),
+        // "A-mazing": G over the "m" (x 58), G7 over "grace" (x 111).
+        w('G', 58, 70, 67, 18),
+        w('G7', 111, 70, 129, 18),
+        w('Amazing', 40, 92, 106, 20),
+        w('grace', 111, 92, 152, 20),
+      ];
+    }
+
+    Future<void> scanFrom(WidgetTester tester, String source) async {
+      await tester.tap(find.text('Scan photo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(source));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a photo from the library fills title and chords', (
+      tester,
+    ) async {
+      final photos = FakePhotoPicker();
+      final recognizer = FakeTextRecognizer(words: photoOfGrace());
+      final container = await pumpApp(
+        tester,
+        photos: photos,
+        recognizer: recognizer,
+      );
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+
+      await scanFrom(tester, 'Choose from photos');
+
+      expect(photos.picked, [PhotoSource.library]);
+      expect(recognizer.read, ['/photos/song.jpg']);
+      expect(
+        tester.widget<TextField>(titleField).controller!.text,
+        'Amazing Grace',
+      );
+      expect(
+        find.text('Check the chords against the photo before saving.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+      await tester.pumpAndSettle();
+      final song = await container.read(songRepositoryProvider).getSong(1);
+      expect(song!.body, contains('A[G]mazing [G7]grace'));
+    });
+
+    testWidgets('the camera works the same way', (tester) async {
+      final photos = FakePhotoPicker();
+      await pumpApp(
+        tester,
+        photos: photos,
+        recognizer: FakeTextRecognizer(words: photoOfGrace()),
+      );
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+      await scanFrom(tester, 'Take a photo');
+      expect(photos.picked, [PhotoSource.camera]);
+      expect(
+        tester.widget<TextField>(contentField).controller!.text,
+        isNotEmpty,
+      );
+    });
+
+    testWidgets('a second photo is added after the first', (tester) async {
+      await pumpApp(
+        tester,
+        recognizer: FakeTextRecognizer(words: photoOfGrace()),
+      );
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+      await scanFrom(tester, 'Choose from photos');
+      final once = tester.widget<TextField>(contentField).controller!.text;
+      await scanFrom(tester, 'Choose from photos');
+      final twice = tester.widget<TextField>(contentField).controller!.text;
+      expect(twice, '$once\n\n$once');
+    });
+
+    testWidgets('cancelling picks nothing and changes nothing', (tester) async {
+      final recognizer = FakeTextRecognizer(words: photoOfGrace());
+      await pumpApp(
+        tester,
+        photos: FakePhotoPicker(path: null),
+        recognizer: recognizer,
+      );
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+      await scanFrom(tester, 'Choose from photos');
+      expect(recognizer.read, isEmpty);
+      expect(tester.widget<TextField>(contentField).controller!.text, isEmpty);
+    });
+
+    testWidgets('a photo without text, or unreadable, says so', (
+      tester,
+    ) async {
+      final recognizer = FakeTextRecognizer();
+      await pumpApp(tester, recognizer: recognizer);
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+
+      await scanFrom(tester, 'Choose from photos');
+      expect(
+        find.textContaining('No text found in that photo'),
+        findsOneWidget,
+      );
+
+      recognizer.error = const TextRecognitionException('corrupt');
+      await scanFrom(tester, 'Choose from photos');
+      expect(find.text("Couldn't read that photo."), findsOneWidget);
+    });
+
+    testWidgets('a refused camera says where to allow it', (tester) async {
+      await pumpApp(
+        tester,
+        photos: FakePhotoPicker(
+          error: PlatformException(code: 'camera_access_denied'),
+        ),
+      );
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+      await scanFrom(tester, 'Take a photo');
+      expect(find.textContaining("can't use the camera"), findsOneWidget);
+    });
   });
 
   testWidgets('Cancel with no changes closes right away', (tester) async {

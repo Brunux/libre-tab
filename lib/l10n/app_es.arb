@@ -39,7 +39,6 @@
   "artistLabel": "Artista",
   "contentLabel": "Pega acordes sobre la letra, o ChordPro",
   "openFile": "Abrir archivo",
-  "cameraLater": "Cámara (pronto)",
   "notASongFile": "Ese archivo no es una canción (.cho, .chopro, .chordpro, .crd, .txt).",
   "resultLabel": "Resultado",
   "previewTab": "Vista previa",
@@ -150,5 +149,13 @@
   "copiesRemoved": "{count, plural, =1{Se quitó 1 copia.} other{Se quitaron {count} copias.}}",
   "differentVersions": "Mismo título, distinta letra",
   "differentVersionsHint": "Pueden ser versiones distintas. Ábrelas para compararlas y borra la que no quieras.",
-  "addedOn": "Agregada el {date}"
+  "addedOn": "Agregada el {date}",
+  "scanPhoto": "Escanear foto",
+  "takePhoto": "Tomar una foto",
+  "choosePhoto": "Elegir de tus fotos",
+  "readingPhoto": "Leyendo la foto…",
+  "noTextFound": "No se encontró texto en esa foto. Prueba una foto más cercana y nítida, con buena luz.",
+  "scanDone": "Revisa los acordes contra la foto antes de guardar.",
+  "scanError": "No se pudo leer esa foto.",
+  "cameraDenied": "Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes."
 }

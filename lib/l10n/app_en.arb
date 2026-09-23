@@ -67,7 +67,6 @@
   "artistLabel": "Artist",
   "contentLabel": "Paste chords over lyrics, or ChordPro",
   "openFile": "Open file",
-  "cameraLater": "Camera (later)",
   "notASongFile": "That file isn't a song (.cho, .chopro, .chordpro, .crd, .txt).",
   "resultLabel": "Result",
   "previewTab": "Preview",
@@ -316,5 +315,13 @@
         "type": "String"
       }
     }
-  }
+  },
+  "scanPhoto": "Scan photo",
+  "takePhoto": "Take a photo",
+  "choosePhoto": "Choose from photos",
+  "readingPhoto": "Reading the photo…",
+  "noTextFound": "No text found in that photo. Try a closer, sharper photo in good light.",
+  "scanDone": "Check the chords against the photo before saving.",
+  "scanError": "Couldn't read that photo.",
+  "cameraDenied": "Libre Tab can't use the camera. You can allow it in Settings."
 }

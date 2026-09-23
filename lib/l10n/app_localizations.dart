@@ -332,12 +332,6 @@ abstract class AppLocalizations {
   /// **'Open file'**
   String get openFile;
 
-  /// No description provided for @cameraLater.
-  ///
-  /// In en, this message translates to:
-  /// **'Camera (later)'**
-  String get cameraLater;
-
   /// No description provided for @notASongFile.
   ///
   /// In en, this message translates to:
@@ -1003,6 +997,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Added {date}'**
   String addedOn(String date);
+
+  /// No description provided for @scanPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan photo'**
+  String get scanPhoto;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @choosePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from photos'**
+  String get choosePhoto;
+
+  /// No description provided for @readingPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the photo…'**
+  String get readingPhoto;
+
+  /// No description provided for @noTextFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No text found in that photo. Try a closer, sharper photo in good light.'**
+  String get noTextFound;
+
+  /// No description provided for @scanDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the chords against the photo before saving.'**
+  String get scanDone;
+
+  /// No description provided for @scanError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read that photo.'**
+  String get scanError;
+
+  /// No description provided for @cameraDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre Tab can\'t use the camera. You can allow it in Settings.'**
+  String get cameraDenied;
 }
 
 class _AppLocalizationsDelegate

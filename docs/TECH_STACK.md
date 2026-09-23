@@ -29,6 +29,7 @@ with the phone's microphone.
 | Local database | `drift` + `sqlite3_flutter_libs` | Real SQL, typed queries, migrations, reactive `watch()` streams, **FTS5 full-text search** across title/artist/lyrics. |
 | Code generation | `build_runner`, `drift_dev` | Only for Drift. Models use Dart 3 `sealed` classes / records — no `freezed`. |
 | Settings | `shared_preferences` | Theme, font size, default scroll speed, reference pitch (A4). |
+| Photos for camera import | `image_picker` (BSD) | Camera, or the system photo picker (no library permission; only the chosen photo is shared). |
 | Swipe actions | `flutter_slidable` (MIT) | Quick actions when a song row is swiped left. |
 | Keep screen on | `wakelock_plus` | Enabled only on the song view and tuner. |
 | Import / export | `file_picker`, `share_plus`, `archive` | Import `.cho`/`.chopro`/`.txt` or a songbook `.zip`; export a single song or the whole songbook (`archive`, MIT, builds and reads the `.zip`). Files opened from other apps arrive through a small in-app channel, no package. |
@@ -85,10 +86,18 @@ source ─▶ lines with horizontal positions ─▶ classify line: chord / lyri
 - **.cho / .chopro file:** already ChordPro, parsed directly.
 - A chord line is one where every token matches the chord grammar
   (`[A-G][#b]?(m|maj|min|dim|aug|sus)?\d*(/[A-G][#b]?)?`, plus `N.C.`, `x2`, `|`).
-- **OCR engine options for later:** Google ML Kit Text Recognition
-  (`google_mlkit_text_recognition`): best accuracy, on-device and free, but
-  closed-source binaries. Tesseract (Apache-2.0): fully open source, weaker on
-  phone photos. Choose when the camera milestone starts.
+- **OCR engine (decided in milestone 7):** Apple Vision on iOS (built into
+  the OS: nothing shipped, very good on photos and screenshots) and Tesseract
+  (Apache-2.0) on Android. Google ML Kit was ruled out: closed-source
+  binaries in a GPL app, and it can send usage metrics, which would break
+  "Data Not Collected". Both engines sit behind one channel
+  (`libre_tab/text_recognition`) that returns every word with its pixel box;
+  the layout (`lib/core/ocr/ocr_layout.dart`) is shared, pure Dart.
+- **Lone chords:** Vision skips some isolated single letters (a "C" alone
+  reads like a bracket). A second pass finds marks in chord rows that no word
+  covers, crops each one, draws it three times ("C C C") and keeps what at
+  least two copies read as the same chord. On a test sheet that took chords
+  from 8/12 to 12/12.
 
 ## 5. Feature 1 — Songbook (store + display)
 

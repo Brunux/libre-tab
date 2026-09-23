@@ -94,12 +94,18 @@ Details (milestone 4):
 ### 3. Add / edit song
 One screen for both. Header: cancel (asks "Discard changes?" if anything
 changed), "Add song" / "Edit song", Save (enabled once there is a title and
-text). Fields: Title, Artist. Buttons: **Open file** and **Camera (later)** —
+text). Fields: Title, Artist. Buttons: **Open file** and **Scan photo** —
 simpler than the Paste / File / Camera tabs in the mockup, since the text box
 is always there to paste into. Text box (monospace) takes chords-over-lyrics
 or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Result with
 Preview / ChordPro toggle and a summary ("Chord lines placed: 4 · Sections
 found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
+**Scan photo** (milestone 7) asks "Take a photo" or "Choose from photos"
+(the system picker: no permission, only that photo is shared), shows
+"Reading the photo…", then fills Title/Artist (if empty) and the text box
+with chords-over-lyrics, and says "Check the chords against the photo
+before saving." A second scan is added below the first, for two-page songs.
+Refused camera, no text found and unreadable photos each get a plain message.
 A song file opened from another app ("Open in Libre Tab", "Share to") lands
 here the same way, already filled in (docs/SONG_FORMAT.md § Files).
 
