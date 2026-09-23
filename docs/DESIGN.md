@@ -104,7 +104,12 @@ found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
 Header with A4 reference · tuning picker · big note + octave + live Hz · needle
 gauge (−50…+50 cents, green zone ±5) · status ("Too low · tighten" / "Too high ·
 loosen" / "In tune") · Auto-detect toggle · six string buttons (6th → 1st);
-tapping one locks to that string. In-tune string button turns `good`.
+tapping one locks to that string (tap again, or Auto-detect, to unlock).
+In-tune string button turns `good`, with one haptic tap. First visit shows
+"Tune your guitar" and a Start button before the OS microphone prompt; if the
+microphone is refused, the screen says where to allow it. Tapping "A4 = 440 Hz"
+opens a slider (432–446 Hz) with "Back to 440". The tuner only listens while
+its tab is on screen and the app is in front, and keeps the screen on.
 
 ## Not designed yet
 

@@ -60,6 +60,11 @@ class PrefsSettingsStore implements SettingsStore {
 abstract final class SettingsKeys {
   static const theme = 'theme';
   static const lyricsSize = 'lyricsSize';
+  static const tuning = 'tuning';
+  static const a4 = 'a4';
+
+  /// 1 once the tuner has asked for the microphone.
+  static const micAsked = 'micAsked';
 }
 
 /// Lyric text size on the song screen; chords follow at 85 %.

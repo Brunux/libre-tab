@@ -33,9 +33,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
-  String get comingSoon => 'Coming in a later milestone.';
-
-  @override
   String get themeLabel => 'Theme';
 
   @override
@@ -245,4 +242,102 @@ class AppLocalizationsEn extends AppLocalizations {
   String soundsIn(String key, int fret, String shapes) {
     return 'Sounds in $key · Capo $fret · $shapes shapes';
   }
+
+  @override
+  String get tunerIntroTitle => 'Tune your guitar';
+
+  @override
+  String get tunerIntroBody =>
+      'The tuner listens to your guitar through the microphone. Nothing is recorded or saved.';
+
+  @override
+  String get startTuner => 'Start tuner';
+
+  @override
+  String get micDeniedTitle => 'The microphone is off';
+
+  @override
+  String get micDeniedBody =>
+      'Allow it in Settings → Libre Tab → Microphone, then try again.';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get playAString => 'Play a string';
+
+  @override
+  String get inTune => 'In tune';
+
+  @override
+  String get tooLow => 'Too low · tighten';
+
+  @override
+  String get tooHigh => 'Too high · loosen';
+
+  @override
+  String centsOff(String cents) {
+    return '$cents cents';
+  }
+
+  @override
+  String get tuningLabel => 'Tuning';
+
+  @override
+  String get tuningStandard => 'Standard';
+
+  @override
+  String get tuningHalfStepDown => 'Half-step down';
+
+  @override
+  String get tuningDropD => 'Drop D';
+
+  @override
+  String get tuningDadgad => 'DADGAD';
+
+  @override
+  String get tuningOpenG => 'Open G';
+
+  @override
+  String get tuningOpenD => 'Open D';
+
+  @override
+  String get stringsLabel => 'Strings';
+
+  @override
+  String get autoDetect => 'Auto-detect';
+
+  @override
+  String stringNumber(String number) {
+    String _temp0 = intl.Intl.selectLogic(
+      number,
+      {
+        '1': '1st',
+        '2': '2nd',
+        '3': '3rd',
+        'other': '${number}th',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String stringButton(String number, String note) {
+    return '$number string, $note';
+  }
+
+  @override
+  String a4Label(int hz) {
+    return 'A4 = $hz Hz';
+  }
+
+  @override
+  String get a4Title => 'Reference pitch';
+
+  @override
+  String get a4Help =>
+      'Almost all music uses A4 = 440 Hz. Change it only to match another instrument.';
+
+  @override
+  String get a4Reset => 'Back to 440';
 }

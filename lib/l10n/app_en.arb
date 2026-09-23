@@ -8,7 +8,6 @@
   "editSong": "Edit song",
   "cancel": "Cancel",
   "save": "Save",
-  "comingSoon": "Coming in a later milestone.",
   "themeLabel": "Theme",
   "themeDark": "Dark",
   "themeRedNight": "Red night",
@@ -129,5 +128,62 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tunerIntroTitle": "Tune your guitar",
+  "tunerIntroBody": "The tuner listens to your guitar through the microphone. Nothing is recorded or saved.",
+  "startTuner": "Start tuner",
+  "micDeniedTitle": "The microphone is off",
+  "micDeniedBody": "Allow it in Settings → Libre Tab → Microphone, then try again.",
+  "tryAgain": "Try again",
+  "playAString": "Play a string",
+  "inTune": "In tune",
+  "tooLow": "Too low · tighten",
+  "tooHigh": "Too high · loosen",
+  "centsOff": "{cents} cents",
+  "@centsOff": {
+    "placeholders": {
+      "cents": {
+        "type": "String"
+      }
+    }
+  },
+  "tuningLabel": "Tuning",
+  "tuningStandard": "Standard",
+  "tuningHalfStepDown": "Half-step down",
+  "tuningDropD": "Drop D",
+  "tuningDadgad": "DADGAD",
+  "tuningOpenG": "Open G",
+  "tuningOpenD": "Open D",
+  "stringsLabel": "Strings",
+  "autoDetect": "Auto-detect",
+  "stringNumber": "{number, select, 1{1st} 2{2nd} 3{3rd} other{{number}th}}",
+  "@stringNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "stringButton": "{number} string, {note}",
+  "@stringButton": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "a4Label": "A4 = {hz} Hz",
+  "@a4Label": {
+    "placeholders": {
+      "hz": {
+        "type": "int"
+      }
+    }
+  },
+  "a4Title": "Reference pitch",
+  "a4Help": "Almost all music uses A4 = 440 Hz. Change it only to match another instrument.",
+  "a4Reset": "Back to 440"
 }

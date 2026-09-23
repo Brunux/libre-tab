@@ -60,7 +60,8 @@ void main() {
 
     router.go(Routes.tuner);
     await tester.pumpAndSettle();
-    expect(find.text('Llegará en una próxima etapa.'), findsOneWidget);
+    expect(find.text('Afina tu guitarra'), findsOneWidget);
+    expect(find.text('Iniciar afinador'), findsOneWidget);
 
     router.go(Routes.settings);
     await tester.pumpAndSettle();

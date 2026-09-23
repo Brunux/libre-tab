@@ -32,7 +32,7 @@ with the phone's microphone.
 | Keep screen on | `wakelock_plus` | Enabled only on the song view and tuner. |
 | Import / export | `file_picker`, `share_plus` | Import `.cho`/`.chopro`/`.txt`; export single song or whole songbook. |
 | Mic audio stream | `record` | Streams raw PCM16 on iOS/Android. |
-| Mic permission | `permission_handler` | Explicit rationale screen before the OS prompt. |
+| Mic permission | `record`'s own `hasPermission()` | Our explanation screen first, then the OS prompt. (`permission_handler` wasn't needed.) |
 | Localization | `flutter_localizations` + `intl` (ARB files) | Spanish + English from day one. |
 | Lints | `very_good_analysis` | Strict, catches issues early. |
 | Tests | `flutter_test`, `mocktail` | Unit, widget and golden tests. |
@@ -204,6 +204,6 @@ so it's fast to unit test.
 2. **Music core** ✅ — Note/Chord/Key model, ChordPro parser, transposer (+ tests).
 3. **Songbook** ✅ — Drift schema + FTS5 search, library list, add/edit song with chords-over-lyrics importer, open file, share `.cho`, delete. (Whole-songbook `.zip` export moved to milestone 6.)
 4. **Campfire mode** ✅ — dock (transpose, capo, text size, auto-scroll speed), tap-to-pause auto-scroll, chord diagrams, screen kept awake, theme and text size remembered. (Pinch-to-zoom replaced by A−/A+; setlist swipe moves to milestone 6.)
-5. **Tuner** — mic permission, audio stream, MPM isolate, tuner UI, alternate tunings.
+5. **Tuner** ✅ — explanation screen then mic permission, `record` PCM stream, MPM on a background isolate, needle UI, six tunings, string lock, A4 432–446, haptic when in tune, listens only while the tab is visible and the app is in front.
 6. **Polish** — setlists, starter songs, app icon, store assets.
 7. **Camera import** — photo → OCR with word boxes → same chords-over-lyrics importer → ChordPro.

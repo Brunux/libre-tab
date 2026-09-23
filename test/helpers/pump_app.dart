@@ -9,6 +9,7 @@ import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/tuner/data/pitch_source.dart';
 
 import 'test_database.dart';
 
@@ -21,6 +22,7 @@ Future<ProviderContainer> pumpApp(
   FakeSongFiles? files,
   FakeKeepAwake? keepAwake,
   SettingsStore? settings,
+  FakePitchSource? pitch,
   List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
@@ -32,6 +34,8 @@ Future<ProviderContainer> pumpApp(
       settingsStoreProvider.overrideWithValue(
         settings ?? MemorySettingsStore(),
       ),
+      // Never the real microphone in tests.
+      pitchSourceProvider.overrideWithValue(pitch ?? FakePitchSource()),
       ...overrides,
     ],
   );
@@ -96,13 +100,39 @@ class FakeSongFiles implements SongFiles {
       shared.add((title: title, body: body));
 }
 
-/// Records whether the screen is being kept awake.
+/// Counts screen-awake requests like the real [KeepAwake].
 class FakeKeepAwake implements KeepAwake {
-  bool awake = false;
+  var _requests = 0;
 
   @override
-  Future<void> enable() async => awake = true;
+  bool get awake => _requests > 0;
 
   @override
-  Future<void> disable() async => awake = false;
+  Future<void> enable() async => _requests++;
+
+  @override
+  Future<void> disable() async {
+    if (_requests > 0) _requests--;
+  }
+}
+
+/// A microphone that "hears" whatever the test plays.
+class FakePitchSource implements PitchSource {
+  FakePitchSource({this.access = MicAccess.granted});
+
+  MicAccess access;
+  void Function(double?)? _onPitch;
+  bool get listening => _onPitch != null;
+
+  @override
+  Future<MicAccess> start(void Function(double? frequency) onPitch) async {
+    if (access == MicAccess.granted) _onPitch = onPitch;
+    return access;
+  }
+
+  @override
+  Future<void> stop() async => _onPitch = null;
+
+  /// Delivers one detected frequency (null = silence), as the mic would.
+  void hear(double? frequency) => _onPitch?.call(frequency);
 }

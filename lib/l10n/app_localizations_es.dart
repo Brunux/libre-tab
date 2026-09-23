@@ -33,9 +33,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get save => 'Guardar';
 
   @override
-  String get comingSoon => 'Llegará en una próxima etapa.';
-
-  @override
   String get themeLabel => 'Tema';
 
   @override
@@ -246,4 +243,93 @@ class AppLocalizationsEs extends AppLocalizations {
   String soundsIn(String key, int fret, String shapes) {
     return 'Suena en $key · Cejilla $fret · posiciones de $shapes';
   }
+
+  @override
+  String get tunerIntroTitle => 'Afina tu guitarra';
+
+  @override
+  String get tunerIntroBody =>
+      'El afinador escucha tu guitarra con el micrófono. No se graba ni se guarda nada.';
+
+  @override
+  String get startTuner => 'Iniciar afinador';
+
+  @override
+  String get micDeniedTitle => 'El micrófono está desactivado';
+
+  @override
+  String get micDeniedBody =>
+      'Actívalo en Ajustes → Libre Tab → Micrófono y vuelve a intentarlo.';
+
+  @override
+  String get tryAgain => 'Reintentar';
+
+  @override
+  String get playAString => 'Toca una cuerda';
+
+  @override
+  String get inTune => 'Afinada';
+
+  @override
+  String get tooLow => 'Muy baja · aprieta';
+
+  @override
+  String get tooHigh => 'Muy alta · afloja';
+
+  @override
+  String centsOff(String cents) {
+    return '$cents cents';
+  }
+
+  @override
+  String get tuningLabel => 'Afinación';
+
+  @override
+  String get tuningStandard => 'Estándar';
+
+  @override
+  String get tuningHalfStepDown => 'Medio tono abajo';
+
+  @override
+  String get tuningDropD => 'Drop D';
+
+  @override
+  String get tuningDadgad => 'DADGAD';
+
+  @override
+  String get tuningOpenG => 'Sol abierta';
+
+  @override
+  String get tuningOpenD => 'Re abierta';
+
+  @override
+  String get stringsLabel => 'Cuerdas';
+
+  @override
+  String get autoDetect => 'Detección automática';
+
+  @override
+  String stringNumber(String number) {
+    return '$numberª';
+  }
+
+  @override
+  String stringButton(String number, String note) {
+    return '$number cuerda, $note';
+  }
+
+  @override
+  String a4Label(int hz) {
+    return 'La4 = $hz Hz';
+  }
+
+  @override
+  String get a4Title => 'Tono de referencia';
+
+  @override
+  String get a4Help =>
+      'Casi toda la música usa La4 = 440 Hz. Cámbialo solo para igualar otro instrumento.';
+
+  @override
+  String get a4Reset => 'Volver a 440';
 }

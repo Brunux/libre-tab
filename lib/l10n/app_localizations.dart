@@ -146,12 +146,6 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
-  /// No description provided for @comingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming in a later milestone.'**
-  String get comingSoon;
-
   /// No description provided for @themeLabel.
   ///
   /// In en, this message translates to:
@@ -529,6 +523,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sounds in {key} · Capo {fret} · {shapes} shapes'**
   String soundsIn(String key, int fret, String shapes);
+
+  /// No description provided for @tunerIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tune your guitar'**
+  String get tunerIntroTitle;
+
+  /// No description provided for @tunerIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The tuner listens to your guitar through the microphone. Nothing is recorded or saved.'**
+  String get tunerIntroBody;
+
+  /// No description provided for @startTuner.
+  ///
+  /// In en, this message translates to:
+  /// **'Start tuner'**
+  String get startTuner;
+
+  /// No description provided for @micDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone is off'**
+  String get micDeniedTitle;
+
+  /// No description provided for @micDeniedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow it in Settings → Libre Tab → Microphone, then try again.'**
+  String get micDeniedBody;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @playAString.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a string'**
+  String get playAString;
+
+  /// No description provided for @inTune.
+  ///
+  /// In en, this message translates to:
+  /// **'In tune'**
+  String get inTune;
+
+  /// No description provided for @tooLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Too low · tighten'**
+  String get tooLow;
+
+  /// No description provided for @tooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Too high · loosen'**
+  String get tooHigh;
+
+  /// No description provided for @centsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{cents} cents'**
+  String centsOff(String cents);
+
+  /// No description provided for @tuningLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning'**
+  String get tuningLabel;
+
+  /// No description provided for @tuningStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get tuningStandard;
+
+  /// No description provided for @tuningHalfStepDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Half-step down'**
+  String get tuningHalfStepDown;
+
+  /// No description provided for @tuningDropD.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop D'**
+  String get tuningDropD;
+
+  /// No description provided for @tuningDadgad.
+  ///
+  /// In en, this message translates to:
+  /// **'DADGAD'**
+  String get tuningDadgad;
+
+  /// No description provided for @tuningOpenG.
+  ///
+  /// In en, this message translates to:
+  /// **'Open G'**
+  String get tuningOpenG;
+
+  /// No description provided for @tuningOpenD.
+  ///
+  /// In en, this message translates to:
+  /// **'Open D'**
+  String get tuningOpenD;
+
+  /// No description provided for @stringsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Strings'**
+  String get stringsLabel;
+
+  /// No description provided for @autoDetect.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-detect'**
+  String get autoDetect;
+
+  /// No description provided for @stringNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'{number, select, 1{1st} 2{2nd} 3{3rd} other{{number}th}}'**
+  String stringNumber(String number);
+
+  /// No description provided for @stringButton.
+  ///
+  /// In en, this message translates to:
+  /// **'{number} string, {note}'**
+  String stringButton(String number, String note);
+
+  /// No description provided for @a4Label.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 = {hz} Hz'**
+  String a4Label(int hz);
+
+  /// No description provided for @a4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference pitch'**
+  String get a4Title;
+
+  /// No description provided for @a4Help.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost all music uses A4 = 440 Hz. Change it only to match another instrument.'**
+  String get a4Help;
+
+  /// No description provided for @a4Reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to 440'**
+  String get a4Reset;
 }
 
 class _AppLocalizationsDelegate
