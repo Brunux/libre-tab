@@ -871,6 +871,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// No description provided for @dangerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger zone'**
+  String get dangerZone;
+
+  /// No description provided for @deleteAllSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all songs'**
+  String get deleteAllSongs;
+
+  /// No description provided for @deleteAllSongsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes every song from this phone'**
+  String get deleteAllSongsHint;
+
+  /// No description provided for @deleteAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete your only song?} other{Delete all {count} songs?}}'**
+  String deleteAllTitle(int count);
+
+  /// No description provided for @deleteAllBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your setlists will be left empty. To keep a copy, export your songs first.'**
+  String get deleteAllBody;
+
+  /// No description provided for @exportFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Export first'**
+  String get exportFirst;
+
+  /// No description provided for @deleteAllConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all'**
+  String get deleteAllConfirm;
+
+  /// No description provided for @songsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song deleted.} other{{count} songs deleted.}}'**
+  String songsDeleted(int count);
+
+  /// No description provided for @songDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted “{title}”.'**
+  String songDeleted(String title);
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @swipeSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Setlist'**
+  String get swipeSetlist;
 }
 
 class _AppLocalizationsDelegate

@@ -62,6 +62,13 @@ Header (title + settings icon) · search field · chips: All songs / Favorites /
 Setlists · song rows (key badge, title, artist · capo, favorite star) ·
 floating "Add song" button · bottom tabs.
 
+Swiping a song row left reveals quick actions: **Setlist** (the Add to setlist
+sheet), **Share** (the `.cho` file) and **Delete** (red). Only one row is open
+at a time. Delete happens at once with an **Undo** snackbar (8 s) that puts the
+song back with its id, favorite and setlist places; that's quicker than a
+dialog and just as safe. Screen readers get the same three as custom actions
+on the row. (`flutter_slidable`)
+
 ### 2. Song view (campfire mode)
 Header: back, title, "artist · Key G" (with capo: "Sounds in A · Capo 2 · play G
 shapes"), favorite star, theme switch, ⋮ menu (Chords, Edit song, Share,
@@ -136,7 +143,15 @@ Theme (Dark / Red night / Light) · **Songbook**: Export all songs (a `.zip` of
 `.cho` files through the share sheet), Import songs (`.zip` or a single song
 file; adds every song, skips files that aren't songs), Add starter songs
 (adds the public-domain starters that aren't in the songbook) · **About**:
-version, GPL-3.0 note and the licenses page.
+version, GPL-3.0 note and the licenses page. · **Danger zone** (last, in the
+error color): Delete all songs.
+
+Delete all songs follows the usual rules for destructive actions: it's
+disabled when the songbook is empty; the dialog says exactly what's lost
+("Delete all 12 songs?", setlists are left empty), offers **Export first**,
+keeps Cancel as the safe choice and makes the destructive button red; and
+after deleting, an **Undo** snackbar can still bring everything back. Undo
+lives in memory only, so it's gone if the app is closed.
 
 Starter songs are added automatically on the very first launch only; after
 that the songbook is the user's (deleting them is fine, they don't come back

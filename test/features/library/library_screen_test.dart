@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
@@ -100,5 +101,68 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(SongViewScreen), findsOneWidget);
     expect(find.text('John Newton · Key G'), findsOneWidget);
+  });
+
+  group('swipe actions', () {
+    Future<void> swipeLeft(WidgetTester tester, String title) async {
+      await tester.drag(find.text(title), const Offset(-500, 0));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('swiping left shows Setlist, Share and Delete', (tester) async {
+      await pumpApp(tester, songs: _all);
+      await swipeLeft(tester, 'Amazing Grace');
+
+      expect(find.text('Setlist'), findsOneWidget);
+      expect(find.text('Share'), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
+    });
+
+    testWidgets('Delete removes the song at once, and Undo brings it back', (
+      tester,
+    ) async {
+      final container = await pumpApp(tester, songs: _all);
+      final songs = container.read(songRepositoryProvider);
+      await swipeLeft(tester, 'Amazing Grace');
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Amazing Grace'), findsNothing);
+      expect(find.text('Deleted “Amazing Grace”.'), findsOneWidget);
+      expect(await songs.getSong(2), isNull);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect(await songs.getSong(2), isNotNull);
+      expect(find.text('Amazing Grace'), findsOneWidget);
+    });
+
+    testWidgets('Share shares the song file', (tester) async {
+      final files = FakeSongFiles();
+      await pumpApp(tester, songs: _all, files: files);
+      await swipeLeft(tester, 'Oh! Susanna');
+      await tester.tap(find.text('Share'));
+      await tester.pumpAndSettle();
+      expect(files.shared.single.title, 'Oh! Susanna');
+    });
+
+    testWidgets('Setlist opens the Add to setlist sheet', (tester) async {
+      await pumpApp(tester, songs: _all);
+      await swipeLeft(tester, 'Oh! Susanna');
+      await tester.tap(find.text('Setlist'));
+      await tester.pumpAndSettle();
+      expect(find.text('Add to setlist'), findsOneWidget);
+      expect(find.text('New setlist'), findsOneWidget);
+    });
+
+    testWidgets('screen readers get the same actions', (tester) async {
+      await pumpApp(tester, songs: _all);
+      final node = tester.getSemantics(find.text('Amazing Grace'));
+      final ids = node.getSemanticsData().customSemanticsActionIds ?? [];
+      final labels = [
+        for (final int id in ids) CustomSemanticsAction.getAction(id)!.label,
+      ];
+      expect(labels, ['Add to setlist', 'Share', 'Delete']);
+    });
   });
 }

@@ -128,5 +128,16 @@
   "nothingToExport": "Tu cancionero está vacío. No hay nada que exportar.",
   "aboutSection": "Acerca de",
   "aboutBody": "Libre Tab es software libre bajo la GNU GPL 3.0 o posterior. Funciona sin conexión y no recopila datos.",
-  "licenses": "Licencias"
+  "licenses": "Licencias",
+  "dangerZone": "Zona de riesgo",
+  "deleteAllSongs": "Borrar todas las canciones",
+  "deleteAllSongsHint": "Quita todas las canciones de este teléfono",
+  "deleteAllTitle": "{count, plural, =1{¿Borrar tu única canción?} other{¿Borrar las {count} canciones?}}",
+  "deleteAllBody": "Tus repertorios quedarán vacíos. Para guardar una copia, exporta tus canciones primero.",
+  "exportFirst": "Exportar primero",
+  "deleteAllConfirm": "Borrar todo",
+  "songsDeleted": "{count, plural, =1{Se borró 1 canción.} other{Se borraron {count} canciones.}}",
+  "songDeleted": "Se borró “{title}”.",
+  "undo": "Deshacer",
+  "swipeSetlist": "Repertorio"
 }

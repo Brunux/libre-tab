@@ -460,4 +460,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
+
+  @override
+  String get dangerZone => 'Danger zone';
+
+  @override
+  String get deleteAllSongs => 'Delete all songs';
+
+  @override
+  String get deleteAllSongsHint => 'Removes every song from this phone';
+
+  @override
+  String deleteAllTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete all $count songs?',
+      one: 'Delete your only song?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteAllBody =>
+      'Your setlists will be left empty. To keep a copy, export your songs first.';
+
+  @override
+  String get exportFirst => 'Export first';
+
+  @override
+  String get deleteAllConfirm => 'Delete all';
+
+  @override
+  String songsDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs deleted.',
+      one: '1 song deleted.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String songDeleted(String title) {
+    return 'Deleted “$title”.';
+  }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get swipeSetlist => 'Setlist';
 }

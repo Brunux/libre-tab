@@ -245,5 +245,37 @@
   "nothingToExport": "Your songbook is empty. There's nothing to export.",
   "aboutSection": "About",
   "aboutBody": "Libre Tab is free software under the GNU GPL 3.0 or later. It works offline and collects no data.",
-  "licenses": "Licenses"
+  "licenses": "Licenses",
+  "dangerZone": "Danger zone",
+  "deleteAllSongs": "Delete all songs",
+  "deleteAllSongsHint": "Removes every song from this phone",
+  "deleteAllTitle": "{count, plural, =1{Delete your only song?} other{Delete all {count} songs?}}",
+  "@deleteAllTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteAllBody": "Your setlists will be left empty. To keep a copy, export your songs first.",
+  "exportFirst": "Export first",
+  "deleteAllConfirm": "Delete all",
+  "songsDeleted": "{count, plural, =1{1 song deleted.} other{{count} songs deleted.}}",
+  "@songsDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "songDeleted": "Deleted “{title}”.",
+  "@songDeleted": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Undo",
+  "swipeSetlist": "Setlist"
 }

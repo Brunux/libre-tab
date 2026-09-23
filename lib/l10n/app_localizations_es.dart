@@ -453,4 +453,56 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get licenses => 'Licencias';
+
+  @override
+  String get dangerZone => 'Zona de riesgo';
+
+  @override
+  String get deleteAllSongs => 'Borrar todas las canciones';
+
+  @override
+  String get deleteAllSongsHint => 'Quita todas las canciones de este teléfono';
+
+  @override
+  String deleteAllTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¿Borrar las $count canciones?',
+      one: '¿Borrar tu única canción?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteAllBody =>
+      'Tus repertorios quedarán vacíos. Para guardar una copia, exporta tus canciones primero.';
+
+  @override
+  String get exportFirst => 'Exportar primero';
+
+  @override
+  String get deleteAllConfirm => 'Borrar todo';
+
+  @override
+  String songsDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Se borraron $count canciones.',
+      one: 'Se borró 1 canción.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String songDeleted(String title) {
+    return 'Se borró “$title”.';
+  }
+
+  @override
+  String get undo => 'Deshacer';
+
+  @override
+  String get swipeSetlist => 'Repertorio';
 }

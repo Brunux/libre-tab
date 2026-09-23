@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/core/database/app_database.dart';
+import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 
 import '../../helpers/test_database.dart';
@@ -213,6 +214,52 @@ void main() {
     expect(listTime, lessThan(300));
     expect(oneTime, lessThan(300));
     expect(broadTime, lessThan(300));
+  });
+
+  group('delete and undo', () {
+    test('delete all, then restore: same ids, searchable, same setlist '
+        'places', () async {
+      await addAll(); // ids 1, 2, 3
+      final setlists = SetlistRepository(db);
+      final friday = await setlists.create('Friday');
+      await setlists.setSongs(friday, [3, 1, 2]);
+      await repo.setFavorite(2, favorite: true);
+
+      final deleted = await repo.deleteAllSongs();
+      expect(deleted.count, 3);
+      expect(await repo.allSongs(), isEmpty);
+      expect(await titles(query: 'wretch'), isEmpty);
+      expect(await setlists.songIds(friday), isEmpty);
+
+      await repo.restore(deleted);
+      expect([for (final s in await repo.allSongs()) s.id], [2, 3, 1]);
+      expect((await repo.getSong(2))!.favorite, isTrue);
+      expect(await titles(query: 'wretch'), ['Amazing Grace']);
+      expect(await setlists.songIds(friday), [3, 1, 2]);
+    });
+
+    test('restoring skips setlists deleted in the meantime', () async {
+      await addAll();
+      final setlists = SetlistRepository(db);
+      final gone = await setlists.create('Gone');
+      final kept = await setlists.create('Kept');
+      await setlists.setSongs(gone, [1]);
+      await setlists.setSongs(kept, [1]);
+
+      final deleted = await repo.deleteSong(1);
+      await setlists.delete(gone);
+      await repo.restore(deleted);
+
+      expect(await repo.getSong(1), isNotNull);
+      expect(await setlists.songIds(kept), [1]);
+    });
+
+    test('deleting from an empty songbook is fine', () async {
+      final deleted = await repo.deleteAllSongs();
+      expect(deleted.count, 0);
+      await repo.restore(deleted);
+      expect(await repo.allSongs(), isEmpty);
+    });
   });
 
   group('ftsQuery', () {

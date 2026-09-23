@@ -4,9 +4,11 @@ import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/data/songbook_archive.dart';
 import 'package:libre_tab/features/library/data/starter_songs.dart';
+import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 /// Theme, songbook export/import/starter songs, and About
@@ -18,6 +20,8 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final variant = ref.watch(themeVariantProvider);
+    final songCount = ref.watch(allSongsProvider).value?.length ?? 0;
+    final danger = Theme.of(context).colorScheme.error;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
       body: ListView(
@@ -83,6 +87,19 @@ class SettingsScreen extends ConsumerWidget {
               applicationLegalese: 'GNU GPL 3.0 or later',
             ),
           ),
+          // Last, apart from everything else, in the error color, and off
+          // when there's nothing to delete (docs/DESIGN.md § Settings).
+          const SizedBox(height: 28),
+          _SectionLabel(l10n.dangerZone),
+          ListTile(
+            enabled: songCount > 0,
+            iconColor: danger,
+            textColor: danger,
+            leading: const Icon(Icons.delete_forever_outlined),
+            title: Text(l10n.deleteAllSongs),
+            subtitle: Text(l10n.deleteAllSongsHint),
+            onTap: () => _deleteAll(context, ref, songCount),
+          ),
         ],
       ),
     );
@@ -103,6 +120,64 @@ class SettingsScreen extends ConsumerWidget {
     await ref
         .read(songFilesProvider)
         .shareSongbook(zip, fileName: 'libre-tab-songs-$date.zip');
+  }
+
+  /// Says exactly what will be lost, offers to export first, keeps Cancel
+  /// as the safe choice, and still offers Undo afterwards.
+  Future<void> _deleteAll(
+    BuildContext context,
+    WidgetRef ref,
+    int songCount,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final choice = await showDialog<_DeleteAllChoice>(
+      context: context,
+      builder: (dialog) {
+        final scheme = Theme.of(dialog).colorScheme;
+        return AlertDialog(
+          icon: Icon(Icons.warning_amber_rounded, color: scheme.error),
+          title: Text(l10n.deleteAllTitle(songCount)),
+          content: Text(l10n.deleteAllBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialog).pop(),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(dialog).pop(_DeleteAllChoice.exportFirst),
+              child: Text(l10n.exportFirst),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: scheme.error,
+                foregroundColor: scheme.onError,
+              ),
+              onPressed: () =>
+                  Navigator.of(dialog).pop(_DeleteAllChoice.delete),
+              child: Text(l10n.deleteAllConfirm),
+            ),
+          ],
+        );
+      },
+    );
+    if (!context.mounted) return;
+    switch (choice) {
+      case null:
+        return;
+      case _DeleteAllChoice.exportFirst:
+        await _export(context, ref);
+      case _DeleteAllChoice.delete:
+        final repository = ref.read(songRepositoryProvider);
+        final deleted = await repository.deleteAllSongs();
+        showUndoSnackBar(
+          messenger,
+          l10n,
+          message: l10n.songsDeleted(deleted.count),
+          onUndo: () => repository.restore(deleted),
+        );
+    }
   }
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
@@ -153,6 +228,8 @@ Future<void> addStarterSongs(BuildContext context, WidgetRef ref) async {
     SnackBar(content: Text(l10n.starterSongsAdded(added))),
   );
 }
+
+enum _DeleteAllChoice { exportFirst, delete }
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);

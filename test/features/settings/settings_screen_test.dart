@@ -152,4 +152,76 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(LicensePage), findsOneWidget);
   });
+
+  group('Delete all songs', () {
+    Future<void> openDeleteAll(WidgetTester tester) async {
+      await tester.scrollUntilVisible(find.text('Delete all songs'), 100);
+      await tester.tap(find.text('Delete all songs'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('is off when the songbook is empty', (tester) async {
+      final container = await pumpApp(tester);
+      await openSettings(tester, container);
+      await tester.scrollUntilVisible(find.text('Delete all songs'), 100);
+      final tile = tester.widget<ListTile>(
+        find.widgetWithText(ListTile, 'Delete all songs'),
+      );
+      expect(tile.enabled, isFalse);
+    });
+
+    testWidgets('says how many, and Cancel keeps everything', (tester) async {
+      final container = await pumpApp(
+        tester,
+        songs: [SampleSongs.amazingGrace, SampleSongs.cancion],
+      );
+      await openSettings(tester, container);
+      await openDeleteAll(tester);
+
+      expect(find.text('Delete all 2 songs?'), findsOneWidget);
+      expect(
+        find.textContaining('setlists will be left empty'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(await songCount(container), 2);
+    });
+
+    testWidgets('Export first exports and deletes nothing', (tester) async {
+      final files = FakeSongFiles();
+      final container = await pumpApp(
+        tester,
+        files: files,
+        songs: [SampleSongs.amazingGrace],
+      );
+      await openSettings(tester, container);
+      await openDeleteAll(tester);
+      await tester.tap(find.text('Export first'));
+      await tester.pumpAndSettle();
+
+      expect(files.exports, hasLength(1));
+      expect(await songCount(container), 1);
+    });
+
+    testWidgets('Delete all empties the songbook; Undo restores it', (
+      tester,
+    ) async {
+      final container = await pumpApp(
+        tester,
+        songs: [SampleSongs.amazingGrace, SampleSongs.cancion],
+      );
+      await openSettings(tester, container);
+      await openDeleteAll(tester);
+      await tester.tap(find.widgetWithText(FilledButton, 'Delete all'));
+      await tester.pumpAndSettle();
+
+      expect(await songCount(container), 0);
+      expect(find.text('2 songs deleted.'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect(await songCount(container), 2);
+    });
+  });
 }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
+import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
+import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
@@ -155,12 +159,15 @@ class _SongList extends ConsumerWidget {
                           label: Text(l10n.addStarterSongs),
                         ),
                       )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 96),
-                  itemCount: list.length + 1,
-                  itemBuilder: (context, i) => i == 0
-                      ? _CountHeader(text: l10n.songCount(list.length))
-                      : _SongTile(song: list[i - 1]),
+              // Opening one row's swipe actions closes the others.
+              : SlidableAutoCloseBehavior(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 96),
+                    itemCount: list.length + 1,
+                    itemBuilder: (context, i) => i == 0
+                        ? _CountHeader(text: l10n.songCount(list.length))
+                        : _SongTile(song: list[i - 1]),
+                  ),
                 ),
         );
   }
@@ -274,21 +281,93 @@ class _CountHeader extends StatelessWidget {
   );
 }
 
-class _SongTile extends StatelessWidget {
+class _SongTile extends ConsumerWidget {
   const _SongTile({required this.song});
 
   final SongEntry song;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final colors = context.colors;
+    final scheme = Theme.of(context).colorScheme;
     final subtitle = [
       if (song.artist.isNotEmpty) song.artist,
       if ((song.capo ?? 0) > 0) l10n.capoLabel(song.capo!),
     ].join(' · ');
 
+    void addToSetlist() => showAddToSetlistSheet(context, songId: song.id);
+    void share() =>
+        ref.read(songFilesProvider).share(title: song.title, body: song.body);
+    void delete() => deleteSongWithUndo(context, ref, song);
+
+    // Swipe left for quick actions. Screen readers get the same three as
+    // custom actions, since the swiped-away buttons can't be reached.
+    return Slidable(
+      key: ValueKey(song.id),
+      groupTag: 'songs',
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.72,
+        children: [
+          SlidableAction(
+            onPressed: (_) => addToSetlist(),
+            backgroundColor: colors.surface2,
+            foregroundColor: colors.text,
+            icon: Icons.playlist_add,
+            label: l10n.swipeSetlist,
+          ),
+          SlidableAction(
+            onPressed: (_) => share(),
+            backgroundColor: colors.surface,
+            foregroundColor: colors.text,
+            icon: Icons.ios_share,
+            label: l10n.share,
+          ),
+          SlidableAction(
+            onPressed: (_) => delete(),
+            backgroundColor: scheme.error,
+            foregroundColor: scheme.onError,
+            icon: Icons.delete_outline,
+            label: l10n.delete,
+          ),
+        ],
+      ),
+      child: _tile(
+        context,
+        subtitle,
+        actions: {
+          CustomSemanticsAction(label: l10n.addToSetlist): addToSetlist,
+          CustomSemanticsAction(label: l10n.share): share,
+          CustomSemanticsAction(label: l10n.delete): delete,
+        },
+      ),
+    );
+  }
+
+  Widget _tile(
+    BuildContext context,
+    String subtitle, {
+    required Map<CustomSemanticsAction, VoidCallback> actions,
+  }) {
+    final l10n = context.l10n;
+    final colors = context.colors;
     return MergeSemantics(
+      child: Semantics(
+        customSemanticsActions: actions,
+        child: _row(context, subtitle, l10n, colors),
+      ),
+    );
+  }
+
+  Widget _row(
+    BuildContext context,
+    String subtitle,
+    AppLocalizations l10n,
+    LibreColors colors,
+  ) {
+    return Material(
+      type: MaterialType.transparency,
       child: InkWell(
         onTap: () => context.push(Routes.song(song.id)),
         child: Container(

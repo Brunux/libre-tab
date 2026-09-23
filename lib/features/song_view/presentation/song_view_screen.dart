@@ -19,9 +19,8 @@ import 'package:libre_tab/core/music/music_key.dart';
 import 'package:libre_tab/core/music/transposition.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
-import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
-import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
+import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/chord_diagram.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
 import 'package:libre_tab/l10n/l10n.dart';
@@ -346,12 +345,8 @@ class _SongViewState extends ConsumerState<_SongView>
     );
   }
 
-  Future<void> _addToSetlist() => showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (_) => _AddToSetlistSheet(songId: widget.entry.id),
-  );
+  Future<void> _addToSetlist() =>
+      showAddToSetlistSheet(context, songId: widget.entry.id);
 
   Future<void> _confirmDelete(BuildContext context) async {
     final l10n = context.l10n;
@@ -605,59 +600,6 @@ class _ChordsSheet extends StatelessWidget {
                   ),
                 ],
               ),
-      ),
-    );
-  }
-}
-
-/// Every setlist with a checkbox that adds or removes this song right away,
-/// plus "New setlist".
-class _AddToSetlistSheet extends ConsumerWidget {
-  const _AddToSetlistSheet({required this.songId});
-
-  final int songId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final setlists = ref.watch(allSetlistsProvider).value ?? const [];
-    final having = ref.watch(setlistsWithSongProvider(songId)).value ?? {};
-    final repository = ref.read(setlistRepositoryProvider);
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.8,
-      ),
-      child: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.only(bottom: 24),
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-            child: Text(
-              l10n.addToSetlist,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          for (final setlist in setlists)
-            CheckboxListTile(
-              value: having.contains(setlist.id),
-              title: Text(setlist.name),
-              subtitle: Text(l10n.songCount(setlist.songCount)),
-              onChanged: (on) => on ?? false
-                  ? repository.addSong(setlist.id, songId)
-                  : repository.removeSong(setlist.id, songId),
-            ),
-          ListTile(
-            leading: const Icon(Icons.playlist_add),
-            title: Text(l10n.newSetlist),
-            onTap: () async {
-              final name = await showSetlistNameDialog(context);
-              if (name == null) return;
-              final id = await repository.create(name);
-              await repository.addSong(id, songId);
-            },
-          ),
-        ],
       ),
     );
   }

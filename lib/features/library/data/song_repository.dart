@@ -4,6 +4,7 @@ import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/database/search_index.dart';
+import 'package:meta/meta.dart';
 
 final songRepositoryProvider = Provider<SongRepository>(
   (ref) => SongRepository(ref.watch(appDatabaseProvider)),
@@ -107,9 +108,45 @@ class SongRepository {
     });
   }
 
-  Future<void> deleteSong(int id) => _db.transaction(() async {
-    await (_db.delete(_db.songs)..where((s) => s.id.equals(id))).go();
-    await SearchIndex.remove(_db, id);
+  /// Deletes a song (and takes it out of its setlists). The result can be
+  /// passed to [restore] to undo it.
+  Future<DeletedSongs> deleteSong(int id) => deleteSongs([id]);
+
+  /// Deletes every song. The result can be passed to [restore] to undo it.
+  Future<DeletedSongs> deleteAllSongs() async =>
+      deleteSongs([for (final song in await allSongs()) song.id]);
+
+  Future<DeletedSongs> deleteSongs(List<int> ids) => _db.transaction(() async {
+    final songs = await (_db.select(
+      _db.songs,
+    )..where((s) => s.id.isIn(ids))).get();
+    final placements = await (_db.select(
+      _db.setlistSongs,
+    )..where((e) => e.songId.isIn(ids))).get();
+    // Setlist rows go with the songs (foreign keys cascade).
+    await (_db.delete(_db.songs)..where((s) => s.id.isIn(ids))).go();
+    for (final id in ids) {
+      await SearchIndex.remove(_db, id);
+    }
+    return DeletedSongs(songs: songs, placements: placements);
+  });
+
+  /// Puts deleted songs back, with the same ids and in the same places in
+  /// their setlists (setlists deleted since are skipped).
+  Future<void> restore(DeletedSongs deleted) => _db.transaction(() async {
+    for (final song in deleted.songs) {
+      await _db.into(_db.songs).insert(song, mode: InsertMode.insertOrReplace);
+      await _index(song.id, _SongMeta.fromBody(song.body));
+    }
+    final setlists = {
+      for (final s in await _db.select(_db.setlists).get()) s.id,
+    };
+    await _db.batch(
+      (batch) => batch.insertAll(_db.setlistSongs, [
+        for (final placement in deleted.placements)
+          if (setlists.contains(placement.setlistId)) placement,
+      ], mode: InsertMode.insertOrIgnore),
+    );
   });
 
   /// Remembers the auto-scroll speed last used for a song.
@@ -133,6 +170,18 @@ class SongRepository {
 
   /// The FTS5 query for what the user typed (see [SearchIndex.query]).
   static String? ftsQuery(String input) => SearchIndex.query(input);
+}
+
+/// Songs a delete took away, and where they sat in setlists, so the delete
+/// can be undone with [SongRepository.restore].
+@immutable
+final class DeletedSongs {
+  const DeletedSongs({required this.songs, required this.placements});
+
+  final List<SongEntry> songs;
+  final List<SetlistSongEntry> placements;
+
+  int get count => songs.length;
 }
 
 /// What gets copied out of the ChordPro text on save.

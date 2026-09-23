@@ -29,6 +29,7 @@ with the phone's microphone.
 | Local database | `drift` + `sqlite3_flutter_libs` | Real SQL, typed queries, migrations, reactive `watch()` streams, **FTS5 full-text search** across title/artist/lyrics. |
 | Code generation | `build_runner`, `drift_dev` | Only for Drift. Models use Dart 3 `sealed` classes / records — no `freezed`. |
 | Settings | `shared_preferences` | Theme, font size, default scroll speed, reference pitch (A4). |
+| Swipe actions | `flutter_slidable` (MIT) | Quick actions when a song row is swiped left. |
 | Keep screen on | `wakelock_plus` | Enabled only on the song view and tuner. |
 | Import / export | `file_picker`, `share_plus`, `archive` | Import `.cho`/`.chopro`/`.txt` or a songbook `.zip`; export a single song or the whole songbook (`archive`, MIT, builds and reads the `.zip`). Files opened from other apps arrive through a small in-app channel, no package. |
 | Mic audio stream | `record` | Streams raw PCM16 on iOS/Android. |
