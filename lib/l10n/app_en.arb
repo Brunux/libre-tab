@@ -91,7 +91,7 @@
   "chordsMenu": "Chords",
   "noChords": "This song has no chords.",
   "noDiagram": "No diagram for this chord yet.",
-  "diagramLegend": "× don't play · ○ open string",
+  "diagramLegend": "× don't play · ○ open · left: fret numbers · below: the fret for each string (0 = open)",
   "keyStepper": "Key",
   "capoStepper": "Capo",
   "capoNone": "None",
@@ -336,5 +336,15 @@
     }
   },
   "startOver": "Start over",
-  "startedOver": "Title, artist and text cleared."
+  "startedOver": "Title, artist and text cleared.",
+  "fretMuted": "not played",
+  "fretOpen": "open",
+  "diagramFrets": "Frets from the thickest string: {frets}",
+  "@diagramFrets": {
+    "placeholders": {
+      "frets": {
+        "type": "String"
+      }
+    }
+  }
 }

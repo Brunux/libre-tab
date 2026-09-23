@@ -312,7 +312,26 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ChordDiagram), findsOneWidget);
-      expect(find.text("× don't play · ○ open string"), findsOneWidget);
+      expect(find.textContaining('left: fret numbers'), findsOneWidget);
+      // G7 = 3 2 0 0 0 1, read out string by string.
+      expect(
+        find.bySemanticsLabel(
+          'Frets from the thickest string: 3, 2, open, open, open, 1',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('strings not played are said so', (tester) async {
+      await openSong(tester, SampleSongs.amazingGrace);
+      await tester.tap(find.text('C').first);
+      await tester.pumpAndSettle();
+      expect(
+        find.bySemanticsLabel(
+          'Frets from the thickest string: not played, 3, 2, open, 1, open',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('the diagram follows the transposed chord', (tester) async {

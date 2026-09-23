@@ -53,7 +53,7 @@
   "chordsMenu": "Acordes",
   "noChords": "Esta canción no tiene acordes.",
   "noDiagram": "Aún no hay diagrama para este acorde.",
-  "diagramLegend": "× no tocar · ○ cuerda al aire",
+  "diagramLegend": "× no tocar · ○ al aire · a la izquierda: trastes · abajo: el traste de cada cuerda (0 = al aire)",
   "keyStepper": "Tono",
   "capoStepper": "Cejilla",
   "capoNone": "Sin",
@@ -160,5 +160,8 @@
   "cameraDenied": "Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes.",
   "readingPhotoOf": "Leyendo la foto {current} de {total}…",
   "startOver": "Empezar de nuevo",
-  "startedOver": "Se vaciaron el título, el artista y el texto."
+  "startedOver": "Se vaciaron el título, el artista y el texto.",
+  "fretMuted": "no se toca",
+  "fretOpen": "al aire",
+  "diagramFrets": "Trastes desde la cuerda más gruesa: {frets}"
 }

@@ -76,7 +76,9 @@ Delete — delete asks first). "Chords" shows diagrams for every chord in the so
 it's also how screen-reader users reach diagrams, since chords in the lyrics are
 too small to be good accessible buttons. Body: sections with small uppercase labels; each lyric
 line is a wrapping row of chord/lyric pairs, chord above its syllable. Tapping a
-chord opens a bottom sheet with its diagram. Bottom dock:
+chord opens a bottom sheet with its diagram. Diagrams show fret numbers down
+the left and, under each string, the fret to press (C: × 3 2 0 1 0), so shapes
+are easy to learn; screen readers hear the same, string by string. Bottom dock:
 - Row 1: Key − / + (transpose), Capo − / +
 - Row 2: A− / A+ (text size), Speed − / ▶ Speed N / +
 

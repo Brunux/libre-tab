@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @diagramLegend.
   ///
   /// In en, this message translates to:
-  /// **'× don\'t play · ○ open string'**
+  /// **'× don\'t play · ○ open · left: fret numbers · below: the fret for each string (0 = open)'**
   String get diagramLegend;
 
   /// No description provided for @keyStepper.
@@ -1063,6 +1063,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Title, artist and text cleared.'**
   String get startedOver;
+
+  /// No description provided for @fretMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'not played'**
+  String get fretMuted;
+
+  /// No description provided for @fretOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get fretOpen;
+
+  /// No description provided for @diagramFrets.
+  ///
+  /// In en, this message translates to:
+  /// **'Frets from the thickest string: {frets}'**
+  String diagramFrets(String frets);
 }
 
 class _AppLocalizationsDelegate

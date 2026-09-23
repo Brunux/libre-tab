@@ -186,7 +186,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDiagram => 'No diagram for this chord yet.';
 
   @override
-  String get diagramLegend => '× don\'t play · ○ open string';
+  String get diagramLegend =>
+      '× don\'t play · ○ open · left: fret numbers · below: the fret for each string (0 = open)';
 
   @override
   String get keyStepper => 'Key';
@@ -607,4 +608,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startedOver => 'Title, artist and text cleared.';
+
+  @override
+  String get fretMuted => 'not played';
+
+  @override
+  String get fretOpen => 'open';
+
+  @override
+  String diagramFrets(String frets) {
+    return 'Frets from the thickest string: $frets';
+  }
 }

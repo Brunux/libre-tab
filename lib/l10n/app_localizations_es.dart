@@ -187,7 +187,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noDiagram => 'Aún no hay diagrama para este acorde.';
 
   @override
-  String get diagramLegend => '× no tocar · ○ cuerda al aire';
+  String get diagramLegend =>
+      '× no tocar · ○ al aire · a la izquierda: trastes · abajo: el traste de cada cuerda (0 = al aire)';
 
   @override
   String get keyStepper => 'Tono';
@@ -600,4 +601,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get startedOver => 'Se vaciaron el título, el artista y el texto.';
+
+  @override
+  String get fretMuted => 'no se toca';
+
+  @override
+  String get fretOpen => 'al aire';
+
+  @override
+  String diagramFrets(String frets) {
+    return 'Trastes desde la cuerda más gruesa: $frets';
+  }
 }
