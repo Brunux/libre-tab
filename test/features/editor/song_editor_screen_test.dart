@@ -109,6 +109,17 @@ void main() {
     expect(find.textContaining("That file isn't a song"), findsOneWidget);
   });
 
+  testWidgets('the keyboard never "corrects" the chord sheet', (tester) async {
+    await openEditor(tester);
+    final field = tester.widget<TextField>(contentField);
+    expect(field.autocorrect, isFalse);
+    expect(field.enableSuggestions, isFalse);
+    expect(field.smartDashesType, SmartDashesType.disabled);
+    expect(field.smartQuotesType, SmartQuotesType.disabled);
+    expect(field.textCapitalization, TextCapitalization.none);
+    expect(field.spellCheckConfiguration?.spellCheckService, isNull);
+  });
+
   testWidgets('the camera button is shown but not usable yet', (tester) async {
     await openEditor(tester);
     final camera = tester.widget<ButtonStyleButton>(

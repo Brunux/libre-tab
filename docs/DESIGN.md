@@ -64,7 +64,8 @@ floating "Add song" button · bottom tabs.
 
 ### 2. Song view (campfire mode)
 Header: back, title, "artist · Key G" (with capo: "Sounds in A · Capo 2 · play G
-shapes"), theme switch. Body: sections with small uppercase labels; each lyric
+shapes"), favorite star, theme switch, ⋮ menu (Edit song, Share, Delete — delete
+asks first). Body: sections with small uppercase labels; each lyric
 line is a wrapping row of chord/lyric pairs, chord above its syllable. Tapping a
 chord opens a bottom sheet with its diagram. Bottom dock:
 - Row 1: Key − / + (transpose), Capo − / +
@@ -72,11 +73,24 @@ chord opens a bottom sheet with its diagram. Bottom dock:
 
 Screen stays awake; auto-scroll stops at the end.
 
-### 3. Add song
-Header: cancel, title, Save. Source switch: Paste / File / Camera (later). Title
-and artist fields. Paste box (monospace). Result with Preview / ChordPro toggle
-and a summary ("4 chord lines placed over the lyrics · 2 sections found").
-Nothing is saved until Save.
+Built in milestone 3: header, menu and the chords-over-lyrics body. The dock,
+chord diagrams and wakelock come in milestone 4.
+
+### 3. Add / edit song
+One screen for both. Header: cancel (asks "Discard changes?" if anything
+changed), "Add song" / "Edit song", Save (enabled once there is a title and
+text). Fields: Title, Artist. Buttons: **Open file** and **Camera (later)** —
+simpler than the Paste / File / Camera tabs in the mockup, since the text box
+is always there to paste into. Text box (monospace) takes chords-over-lyrics
+or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Result with
+Preview / ChordPro toggle and a summary ("Chord lines placed: 4 · Sections
+found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
+
+### Empty and error states
+- Empty songbook: "Your songbook is empty. Add your first song."
+- Search with no results: "No songs match your search."
+- Favorites with none: "No favorites yet. Tap the star on a song to add it."
+- Unknown or deleted song: "This song isn't in your songbook."
 
 ### 4. Tuner
 Header with A4 reference · tuning picker · big note + octave + live Hz · needle
@@ -86,5 +100,4 @@ tapping one locks to that string. In-tune string button turns `good`.
 
 ## Not designed yet
 
-Settings, setlist detail/editing, song editor (edit existing ChordPro), empty
-songbook first-run state. Design these when their milestone starts.
+Settings, setlist detail/editing. Design these when their milestone starts.

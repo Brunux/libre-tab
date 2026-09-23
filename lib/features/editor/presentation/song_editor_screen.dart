@@ -255,6 +255,13 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
           minLines: 8,
           maxLines: 16,
           keyboardType: TextInputType.multiline,
+          // Chord sheets depend on exact spacing and spelling: the iOS
+          // keyboard would turn "G  " into "G. " and "mazing" into "maxing".
+          autocorrect: false,
+          enableSuggestions: false,
+          smartDashesType: SmartDashesType.disabled,
+          smartQuotesType: SmartQuotesType.disabled,
+          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
           style: TextStyle(
             fontFamily: AppFonts.mono,
             fontSize: 13,

@@ -110,7 +110,9 @@ is converted to ChordPro:
 
 1. **Classify each line.** A line is a *chord line* if every whitespace-separated
    token matches the chord grammar (or is `|`, `N.C.`, `xN`) and at least one
-   is a real chord. Section labels on their own line — bracketed (`[Chorus]`,
+   is a real chord. A chord followed by a single `.` counts as the chord: the
+   iPhone keyboard turns a double space into ". " while typing (`G  C` →
+   `G. C`), and the period is dropped. Section labels on their own line — bracketed (`[Chorus]`,
    `[Solo]`) or alone with an optional number, repeat or colon (`Verse 1:`,
    `Coro x2`, `Intro`) — become sections; chorus/coro/estribillo become
    `{start_of_chorus}`, the rest `{start_of_verse: <label>}`. Lyrics that just

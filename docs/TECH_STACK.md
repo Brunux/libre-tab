@@ -17,7 +17,7 @@ with the phone's microphone.
 ## 2. Toolchain
 
 - **Flutter 3.44 (stable) / Dart 3.12** — installed locally.
-- **Targets:** iOS and Android phones (tablets supported by responsive layout). Desktop/web are out of scope for v1 (tuner mic APIs differ).
+- **Targets:** iOS 14+ and Android phones (tablets supported by responsive layout). Desktop/web are out of scope for v1 (tuner mic APIs differ). iOS 14 is required by `file_picker`.
 - **Xcode 26.5** + Android SDK — installed.
 
 ## 3. Packages
@@ -202,7 +202,7 @@ so it's fast to unit test.
 0. **Screen design** ✅ — done 2026-09-22, see [DESIGN.md](DESIGN.md).
 1. **Scaffold** ✅ — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
 2. **Music core** ✅ — Note/Chord/Key model, ChordPro parser, transposer (+ tests).
-3. **Songbook** — Drift schema, library list, search, editor, import/export.
+3. **Songbook** ✅ — Drift schema + FTS5 search, library list, add/edit song with chords-over-lyrics importer, open file, share `.cho`, delete. (Whole-songbook `.zip` export moved to milestone 6.)
 4. **Campfire mode** — song view, auto-scroll, transpose/capo, chord diagrams, wakelock.
 5. **Tuner** — mic permission, audio stream, MPM isolate, tuner UI, alternate tunings.
 6. **Polish** — setlists, starter songs, app icon, store assets.

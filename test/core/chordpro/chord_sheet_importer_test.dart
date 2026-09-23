@@ -127,6 +127,20 @@ Oh! Susanna, oh don't you cry for me''');
       expect(convert('| G | C | (x2)'), '| [G] | [C] | (x2)');
     });
 
+    test('the iPhone double-space period after a chord is ignored', () {
+      // iOS turns "G  " into "G. " as you type; columns stay the same.
+      expect(ChordSheetImporter.isChordLine('  G.     G7.        C'), isTrue);
+      expect(
+        convert(
+          '  G.     G7.        C.        G\n'
+          'A-mazing grace, how sweet the sound',
+        ),
+        'A-[G]mazing [G7]grace, how [C]sweet the [G]sound',
+      );
+      expect(convert('G. C. D'), '[G] [C] [D]');
+      expect(ChordSheetImporter.isChordLine('Go. Stay.'), isFalse);
+    });
+
     test('parentheses around a chord are dropped inside brackets', () {
       expect(convert('(G)\nOh'), '[G]Oh');
     });

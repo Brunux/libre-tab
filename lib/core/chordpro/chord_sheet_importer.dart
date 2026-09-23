@@ -43,13 +43,27 @@ abstract final class ChordSheetImporter {
 
   static bool isChordSymbol(String token) => _chord.hasMatch(token);
 
+  /// A chord as typed on an iPhone: its keyboard turns a double space into
+  /// ". ", so "G  C" arrives as "G. C". The period is dropped; the column
+  /// positions are unchanged.
+  static String? _chordIn(String token) {
+    if (isChordSymbol(token)) return token;
+    if (token.length > 1 && token.endsWith('.')) {
+      final bare = token.substring(0, token.length - 1);
+      if (isChordSymbol(bare)) return bare;
+    }
+    return null;
+  }
+
   /// A line where every word is a chord (or `|`, `N.C.`, `x2`), and at least
   /// one is a real chord.
   static bool isChordLine(String line) {
     final tokens = line.trim().split(RegExp(r'\s+'));
     if (tokens.first.isEmpty) return false;
-    return tokens.every((t) => isChordSymbol(t) || _extraToken.hasMatch(t)) &&
-        tokens.any(isChordSymbol);
+    return tokens.every(
+          (t) => _chordIn(t) != null || _extraToken.hasMatch(t),
+        ) &&
+        tokens.any((t) => _chordIn(t) != null);
   }
 
   static bool isSectionLabel(String line) => _label.hasMatch(line);
@@ -189,10 +203,12 @@ class _Converter {
     _open = null;
   }
 
-  static String _bracket(String token) =>
-      ChordSheetImporter.isChordSymbol(token)
-      ? '[${token.replaceAll(RegExp(r'^\(|\)$'), '')}]'
-      : token;
+  static String _bracket(String token) {
+    final chord = ChordSheetImporter._chordIn(token);
+    return chord == null
+        ? token
+        : '[${chord.replaceAll(RegExp(r'^\(|\)$'), '')}]';
+  }
 
   /// Inserts each chord into the lyric at the column where it starts.
   static String _merge(String chordLine, String lyric) {
@@ -200,7 +216,7 @@ class _Converter {
     var merged = lyric.trimRight();
     for (final m in chords.reversed) {
       final symbol = m.group(0)!;
-      if (!ChordSheetImporter.isChordSymbol(symbol)) continue;
+      if (ChordSheetImporter._chordIn(symbol) == null) continue;
       merged = merged.padRight(m.start);
       merged =
           '${merged.substring(0, m.start)}${_bracket(symbol)}'
