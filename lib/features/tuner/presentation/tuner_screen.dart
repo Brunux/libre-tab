@@ -167,21 +167,7 @@ class _TunerBody extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
       children: [
-        DropdownMenu<Tuning>(
-          expandedInsets: EdgeInsets.zero,
-          label: Text(l10n.tuningLabel),
-          initialSelection: state.tuning,
-          onSelected: (tuning) {
-            if (tuning != null) tuner.tuning = tuning;
-          },
-          dropdownMenuEntries: [
-            for (final tuning in Tuning.values)
-              DropdownMenuEntry(
-                value: tuning,
-                label: '${_tuningName(l10n, tuning)} · ${tuning.notes}',
-              ),
-          ],
-        ),
+        const _TuningMenu(),
         const SizedBox(height: 16),
         Semantics(
           liveRegion: true,
@@ -289,6 +275,33 @@ class _TunerBody extends ConsumerWidget {
             ],
           ],
         ),
+      ],
+    );
+  }
+}
+
+/// Kept apart from [_TunerBody], which rebuilds on every pitch reading:
+/// rebuilding the menu that often recreates its items and swallows taps.
+class _TuningMenu extends ConsumerWidget {
+  const _TuningMenu();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final tuning = ref.watch(tunerProvider.select((s) => s.tuning));
+    return DropdownMenu<Tuning>(
+      expandedInsets: EdgeInsets.zero,
+      label: Text(l10n.tuningLabel),
+      initialSelection: tuning,
+      onSelected: (tuning) {
+        if (tuning != null) ref.read(tunerProvider.notifier).tuning = tuning;
+      },
+      dropdownMenuEntries: [
+        for (final tuning in Tuning.values)
+          DropdownMenuEntry(
+            value: tuning,
+            label: '${_tuningName(l10n, tuning)} · ${tuning.notes}',
+          ),
       ],
     );
   }

@@ -263,6 +263,25 @@ void main() {
       expect(settings.getString(SettingsKeys.tuning), 'dropD');
     });
 
+    testWidgets('a tuning can be picked while the tuner is hearing a string', (
+      tester,
+    ) async {
+      final (container, pitch) = await openTuner(tester);
+      await hear(tester, pitch, 110);
+
+      await tester.tap(find.byType(DropdownMenu<Tuning>));
+      await tester.pumpAndSettle();
+      // A reading lands between finger down and finger up.
+      final press = await tester.startGesture(
+        tester.getCenter(find.text('Drop D · D A D G B E').last),
+      );
+      await hear(tester, pitch, 111);
+      await press.up();
+      await tester.pumpAndSettle();
+
+      expect(container.read(tunerProvider).tuning, Tuning.dropD);
+    });
+
     testWidgets('changing A4 to 432 Hz is shown and remembered', (
       tester,
     ) async {
