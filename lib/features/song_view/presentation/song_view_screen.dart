@@ -284,8 +284,14 @@ class _SongViewState extends ConsumerState<_SongView>
               value: sounding == null
                   ? semitoneLabel.trim()
                   : '$sounding$semitoneLabel',
-              minus: (l10n.transposeDown, () => _transpose(-1)),
-              plus: (l10n.transposeUp, () => _transpose(1)),
+              minus: (
+                l10n.transposeDown,
+                t.semitones > -11 ? () => _transpose(-1) : null,
+              ),
+              plus: (
+                l10n.transposeUp,
+                t.semitones < 11 ? () => _transpose(1) : null,
+              ),
             ),
             _StepperModel(
               label: l10n.capoStepper,

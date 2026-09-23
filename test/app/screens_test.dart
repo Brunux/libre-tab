@@ -42,6 +42,29 @@ void main() {
     }
   });
 
+  group('layout: every screen fits a small phone held sideways', () {
+    for (final variant in AppThemeVariant.values) {
+      testWidgets(variant.name, (tester) async {
+        tester.view
+          ..physicalSize = Size(smallPhone.height, smallPhone.width)
+          ..devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+
+        final container = await pumpApp(
+          tester,
+          songs: [SampleSongs.amazingGrace],
+        );
+        container.read(themeVariantProvider.notifier).variant = variant;
+
+        for (final MapEntry(key: screen, value: path) in screenPaths.entries) {
+          container.read(routerProvider).go(path);
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull, reason: screen);
+        }
+      });
+    }
+  });
+
   testWidgets(
     'screen titles are left-aligned on every screen',
     (tester) async {

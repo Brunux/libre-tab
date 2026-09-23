@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
+import 'package:libre_tab/core/database/search_index.dart';
 
 final songRepositoryProvider = Provider<SongRepository>(
   (ref) => SongRepository(ref.watch(appDatabaseProvider)),
@@ -10,7 +11,7 @@ final songRepositoryProvider = Provider<SongRepository>(
 
 /// Stores songs as ChordPro and keeps the search index in step with them.
 class SongRepository {
-  SongRepository(this._db);
+  SongRepository(AppDatabase db) : _db = db;
 
   final AppDatabase _db;
 
@@ -89,7 +90,7 @@ class SongRepository {
 
   Future<void> deleteSong(int id) => _db.transaction(() async {
     await (_db.delete(_db.songs)..where((s) => s.id.equals(id))).go();
-    await _db.customStatement('DELETE FROM songs_fts WHERE rowid = ?', [id]);
+    await SearchIndex.remove(_db, id);
   });
 
   /// Remembers the auto-scroll speed last used for a song.
@@ -103,25 +104,16 @@ class SongRepository {
         SongsCompanion(favorite: Value(favorite)),
       );
 
-  Future<void> _index(int id, _SongMeta meta) async {
-    await _db.customStatement('DELETE FROM songs_fts WHERE rowid = ?', [id]);
-    await _db.customStatement(
-      'INSERT INTO songs_fts(rowid, title, artist, lyrics) VALUES (?, ?, ?, ?)',
-      [id, meta.title, meta.artist, meta.lyrics],
-    );
-  }
+  Future<void> _index(int id, _SongMeta meta) => SearchIndex.put(
+    _db,
+    id,
+    title: meta.title,
+    artist: meta.artist,
+    lyrics: meta.lyrics,
+  );
 
-  /// Turns what the user typed into an FTS5 query: every word must match
-  /// the start of a word in the song. Returns null for an empty search.
-  /// Punctuation is dropped, so user input can't break the query syntax.
-  static String? ftsQuery(String input) {
-    final words = input
-        .toLowerCase()
-        .split(RegExp(r'[^\p{L}\p{N}]+', unicode: true))
-        .where((w) => w.isNotEmpty);
-    if (words.isEmpty) return null;
-    return words.map((w) => '"$w"*').join(' ');
-  }
+  /// The FTS5 query for what the user typed (see [SearchIndex.query]).
+  static String? ftsQuery(String input) => SearchIndex.query(input);
 }
 
 /// What gets copied out of the ChordPro text on save.

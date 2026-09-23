@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/app.dart';
 import 'package:libre_tab/app/router.dart';
@@ -20,6 +21,7 @@ Future<ProviderContainer> pumpApp(
   FakeSongFiles? files,
   FakeKeepAwake? keepAwake,
   SettingsStore? settings,
+  List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
   final container = ProviderContainer(
@@ -30,6 +32,7 @@ Future<ProviderContainer> pumpApp(
       settingsStoreProvider.overrideWithValue(
         settings ?? MemorySettingsStore(),
       ),
+      ...overrides,
     ],
   );
   // Tear-downs run last-registered-first: dispose the providers (and their

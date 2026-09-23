@@ -177,6 +177,44 @@ void main() {
     await expectation;
   });
 
+  test("apostrophes don't matter: dont, don't and don’t all match", () async {
+    await repo.addSong(
+      "{title: Oh! Susanna}\n[F]Oh! Susanna, oh don't you cry for me",
+    );
+    for (final query in ['dont', "don't", 'don’t', 'DONT CRY']) {
+      expect(await titles(query: query), ['Oh! Susanna'], reason: query);
+    }
+  });
+
+  test('a songbook of 1000 songs lists and searches quickly', () async {
+    await db.transaction(() async {
+      for (var i = 0; i < 1000; i++) {
+        await repo.addSong(
+          '{title: Song $i}\n{artist: Band ${i % 50}}\n'
+          '[G]Words for song number $i, [C]sung around the fire',
+        );
+      }
+    });
+
+    Future<(int, int)> timed(String query) async {
+      final watch = Stopwatch()..start();
+      final songs = await repo.watchSongs(query: query).first;
+      return (songs.length, watch.elapsedMilliseconds);
+    }
+
+    final (all, listTime) = await timed('');
+    final (one, oneTime) = await timed('number 999');
+    // Worst case: every song matches and has to be ranked.
+    final (broad, broadTime) = await timed('fire');
+
+    expect(all, 1000);
+    expect(one, 1);
+    expect(broad, 1000);
+    expect(listTime, lessThan(300));
+    expect(oneTime, lessThan(300));
+    expect(broadTime, lessThan(300));
+  });
+
   group('ftsQuery', () {
     test('quotes each word as a prefix', () {
       expect(SongRepository.ftsQuery('Amazing  grace'), '"amazing"* "grace"*');

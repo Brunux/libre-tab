@@ -108,6 +108,14 @@ void main() {
     expect(find.text('Softly'), findsOneWidget);
   });
 
+  testWidgets('{chorus} before any chorus shows just the label', (
+    tester,
+  ) async {
+    await pumpSheet(tester, '[G]Verse\n\n{chorus}');
+    expect(find.text('CHORUS'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('tabs are monospace and scroll sideways', (tester) async {
     await pumpSheet(tester, '{sot}\ne|--0--2--3--|\nB|--1--------|\n{eot}');
     final tab = find.textContaining('e|--0--2--3--|');

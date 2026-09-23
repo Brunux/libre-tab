@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:libre_tab/core/database/search_index.dart';
 
 part 'app_database.g.dart';
 
@@ -29,8 +30,9 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'libre_tab'));
 
+  /// 1: first release. 2: search index strips apostrophes (rebuilt).
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -42,6 +44,9 @@ class AppDatabase extends _$AppDatabase {
         'CREATE VIRTUAL TABLE songs_fts USING fts5(title, artist, lyrics, '
         "tokenize = 'unicode61 remove_diacritics 2')",
       );
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await SearchIndex.rebuild(this);
     },
   );
 }

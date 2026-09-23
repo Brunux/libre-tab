@@ -9,8 +9,6 @@ final class LibraryFilter {
 
   final String query;
   final bool favoritesOnly;
-
-  bool get isDefault => query.trim().isEmpty && !favoritesOnly;
 }
 
 final libraryFilterProvider =
