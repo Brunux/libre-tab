@@ -144,3 +144,21 @@ from text recognition instead of character columns. Steps 1, 2 and 4 are the sam
 
 Export writes one `.cho` per song, or a `.zip` of them for the whole songbook.
 Text encoding is always UTF-8.
+
+### Opening files from other apps
+
+The app registers these extensions with the system, so a downloaded or
+received song file can be sent straight to it. It opens in **Add song**,
+exactly as if picked with "Open file"; nothing is saved until Save.
+
+- **iOS:** `.cho`, `.chopro`, `.chordpro` and `.crd` are declared as the
+  type `org.chordpro.chordpro` (plain text), with Libre Tab as their owner, so
+  Files, Safari, Mail and chat apps offer "Open in Libre Tab". Plain `.txt`
+  files list Libre Tab as an alternative. (`ios/Runner/Info.plist`,
+  `AppDelegate.swift`)
+- **Android:** "Open with" and "Share to" for `text/plain`,
+  `text/x-chordpro`, `application/x-chordpro` and `application/octet-stream`
+  (downloads are often labelled that way); the file name decides whether it's
+  a song. Text shared from a web page opens as a `.txt`. (`AndroidManifest.xml`,
+  `MainActivity.kt`)
+- Other files show "That file isn't a song". Files over 5 MB are ignored.

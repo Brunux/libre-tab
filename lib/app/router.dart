@@ -44,7 +44,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'new',
                     parentNavigatorKey: rootKey,
-                    builder: (_, _) => const SongEditorScreen(),
+                    // extra: text to start from (a file from another app).
+                    builder: (_, state) => SongEditorScreen(
+                      initialText: state.extra is String
+                          ? state.extra! as String
+                          : null,
+                    ),
                   ),
                   GoRoute(
                     path: ':id',

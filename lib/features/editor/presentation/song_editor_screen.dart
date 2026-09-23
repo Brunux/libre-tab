@@ -21,9 +21,13 @@ import 'package:libre_tab/l10n/l10n.dart';
 /// chords-over-lyrics or ChordPro. The preview shows exactly what will be
 /// saved (docs/SONG_FORMAT.md § Importing chords-over-lyrics).
 class SongEditorScreen extends ConsumerStatefulWidget {
-  const SongEditorScreen({this.songId, super.key});
+  const SongEditorScreen({this.songId, this.initialText, super.key});
 
   final int? songId;
+
+  /// A new song's text to start from, e.g. a file opened from another app.
+  /// Handled like a file picked with "Open file"; nothing is saved yet.
+  final String? initialText;
 
   @override
   ConsumerState<SongEditorScreen> createState() => _SongEditorScreenState();
@@ -57,6 +61,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       c.addListener(_changed);
     }
     if (!_isNew) unawaited(_load());
+    if (widget.initialText case final text? when _isNew) {
+      _fill(SongHeader.split(text));
+    }
   }
 
   @override

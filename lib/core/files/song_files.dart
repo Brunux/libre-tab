@@ -18,11 +18,22 @@ class SongFiles {
   Future<String?> pickSongText() async {
     final file = await FilePicker.pickFile();
     if (file == null) return null;
-    if (!extensions.contains(file.extension?.toLowerCase())) {
+    if (!isSongFile(file.name)) {
       throw FormatException('Not a song file', file.name);
     }
-    return utf8.decode(await file.xFile.readAsBytes(), allowMalformed: true);
+    return decode(await file.xFile.readAsBytes());
   }
+
+  /// Whether [fileName] has one of the song [extensions].
+  static bool isSongFile(String fileName) {
+    final dot = fileName.lastIndexOf('.');
+    return dot >= 0 &&
+        extensions.contains(fileName.substring(dot + 1).toLowerCase());
+  }
+
+  /// A song file's text. Songs are UTF-8; stray bytes don't stop the import.
+  static String decode(List<int> bytes) =>
+      utf8.decode(bytes, allowMalformed: true);
 
   /// Shares the song as a `.cho` file through the system share sheet.
   Future<void> share({required String title, required String body}) =>

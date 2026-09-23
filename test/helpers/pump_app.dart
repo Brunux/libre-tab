@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -7,6 +9,7 @@ import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
+import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/tuner/data/pitch_source.dart';
@@ -23,6 +26,7 @@ Future<ProviderContainer> pumpApp(
   FakeKeepAwake? keepAwake,
   SettingsStore? settings,
   FakePitchSource? pitch,
+  FakeIncomingFiles? incoming,
   List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
@@ -36,6 +40,9 @@ Future<ProviderContainer> pumpApp(
       ),
       // Never the real microphone in tests.
       pitchSourceProvider.overrideWithValue(pitch ?? FakePitchSource()),
+      incomingFilesProvider.overrideWithValue(
+        incoming ?? FakeIncomingFiles(),
+      ),
       ...overrides,
     ],
   );
@@ -114,6 +121,20 @@ class FakeKeepAwake implements KeepAwake {
   Future<void> disable() async {
     if (_requests > 0) _requests--;
   }
+}
+
+/// Files "opened in" the app by another app, sent by the test.
+class FakeIncomingFiles implements IncomingFiles {
+  void Function(ReceivedFile file)? _onFile;
+
+  @override
+  void listen(void Function(ReceivedFile file) onFile) => _onFile = onFile;
+
+  @override
+  void dispose() => _onFile = null;
+
+  void send(String name, String text) =>
+      _onFile?.call((name: name, bytes: utf8.encode(text)));
 }
 
 /// A microphone that "hears" whatever the test plays.

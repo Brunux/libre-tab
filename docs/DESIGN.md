@@ -93,6 +93,8 @@ is always there to paste into. Text box (monospace) takes chords-over-lyrics
 or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Result with
 Preview / ChordPro toggle and a summary ("Chord lines placed: 4 · Sections
 found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
+A song file opened from another app ("Open in Libre Tab", "Share to") lands
+here the same way, already filled in (docs/SONG_FORMAT.md § Files).
 
 ### Empty and error states
 - Empty songbook: "Your songbook is empty. Add your first song."
