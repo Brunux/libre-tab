@@ -2,9 +2,9 @@
 """Builds the Libre Tab logo in every version from one set of shapes.
 
 The mark: a campfire flame shaped like a guitar pick, built from flat
-faceted planes (the layered, geometric style of Flutter's own logo), with
-three tab-staff "strings" cut through it, on two crossed logs. The sparks
-flying off it are the chords everyone knows: G, C, D, Em, Am.
+faceted planes (the layered, geometric style of Flutter's own logo), on two
+crossed logs. The sparks flying off it are the chords everyone knows:
+G, C, D, Em, Am.
 
     python3 -m pip install fonttools   # once
     python3 branding/generate.py
@@ -37,7 +37,6 @@ FULL = dict(
     log_back="#6B3F22",
     log_front="#9A5E36",
     log_end="#C98A55",
-    cut="#100D0A",  # the strings: cut out of the flame
 )
 RED_NIGHT = dict(
     flame_light="#FF6A5C",
@@ -50,7 +49,6 @@ RED_NIGHT = dict(
     log_back="#3A0C0A",
     log_front="#5C1612",
     log_end="#8A2A22",
-    cut="#000000",
 )
 
 
@@ -103,13 +101,9 @@ def sparks(color, faded=True):
 
 
 def mono_mark(color):
-    """The mark in one color, for stamps and embossing. The tab strings,
-    the inner flame's outline and the gap above the logs are real holes, so
-    it works on any background."""
-    lines = "".join(
-        f'<rect x="200" y="{y}" width="624" height="11" rx="5.5" fill="#000"/>'
-        for y in (598, 640, 682)
-    )
+    """The mark in one color, for stamps and embossing. The inner flame's
+    outline and the gap above the logs are real holes, so it works on any
+    background."""
     return f"""
   <defs><mask id="mono" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
     <g transform="rotate(-15 512 836)">
@@ -126,8 +120,6 @@ def mono_mark(color):
     <path d="{PICK}" fill="#fff" stroke="#000" stroke-width="24"/>
     <path d="{PICK}" fill="#fff"/>
     <path d="{CORE}" fill="none" stroke="#000" stroke-width="14"/>
-    <clipPath id="monopick"><path d="{PICK}"/></clipPath>
-    <g clip-path="url(#monopick)">{lines}</g>
     {sparks("#fff", faded=False)}
   </mask></defs>
   <rect width="1024" height="1024" fill="{color}" mask="url(#mono)"/>
@@ -152,16 +144,8 @@ CORE = (
 )
 
 
-def mark(p, cut_strings=True):
+def mark(p):
     """The mark's shapes, as SVG, for palette [p]."""
-    strings = ""
-    if cut_strings:
-        # Three tab lines across the lower flame, cut out of it.
-        strings = "".join(
-            f'<rect x="200" y="{y}" width="624" height="11" rx="5.5" '
-            f'fill="{p["cut"]}" clip-path="url(#pick)"/>'
-            for y in (598, 640, 682)
-        )
     return f"""
   <defs><clipPath id="pick"><path d="{PICK}"/></clipPath></defs>
   <!-- logs: back one darker, front one lighter, with cut ends -->
@@ -190,7 +174,6 @@ def mark(p, cut_strings=True):
     <rect x="380" y="400" width="132" height="360" fill="{p["core_light"]}"/>
     <rect x="512" y="400" width="132" height="360" fill="{p["core_dark"]}"/>
   </g>
-  {strings}
   <!-- sparks: chords flying off the fire -->
   {sparks(p["spark"])}
 """
@@ -204,11 +187,11 @@ def svg(width, height, body, view=None):
     )
 
 
-def placed(p, size, x, y, cut_strings=True):
+def placed(p, size, x, y):
     """The mark scaled to [size] px with its canvas at ([x], [y])."""
     return (
         f'<g transform="translate({x} {y}) scale({size / 1024})">'
-        f"{mark(p, cut_strings)}</g>"
+        f"{mark(p)}</g>"
     )
 
 
