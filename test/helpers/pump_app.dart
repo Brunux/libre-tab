@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -96,6 +97,19 @@ class FakeSongFiles implements SongFiles {
 
   final shared = <({String title, String body})>[];
 
+  /// What "Import songs" picks; null means the user cancelled.
+  ({String name, Uint8List bytes})? pickedFile;
+
+  /// Songbook exports shared, by file name.
+  final exports = <String, Uint8List>{};
+
+  @override
+  Future<({String name, Uint8List bytes})?> pickFile() async => pickedFile;
+
+  @override
+  Future<void> shareSongbook(Uint8List zip, {required String fileName}) async =>
+      exports[fileName] = zip;
+
   @override
   Future<String?> pickSongText() async {
     if (pickError case final Exception error) throw error;
@@ -135,6 +149,9 @@ class FakeIncomingFiles implements IncomingFiles {
 
   void send(String name, String text) =>
       _onFile?.call((name: name, bytes: utf8.encode(text)));
+
+  void sendBytes(String name, Uint8List bytes) =>
+      _onFile?.call((name: name, bytes: bytes));
 }
 
 /// A microphone that "hears" whatever the test plays.

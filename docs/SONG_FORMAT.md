@@ -142,7 +142,12 @@ from text recognition instead of character columns. Steps 1, 2 and 4 are the sam
 | `.cho`, `.chopro`, `.chordpro`, `.crd` | Parsed as ChordPro |
 | `.txt` | Treated as ChordPro if it contains `{…}` directives or `[Chord]` markup; otherwise run through the chords-over-lyrics importer |
 
-Export writes one `.cho` per song, or a `.zip` of them for the whole songbook.
+Export writes one `.cho` per song, or a `.zip` of them for the whole songbook
+(`<title>.cho`; same titles get " (2)", " (3)"…). Import takes such a `.zip`
+or a single song file and adds every song in it: `.txt` goes through the
+importer, a song without `{title}` is named after its file, songs whose text
+is already in the songbook are skipped (importing the same backup twice adds
+nothing), and macOS `__MACOSX/` / `._` entries are ignored.
 Text encoding is always UTF-8.
 
 ### Opening files from other apps

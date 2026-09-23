@@ -65,6 +65,9 @@ abstract final class SettingsKeys {
 
   /// 1 once the tuner has asked for the microphone.
   static const micAsked = 'micAsked';
+
+  /// 1 once the first launch has offered the starter songs.
+  static const starterSongs = 'starterSongs';
 }
 
 /// Lyric text size on the song screen; chords follow at 85 %.

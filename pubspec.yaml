@@ -8,6 +8,7 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
+  archive: ^4.3.0
   drift: ^2.35.0
   drift_flutter: ^0.3.1
   file_picker: ^13.1.0
@@ -42,6 +43,8 @@ flutter:
 
   # SIL Open Font License texts, shown on the in-app licenses page.
   assets:
+    # Public-domain starter songs (lib/features/library/data/starter_songs.dart).
+    - assets/songs/
     - assets/fonts/AtkinsonHyperlegible-OFL.txt
     - assets/fonts/Fraunces-OFL.txt
     - assets/fonts/JetBrainsMono-OFL.txt

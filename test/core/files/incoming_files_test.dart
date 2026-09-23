@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/library/data/songbook_archive.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_database.dart';
@@ -101,6 +102,22 @@ void main() {
 
       expect(find.byType(SongEditorScreen), findsOneWidget);
       expect(find.textContaining('Chord lines placed: 1'), findsOneWidget);
+    });
+
+    testWidgets('a songbook zip is imported', (tester) async {
+      final incoming = FakeIncomingFiles();
+      final container = await pumpApp(tester, incoming: incoming);
+      final zip = SongbookArchive.export([
+        (title: 'Amazing Grace', body: SampleSongs.amazingGrace),
+        (title: 'Oh! Susanna', body: SampleSongs.ohSusanna),
+      ]);
+
+      incoming.sendBytes('backup.zip', zip);
+      await tester.pumpAndSettle();
+
+      expect(find.text('2 songs added.'), findsOneWidget);
+      final songs = container.read(songRepositoryProvider);
+      expect(await songs.allSongs(), hasLength(2));
     });
 
     testWidgets("other files say they aren't songs", (tester) async {

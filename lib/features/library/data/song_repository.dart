@@ -50,6 +50,25 @@ class SongRepository {
   Future<SongEntry?> getSong(int id) =>
       (_db.select(_db.songs)..where((s) => s.id.equals(id))).getSingleOrNull();
 
+  /// Every song, by title.
+  Future<List<SongEntry>> allSongs() => (_db.select(
+    _db.songs,
+  )..orderBy([(s) => OrderingTerm.asc(s.title.collate(Collate.noCase))])).get();
+
+  /// Saves [bodies] as new songs, skipping any whose text is already in the
+  /// songbook (importing the same export twice adds nothing). Returns how
+  /// many were added.
+  Future<int> importSongs(Iterable<String> bodies) => _db.transaction(() async {
+    final existing = {for (final song in await allSongs()) song.body.trim()};
+    var added = 0;
+    for (final body in bodies) {
+      if (!existing.add(body.trim())) continue;
+      await addSong(body);
+      added++;
+    }
+    return added;
+  });
+
   /// Saves a new song and returns its id. [body] must have a `{title}`.
   Future<int> addSong(String body) async {
     final meta = _SongMeta.fromBody(body);

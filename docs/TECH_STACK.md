@@ -30,7 +30,7 @@ with the phone's microphone.
 | Code generation | `build_runner`, `drift_dev` | Only for Drift. Models use Dart 3 `sealed` classes / records — no `freezed`. |
 | Settings | `shared_preferences` | Theme, font size, default scroll speed, reference pitch (A4). |
 | Keep screen on | `wakelock_plus` | Enabled only on the song view and tuner. |
-| Import / export | `file_picker`, `share_plus` | Import `.cho`/`.chopro`/`.txt`; export single song or whole songbook. |
+| Import / export | `file_picker`, `share_plus`, `archive` | Import `.cho`/`.chopro`/`.txt` or a songbook `.zip`; export a single song or the whole songbook (`archive`, MIT, builds and reads the `.zip`). Files opened from other apps arrive through a small in-app channel, no package. |
 | Mic audio stream | `record` | Streams raw PCM16 on iOS/Android. |
 | Mic permission | `record`'s own `hasPermission()` | Our explanation screen first, then the OS prompt. (`permission_handler` wasn't needed.) |
 | Localization | `flutter_localizations` + `intl` (ARB files) | Spanish + English from day one. |
@@ -171,8 +171,8 @@ lib/
     tuner/             audio capture, pitch detector isolate, tuner UI
     settings/
 assets/
-  chords/voicings.json
-  songs/               a few public-domain starter songs
+  fonts/               Atkinson Hyperlegible, Fraunces, JetBrains Mono (OFL)
+  songs/               seven public-domain starter songs
 test/                  mirrors lib/
 ```
 

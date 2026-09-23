@@ -8,6 +8,8 @@ import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 class LibreTabApp extends ConsumerStatefulWidget {
@@ -33,6 +35,21 @@ class _LibreTabAppState extends ConsumerState<LibreTabApp> {
     unawaited(
       SchedulerBinding.instance.endOfFrame.then((_) {
         if (!mounted) return;
+        // A songbook export: add its songs (docs/SONG_FORMAT.md § Files).
+        if (file.name.toLowerCase().endsWith('.zip')) {
+          final messenger = _messenger.currentState;
+          if (messenger == null) return;
+          unawaited(
+            importSongFile(
+              ref.read(songRepositoryProvider),
+              messenger,
+              messenger.context.l10n,
+              name: file.name,
+              bytes: file.bytes,
+            ),
+          );
+          return;
+        }
         if (!SongFiles.isSongFile(file.name)) {
           final messenger = _messenger.currentState;
           if (messenger == null) return;

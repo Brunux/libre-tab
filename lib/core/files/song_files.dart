@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,12 +36,30 @@ class SongFiles {
   static String decode(List<int> bytes) =>
       utf8.decode(bytes, allowMalformed: true);
 
+  static Uint8List encode(String text) => utf8.encode(text);
+
+  /// Lets the user pick any file (for Import songs); null if cancelled.
+  Future<({String name, Uint8List bytes})?> pickFile() async {
+    final file = await FilePicker.pickFile();
+    if (file == null) return null;
+    return (name: file.name, bytes: await file.xFile.readAsBytes());
+  }
+
+  /// Shares a songbook export ([zip]) through the system share sheet.
+  Future<void> shareSongbook(Uint8List zip, {required String fileName}) =>
+      SharePlus.instance.share(
+        ShareParams(
+          files: [XFile.fromData(zip, mimeType: 'application/zip')],
+          fileNameOverrides: [fileName],
+        ),
+      );
+
   /// Shares the song as a `.cho` file through the system share sheet.
   Future<void> share({required String title, required String body}) =>
       SharePlus.instance.share(
         ShareParams(
           subject: title,
-          files: [XFile.fromData(utf8.encode(body), mimeType: 'text/plain')],
+          files: [XFile.fromData(encode(body), mimeType: 'text/plain')],
           fileNameOverrides: ['${fileNameFor(title)}.cho'],
         ),
       );

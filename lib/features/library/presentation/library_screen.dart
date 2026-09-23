@@ -8,6 +8,7 @@ import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
+import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -142,13 +143,18 @@ class _SongList extends ConsumerWidget {
           loading: () => const SizedBox.shrink(),
           error: (_, _) => PlaceholderBody(message: l10n.loadError),
           data: (list) => list.isEmpty
-              ? PlaceholderBody(
-                  message: filter.query.trim().isNotEmpty
-                      ? l10n.noMatches
-                      : filter.view == LibraryView.favorites
-                      ? l10n.noFavorites
-                      : l10n.emptySongbook,
-                )
+              ? filter.query.trim().isNotEmpty
+                    ? PlaceholderBody(message: l10n.noMatches)
+                    : filter.view == LibraryView.favorites
+                    ? PlaceholderBody(message: l10n.noFavorites)
+                    : PlaceholderBody(
+                        message: l10n.emptySongbook,
+                        action: OutlinedButton.icon(
+                          onPressed: () => addStarterSongs(context, ref),
+                          icon: const Icon(Icons.library_music_outlined),
+                          label: Text(l10n.addStarterSongs),
+                        ),
+                      )
               : ListView.builder(
                   padding: const EdgeInsets.only(bottom: 96),
                   itemCount: list.length + 1,
