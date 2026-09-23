@@ -1,49 +1,119 @@
+<p align="center">
+  <img src="branding/png/mark.png" alt="Libre Tab logo: a campfire with chords rising as sparks" width="160">
+</p>
+
 # Libre Tab
 
-A campfire companion for acoustic guitar players.
+A songbook and guitar tuner for playing around the campfire. It works fully
+offline: no account, no ads, no tracking.
 
-- **Songbook** — keep your songs (lyrics with chords above them) on your phone,
-  fully offline. Read them hands-free with auto-scroll, transpose, capo and chord
-  diagrams, in a dark or red night theme that works next to the fire.
-- **Tuner** — tune your acoustic guitar with the phone's microphone. Standard and
-  common alternate tunings.
+<p align="center">
+  <img src="docs/store/screenshots/1-songbook.png" alt="Songbook" width="200">
+  <img src="docs/store/screenshots/2-song.png" alt="A song in campfire mode" width="200">
+  <img src="docs/store/screenshots/3-red-night-capo.png" alt="Red night theme with a capo" width="200">
+  <img src="docs/store/screenshots/5-setlist.png" alt="A setlist" width="200">
+</p>
+
+## Features
+
+**Songbook**
+- Chords above the lyrics, big enough to read at night.
+- Hands-free auto-scroll: tap the lyrics to pause; the speed is remembered
+  per song.
+- Transpose, capo ("Sounds in A · Capo 2 · G shapes"), and a chord diagram
+  for any chord you tap.
+- Search by title, artist or a line of the lyrics (accents and apostrophes
+  don't matter).
+- Favorites and **setlists**: reorder by dragging, and swipe from one song to
+  the next while playing.
+- Swipe a song left for quick actions: add to a setlist, share, or delete
+  (with Undo).
+- Dark, **red night** and light themes. The screen stays on while a song is
+  open.
+
+**Adding songs**
+- Paste chords-over-lyrics from anywhere; it's converted to ChordPro, with a
+  live preview.
+- Open `.cho`, `.chopro`, `.chordpro`, `.crd` or `.txt` files, including
+  straight from Files, Mail, Safari or a chat app ("Open in Libre Tab" /
+  "Share to").
+- Seven public-domain campfire songs to start with (English and Spanish).
+
+**Your data**
+- Export the whole songbook as a `.zip` of `.cho` files, and import it on
+  another phone. Importing the same backup twice adds nothing.
+- Find duplicates: exact copies are merged, keeping their favorite star and
+  setlist places; different versions are listed for you to compare.
+- Delete all songs, with a clear confirmation, an "Export first" option and
+  Undo.
+
+**Tuner**
+- Standard, half step down, Drop D, DADGAD, Open G and Open D.
+- Auto-detects the string, or lock onto one string. A needle with a ±5 cent
+  "in tune" zone, and a haptic tap when a string is in tune.
+- Reference pitch from 432 to 446 Hz.
+- Only listens while the tuner is on screen; nothing is recorded.
 
 Songs are stored in the open [ChordPro](https://www.chordpro.org/) format, so
-your songbook is never locked into this app.
+your songbook is never locked into this app. The app is in English and
+Spanish.
 
-> Status: early development. See the [roadmap](docs/TECH_STACK.md#10-milestones).
+## Status
+
+Milestones 0–6 are done: screen design, scaffold, music core, songbook,
+campfire mode, tuner, and polish (setlists, starter songs, export/import, app
+icon and brand, store listing). It runs on iPhone; the Android build compiles
+but hasn't been tried on a device yet. 444 tests pass.
+
+**Next:** milestone 7, **camera import**: photograph a song sheet → on-device
+text recognition → the same chords-over-lyrics importer → ChordPro.
+
+See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
 ## Platforms
 
-iOS and Android.
+iOS 14+ and Android 7.0+ (API 24).
 
 ## Development
 
-Requirements: Flutter 3.44+ (Dart 3.12+), Xcode for iOS, Android SDK for Android.
+Requirements: Flutter 3.44+ (Dart 3.12+), Xcode for iOS, Android SDK for
+Android.
 
 ```bash
 flutter pub get
-flutter run          # on a connected device or simulator
+flutter run --release   # on a device (debug builds need the VM service)
 flutter test
 flutter analyze
+dart run build_runner build --delete-conflicting-outputs   # after Drift schema changes
 ```
+
+Brand and app icon: see [branding/README.md](branding/README.md) (runs
+`branding/generate.py`, then `dart run flutter_launcher_icons`).
 
 ## Documentation
 
 | Doc | What's in it |
 |---|---|
 | [docs/TECH_STACK.md](docs/TECH_STACK.md) | Stack, packages, architecture, tuner pipeline, testing, milestones |
-| [docs/SONG_FORMAT.md](docs/SONG_FORMAT.md) | The ChordPro subset Libre Tab reads and writes, and how imports are converted |
-| [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes (dark / red night / light), fonts, screen specs |
+| [docs/SONG_FORMAT.md](docs/SONG_FORMAT.md) | The ChordPro subset Libre Tab reads and writes, imports, file types, export/import |
+| [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes, fonts, and every screen: songbook, song view, editor, tuner, setlists, settings |
+| [docs/store/listing.md](docs/store/listing.md) | App Store / Google Play text (EN + ES), privacy answers, screenshots |
+| [PRIVACY.md](PRIVACY.md) | Privacy statement: no data collected |
+| [branding/README.md](branding/README.md) | Logo, app icon, social media versions, colors, taglines |
 
 ## Project layout
 
 ```
 lib/
-  app/         router, theme, localization
-  core/        database, music theory (pure Dart), shared widgets
-  features/    library, song_view, editor, tuner, settings
-docs/          design docs
+  app/         router, theme, settings, localization setup
+  core/        database (Drift + FTS5), ChordPro, music theory (pure Dart),
+               pitch detection, files, shared widgets
+  features/    library (songbook, setlists, import/export, duplicates),
+               song_view, editor, tuner, settings
+  l10n/        English and Spanish strings
+assets/        fonts, starter songs
+branding/      logo generator and outputs
+docs/          design docs, store listing, screenshots
 test/          mirrors lib/
 ```
 
@@ -59,3 +129,6 @@ version. See [LICENSE](LICENSE) for the full text.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE.
+
+The fonts (Atkinson Hyperlegible, Fraunces, JetBrains Mono) are under the SIL
+Open Font License; the starter songs are in the public domain.
