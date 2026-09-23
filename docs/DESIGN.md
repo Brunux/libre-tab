@@ -146,6 +146,20 @@ file; adds every song, skips files that aren't songs), Add starter songs
 version, GPL-3.0 note and the licenses page. · **Danger zone** (last, in the
 error color): Delete all songs.
 
+**Find duplicates** (Songbook section, needs 2+ songs) groups songs whose title
+and artist match once case, accents, spacing and punctuation are ignored, then
+compares their text with line endings, trailing spaces, runs of blank lines
+and directive spelling (`{Title:`, `{t:`) ignored. Comparing the normalised
+text directly is simpler than a checksum and just as exact for a songbook's
+size.
+- **Exact copies**: listed, then one "Remove N copies" button. The copy kept
+  is the favorite, else the one in more setlists, else the oldest; it takes
+  the others' favorite star and setlist places, so nothing is lost. Undo
+  restores everything as it was.
+- **Same title, different text**: possibly different arrangements, so never
+  removed automatically. Each version is listed (first lyric line, key, date
+  added) and opens in the song view to compare and delete by hand.
+
 Delete all songs follows the usual rules for destructive actions: it's
 disabled when the songbook is empty; the dialog says exactly what's lost
 ("Delete all 12 songs?", setlists are left empty), offers **Export first**,

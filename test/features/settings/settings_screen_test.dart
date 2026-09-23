@@ -224,4 +224,50 @@ void main() {
       expect(await songCount(container), 2);
     });
   });
+
+  group('Find duplicates', () {
+    const grace = SampleSongs.amazingGrace;
+    const graceCopy = '$grace\n\n';
+    final graceInA = grace.replaceAll('[G]', '[A]');
+
+    Future<void> openDuplicates(WidgetTester tester) async {
+      await tester.tap(find.text('Find duplicates'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('lists copies and versions; Remove, then Undo', (tester) async {
+      final container = await pumpApp(
+        tester,
+        songs: [grace, graceCopy, graceInA, SampleSongs.ohSusanna],
+      );
+      await openSettings(tester, container);
+      await openDuplicates(tester);
+
+      expect(find.text('EXACT COPIES'), findsOneWidget);
+      expect(find.text('John Newton · 1 copy'), findsOneWidget);
+      expect(find.text('SAME TITLE, DIFFERENT TEXT'), findsOneWidget);
+
+      await tester.tap(find.text('Remove 1 copy'));
+      await tester.pumpAndSettle();
+      expect(find.text('1 copy removed.'), findsOneWidget);
+      expect(await songCount(container), 3);
+      expect(find.text('EXACT COPIES'), findsNothing);
+      expect(find.text('SAME TITLE, DIFFERENT TEXT'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect(await songCount(container), 4);
+      expect(find.text('EXACT COPIES'), findsOneWidget);
+    });
+
+    testWidgets('a songbook without duplicates says so', (tester) async {
+      final container = await pumpApp(
+        tester,
+        songs: [grace, SampleSongs.ohSusanna],
+      );
+      await openSettings(tester, container);
+      await openDuplicates(tester);
+      expect(find.text('No duplicates found.'), findsOneWidget);
+    });
+  });
 }

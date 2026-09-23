@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
@@ -65,6 +67,13 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l10n.importSongs),
             subtitle: Text(l10n.importSongsHint),
             onTap: () => _import(context, ref),
+          ),
+          ListTile(
+            enabled: songCount > 1,
+            leading: const Icon(Icons.copy_all_outlined),
+            title: Text(l10n.findDuplicates),
+            subtitle: Text(l10n.findDuplicatesHint),
+            onTap: () => context.push(Routes.duplicates),
           ),
           ListTile(
             leading: const Icon(Icons.library_music_outlined),

@@ -512,4 +512,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get swipeSetlist => 'Setlist';
+
+  @override
+  String get findDuplicates => 'Find duplicates';
+
+  @override
+  String get findDuplicatesHint => 'Songs with the same title and artist';
+
+  @override
+  String get noDuplicates => 'No duplicates found.';
+
+  @override
+  String get exactCopies => 'Exact copies';
+
+  @override
+  String get exactCopiesHint =>
+      'Same title, artist and text. One of each is kept, along with any favorite star and setlist places the copies had.';
+
+  @override
+  String removeCopies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Remove $count copies',
+      one: 'Remove 1 copy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count copies',
+      one: '1 copy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String copiesRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count copies removed.',
+      one: '1 copy removed.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get differentVersions => 'Same title, different text';
+
+  @override
+  String get differentVersionsHint =>
+      'These may be different versions. Open them to compare, and delete the one you don\'t want.';
+
+  @override
+  String addedOn(String date) {
+    return 'Added $date';
+  }
 }

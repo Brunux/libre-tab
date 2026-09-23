@@ -277,5 +277,44 @@
     }
   },
   "undo": "Undo",
-  "swipeSetlist": "Setlist"
+  "swipeSetlist": "Setlist",
+  "findDuplicates": "Find duplicates",
+  "findDuplicatesHint": "Songs with the same title and artist",
+  "noDuplicates": "No duplicates found.",
+  "exactCopies": "Exact copies",
+  "exactCopiesHint": "Same title, artist and text. One of each is kept, along with any favorite star and setlist places the copies had.",
+  "removeCopies": "{count, plural, =1{Remove 1 copy} other{Remove {count} copies}}",
+  "@removeCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copiesCount": "{count, plural, =1{1 copy} other{{count} copies}}",
+  "@copiesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copiesRemoved": "{count, plural, =1{1 copy removed.} other{{count} copies removed.}}",
+  "@copiesRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "differentVersions": "Same title, different text",
+  "differentVersionsHint": "These may be different versions. Open them to compare, and delete the one you don't want.",
+  "addedOn": "Added {date}",
+  "@addedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -5,6 +5,7 @@ import 'package:libre_tab/app/shell.dart';
 import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/library/presentation/setlist_screen.dart';
+import 'package:libre_tab/features/settings/presentation/duplicates_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/setlist_player_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
@@ -15,6 +16,7 @@ abstract final class Routes {
   static const addSong = '/songs/new';
   static const tuner = '/tuner';
   static const settings = '/settings';
+  static const duplicates = '/settings/duplicates';
   static String song(int id) => '/songs/$id';
   static String editSong(int id) => '/songs/$id/edit';
   static String setlist(int id) => '/setlists/$id';
@@ -84,6 +86,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.settings,
         parentNavigatorKey: rootKey,
         builder: (_, _) => const SettingsScreen(),
+        routes: [
+          GoRoute(
+            path: 'duplicates',
+            parentNavigatorKey: rootKey,
+            builder: (_, _) => const DuplicatesScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/setlists/:id',

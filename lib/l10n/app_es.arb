@@ -139,5 +139,16 @@
   "songsDeleted": "{count, plural, =1{Se borró 1 canción.} other{Se borraron {count} canciones.}}",
   "songDeleted": "Se borró “{title}”.",
   "undo": "Deshacer",
-  "swipeSetlist": "Repertorio"
+  "swipeSetlist": "Repertorio",
+  "findDuplicates": "Buscar duplicados",
+  "findDuplicatesHint": "Canciones con el mismo título y artista",
+  "noDuplicates": "No se encontraron duplicados.",
+  "exactCopies": "Copias exactas",
+  "exactCopiesHint": "Mismo título, artista y letra. Se conserva una de cada una, con la estrella de favorita y los lugares en repertorios que tenían las copias.",
+  "removeCopies": "{count, plural, =1{Quitar 1 copia} other{Quitar {count} copias}}",
+  "copiesCount": "{count, plural, =1{1 copia} other{{count} copias}}",
+  "copiesRemoved": "{count, plural, =1{Se quitó 1 copia.} other{Se quitaron {count} copias.}}",
+  "differentVersions": "Mismo título, distinta letra",
+  "differentVersionsHint": "Pueden ser versiones distintas. Ábrelas para compararlas y borra la que no quieras.",
+  "addedOn": "Agregada el {date}"
 }

@@ -937,6 +937,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setlist'**
   String get swipeSetlist;
+
+  /// No description provided for @findDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Find duplicates'**
+  String get findDuplicates;
+
+  /// No description provided for @findDuplicatesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs with the same title and artist'**
+  String get findDuplicatesHint;
+
+  /// No description provided for @noDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'No duplicates found.'**
+  String get noDuplicates;
+
+  /// No description provided for @exactCopies.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact copies'**
+  String get exactCopies;
+
+  /// No description provided for @exactCopiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Same title, artist and text. One of each is kept, along with any favorite star and setlist places the copies had.'**
+  String get exactCopiesHint;
+
+  /// No description provided for @removeCopies.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Remove 1 copy} other{Remove {count} copies}}'**
+  String removeCopies(int count);
+
+  /// No description provided for @copiesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 copy} other{{count} copies}}'**
+  String copiesCount(int count);
+
+  /// No description provided for @copiesRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 copy removed.} other{{count} copies removed.}}'**
+  String copiesRemoved(int count);
+
+  /// No description provided for @differentVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Same title, different text'**
+  String get differentVersions;
+
+  /// No description provided for @differentVersionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'These may be different versions. Open them to compare, and delete the one you don\'t want.'**
+  String get differentVersionsHint;
+
+  /// No description provided for @addedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {date}'**
+  String addedOn(String date);
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/database/search_index.dart';
+import 'package:libre_tab/features/library/data/duplicates.dart';
 import 'package:meta/meta.dart';
 
 final songRepositoryProvider = Provider<SongRepository>(
@@ -148,6 +149,64 @@ class SongRepository {
       ], mode: InsertMode.insertOrIgnore),
     );
   });
+
+  /// Songs with the same title and artist ([Duplicates.find]).
+  Future<List<DuplicateGroup>> findDuplicates() async {
+    final counts = <int, int>{};
+    for (final row in await _db.select(_db.setlistSongs).get()) {
+      counts[row.songId] = (counts[row.songId] ?? 0) + 1;
+    }
+    return Duplicates.find(await allSongs(), setlistCounts: counts);
+  }
+
+  /// Removes the copies in identical [groups], keeping each group's first
+  /// song. Nothing is lost: the keeper becomes a favorite if any copy was,
+  /// and takes the copies' places in setlists it wasn't in yet. Returns what
+  /// [undoRemoveCopies] needs to put everything back as it was.
+  Future<DeletedSongs> removeCopies(List<DuplicateGroup> groups) =>
+      _db.transaction(() async {
+        final identical = [
+          for (final group in groups)
+            if (group.identical) group,
+        ];
+        final before = await _snapshot([
+          for (final group in identical) ...group.songs.map((s) => s.id),
+        ]);
+        for (final group in identical) {
+          final keeper = group.keeper.id;
+          final copies = [for (final copy in group.copies) copy.id];
+          if (group.copies.any((s) => s.favorite)) {
+            await setFavorite(keeper, favorite: true);
+          }
+          final keeperIn = {
+            for (final p in before.placements)
+              if (p.songId == keeper) p.setlistId,
+          };
+          for (final p in before.placements) {
+            if (!copies.contains(p.songId) || !keeperIn.add(p.setlistId)) {
+              continue;
+            }
+            await _db.into(_db.setlistSongs).insert(p.copyWith(songId: keeper));
+          }
+          await deleteSongs(copies);
+        }
+        return before;
+      });
+
+  /// Undoes [removeCopies]: the removed copies come back and the kept songs
+  /// return to exactly how they were.
+  Future<void> undoRemoveCopies(DeletedSongs before) =>
+      _db.transaction(() async {
+        await deleteSongs([for (final song in before.songs) song.id]);
+        await restore(before);
+      });
+
+  Future<DeletedSongs> _snapshot(List<int> ids) async => DeletedSongs(
+    songs: await (_db.select(_db.songs)..where((s) => s.id.isIn(ids))).get(),
+    placements: await (_db.select(
+      _db.setlistSongs,
+    )..where((e) => e.songId.isIn(ids))).get(),
+  );
 
   /// Remembers the auto-scroll speed last used for a song.
   Future<void> setScrollSpeed(int id, int speed) =>
