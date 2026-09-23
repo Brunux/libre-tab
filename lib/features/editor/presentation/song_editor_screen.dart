@@ -209,6 +209,7 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     } on TextRecognitionException {
       if (mounted) _snack(l10n.scanError);
     } finally {
+      unawaited(ref.read(photoPickerProvider).discard(path));
       if (mounted) setState(() => _scanning = false);
     }
   }

@@ -32,6 +32,9 @@ offline: no account, no ads, no tracking.
   open.
 
 **Adding songs**
+- **Scan a song sheet** with the camera or from your photos. Text is read on
+  the phone (Apple Vision on iPhone, Tesseract on Android) and each chord is
+  placed over the syllable under it, even in proportional printed fonts.
 - Paste chords-over-lyrics from anywhere; it's converted to ChordPro, with a
   live preview.
 - Open `.cho`, `.chopro`, `.chordpro`, `.crd` or `.txt` files, including
@@ -60,13 +63,10 @@ Spanish.
 
 ## Status
 
-Milestones 0–6 are done: screen design, scaffold, music core, songbook,
-campfire mode, tuner, and polish (setlists, starter songs, export/import, app
-icon and brand, store listing). It runs on iPhone; the Android build compiles
-but hasn't been tried on a device yet. 444 tests pass.
-
-**Next:** milestone 7, **camera import**: photograph a song sheet → on-device
-text recognition → the same chords-over-lyrics importer → ChordPro.
+All seven milestones are done: screen design, scaffold, music core, songbook,
+campfire mode, tuner, polish (setlists, starter songs, export/import, app icon
+and brand, store listing), and camera import. It runs on iPhone; the Android
+build compiles but hasn't been tried on a device yet. 460+ tests pass.
 
 See the [roadmap](docs/TECH_STACK.md#10-milestones).
 

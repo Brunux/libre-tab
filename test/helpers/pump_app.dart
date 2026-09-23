@@ -174,6 +174,10 @@ class FakePhotoPicker implements PhotoPicker {
   Exception? error;
 
   final picked = <PhotoSource>[];
+  final discarded = <String>[];
+
+  @override
+  Future<void> discard(String path) async => discarded.add(path);
 
   @override
   Future<String?> pick(PhotoSource source) async {

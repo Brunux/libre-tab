@@ -16,4 +16,11 @@ void main() {
       expect(text, contains('SIL OPEN FONT LICENSE'));
     }
   });
+
+  test('Tesseract gets its Apache notice', () async {
+    final entry = (await ocrLicenses().toList()).single;
+    expect(entry.packages, contains('Tesseract OCR'));
+    final text = entry.paragraphs.map((p) => p.text).join('\n');
+    expect(text, contains('Apache License, Version 2.0'));
+  });
 }

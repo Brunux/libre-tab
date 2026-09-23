@@ -166,6 +166,7 @@ void main() {
 
       expect(photos.picked, [PhotoSource.library]);
       expect(recognizer.read, ['/photos/song.jpg']);
+      expect(photos.discarded, ['/photos/song.jpg'], reason: 'not kept');
       expect(
         tester.widget<TextField>(titleField).controller!.text,
         'Amazing Grace',

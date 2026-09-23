@@ -16,7 +16,9 @@ checked against each store's limit (shown as used/limit).
   microphone is used for the tuner on the device only; nothing is recorded or
   sent.
 - **Permissions:** microphone (tuner only, asked the first time you start
-  it). No location, contacts, photos, network or account.
+  it) and camera (only for "Take a photo"). Photos are chosen with the system
+  picker, which needs no permission. No location, contacts, network or
+  account. Photos are read on the device and never leave it.
 
 ---
 
@@ -53,6 +55,8 @@ SONGBOOK
 • Dark, red-night (easy on your eyes and everyone else's) and light themes
 
 ADD YOUR SONGS
+• Scan a song sheet with the camera or from your photos — chords land on
+  the right syllables, even in printed songbooks
 • Paste chords-over-lyrics from anywhere; Libre Tab lines them up
 • Open .cho, .chopro, .chordpro, .crd or .txt files — straight from Files,
   Mail, Safari or a chat app
@@ -109,6 +113,8 @@ CANCIONERO
   claro
 
 AGREGA TUS CANCIONES
+• Escanea un cancionero con la cámara o desde tus fotos — los acordes
+  quedan en la sílaba correcta, incluso en cancioneros impresos
 • Pega acordes sobre la letra desde donde sea; Libre Tab los acomoda
 • Abre archivos .cho, .chopro, .chordpro, .crd o .txt — directo desde
   Archivos, Mail, Safari o una app de chat

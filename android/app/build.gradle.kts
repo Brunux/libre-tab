@@ -43,3 +43,9 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // On-device text recognition for camera import (Apache-2.0). The fast
+    // English and Spanish models are in src/main/assets/tessdata.
+    implementation("cz.adaptech.tesseract4android:tesseract4android:4.9.0")
+}

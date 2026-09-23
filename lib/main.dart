@@ -11,6 +11,9 @@ import 'package:libre_tab/features/library/data/starter_songs.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LicenseRegistry.addLicense(fontLicenses);
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    LicenseRegistry.addLicense(ocrLicenses);
+  }
   // Read saved settings before the first frame so the theme doesn't flash.
   final settings = await PrefsSettingsStore.load();
   final container = ProviderContainer(

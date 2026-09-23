@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,5 +30,15 @@ class PhotoPicker {
       requestFullMetadata: false,
     );
     return photo?.path;
+  }
+
+  /// Deletes the picker's copy of a photo once it's been read, so photos
+  /// aren't kept (PRIVACY.md). It's always a copy, never the original.
+  Future<void> discard(String path) async {
+    try {
+      await File(path).delete();
+    } on FileSystemException {
+      // Already gone.
+    }
   }
 }

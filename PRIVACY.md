@@ -25,6 +25,15 @@ Tab asks for permission the first time you start the tuner. You can turn the
 permission off at any time in your phone's settings; everything except the
 tuner keeps working.
 
+## Camera and photos
+
+"Scan photo" reads a song sheet from a photo you take or choose. The text is
+recognized on your phone (Apple's built-in text recognition on iPhone,
+Tesseract bundled in the app on Android); the photo is never sent anywhere
+and isn't kept. Choosing a photo uses the system photo picker, so Libre Tab
+only ever sees the one photo you pick, never your library. The camera is only
+used when you tap "Take a photo", after the system asks for your permission.
+
 ## Children
 
 Libre Tab collects no data from anyone, children included.
@@ -65,6 +74,16 @@ mientras la pestaña Afinador está en pantalla y la app está abierta, y Libre
 Tab pide permiso la primera vez que inicias el afinador. Puedes quitar el
 permiso cuando quieras en los ajustes del teléfono; todo excepto el afinador
 sigue funcionando.
+
+## Cámara y fotos
+
+"Escanear foto" lee un cancionero a partir de una foto que tomas o eliges. El
+texto se reconoce en tu teléfono (el reconocimiento de texto integrado de
+Apple en iPhone, Tesseract incluido en la app en Android); la foto nunca se
+envía a ningún lado y no se guarda. Elegir una foto usa el selector de fotos
+del sistema, así que Libre Tab solo ve la foto que eliges, nunca tu fototeca.
+La cámara solo se usa cuando tocas "Tomar una foto", después de que el
+sistema te pide permiso.
 
 ## Niños
 
