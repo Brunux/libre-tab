@@ -205,5 +205,5 @@ so it's fast to unit test.
 3. **Songbook** ✅ — Drift schema + FTS5 search, library list, add/edit song with chords-over-lyrics importer, open file, share `.cho`, delete. (Whole-songbook `.zip` export moved to milestone 6.)
 4. **Campfire mode** ✅ — dock (transpose, capo, text size, auto-scroll speed), tap-to-pause auto-scroll, chord diagrams, screen kept awake, theme and text size remembered. (Pinch-to-zoom replaced by A−/A+; setlist swipe moves to milestone 6.)
 5. **Tuner** ✅ — explanation screen then mic permission, `record` PCM stream, MPM on a background isolate, needle UI, six tunings, string lock, A4 432–446, haptic when in tune, listens only while the tab is visible and the app is in front.
-6. **Polish** — setlists, starter songs, app icon, store assets.
+6. **Polish** ✅ — setlists (swipe between songs), seven public-domain starter songs, whole-songbook `.zip` export/import, song files opened from other apps go to Add song, Settings (songbook, about, licenses), app icon and brand (`branding/`), store listing and privacy statement (`docs/store/`, `PRIVACY.md`).
 7. **Camera import** — photo → OCR with word boxes → same chords-over-lyrics importer → ChordPro.

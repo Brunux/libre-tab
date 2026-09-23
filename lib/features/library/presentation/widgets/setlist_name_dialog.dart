@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
@@ -36,8 +38,26 @@ class _SetlistNameDialogState extends State<_SetlistNameDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final renaming = widget.initial != null;
+    // iOS can report a negative keyboard inset for a frame while the
+    // keyboard animates, which Dialog asserts against.
+    final media = MediaQuery.of(context);
+    final insets = media.viewInsets;
+    return MediaQuery(
+      data: media.copyWith(
+        viewInsets: EdgeInsets.fromLTRB(
+          math.max(0, insets.left),
+          math.max(0, insets.top),
+          math.max(0, insets.right),
+          math.max(0, insets.bottom),
+        ),
+      ),
+      child: _dialog(context, renaming: renaming),
+    );
+  }
+
+  Widget _dialog(BuildContext context, {required bool renaming}) {
+    final l10n = context.l10n;
     return AlertDialog(
       title: Text(renaming ? l10n.renameSetlist : l10n.newSetlist),
       content: TextField(

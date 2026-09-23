@@ -33,6 +33,7 @@ rewrites an unrelated build setting.
 | `png/social-header-1500x500.png` | X / Mastodon header banner |
 | `png/social-post-1080.png` | Instagram / Facebook square post |
 | `png/social-story-1080x1920.png` | Stories / Reels / TikTok cover (Spanish tagline) |
+| `png/play-feature-1024x500.png` | Google Play feature graphic |
 
 Every PNG has an SVG next to it in `svg/`. The lockup and social SVGs embed
 their fonts (Fraunces and Atkinson Hyperlegible, both SIL OFL).

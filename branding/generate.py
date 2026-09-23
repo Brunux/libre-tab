@@ -321,6 +321,17 @@ def outputs():
     )
     out.append(("social-header-1500x500", 1500, 500, svg(1500, 500, body)))
 
+    # Google Play feature graphic, 1024 × 500 (no transparency).
+    body = (
+        fonts
+        + glow(1024, 500, DARK_BG)
+        + placed(FULL, 400, 40, 50)
+        + wordmark(440, 245, 96, "#F4EDE3", TAGLINE, "#A99C8B")
+        + '<text class="tag" x="442" y="355" font-size="26" fill="#F4A93A">'
+        "Chords · Lyrics · Tuner · Offline</text>"
+    )
+    out.append(("play-feature-1024x500", 1024, 500, svg(1024, 500, body)))
+
     # Social: square post (Instagram/Facebook), 1080 × 1080.
     body = (
         fonts
