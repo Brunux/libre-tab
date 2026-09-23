@@ -61,7 +61,7 @@ Same song, two representations:
 
 ```
 Chords over lyrics (what users see and photograph)
-   G         G7       C          G
+  G      G7         C         G
 A-mazing grace, how sweet the sound
 
 ChordPro (what we store)

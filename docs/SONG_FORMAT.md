@@ -25,7 +25,7 @@ That [G]saved a wretch like [D]me
 Displayed as:
 
 ```
-   G         G7       C          G
+  G      G7         C         G
 A-mazing grace, how sweet the sound
      G                   D
 That saved a wretch like me
@@ -102,17 +102,21 @@ original chords unless the user explicitly chooses "Save in this key".
 Input like this (pasted text or a `.txt` file):
 
 ```
-   G         G7       C          G
+  G      G7         C         G
 A-mazing grace, how sweet the sound
 ```
 
 is converted to ChordPro:
 
 1. **Classify each line.** A line is a *chord line* if every whitespace-separated
-   token matches the chord grammar (or is `|`, `N.C.`, `xN`). Lines like
-   `[Chorus]`, `Verse 1:` or `Intro:` become section directives or comments.
-   Runs of six lines made mostly of `-`, digits and `|` become a
-   `{start_of_tab}` block.
+   token matches the chord grammar (or is `|`, `N.C.`, `xN`) and at least one
+   is a real chord. Section labels on their own line — bracketed (`[Chorus]`,
+   `[Solo]`) or alone with an optional number, repeat or colon (`Verse 1:`,
+   `Coro x2`, `Intro`) — become sections; chorus/coro/estribillo become
+   `{start_of_chorus}`, the rest `{start_of_verse: <label>}`. Lyrics that just
+   start with such a word ("Solo tú…") stay lyrics. Tab lines (`e|--0--|`:
+   optional string name, `|`, then only `-`, digits, `|` and techniques
+   `h p b r x / \ ~`) become a `{start_of_tab}` block, however many there are.
 2. **Pair lines.** A chord line followed by a lyric line is merged. A chord line
    followed by a blank line, another chord line or the end of the song stays a
    chords-only line.
