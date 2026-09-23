@@ -198,6 +198,7 @@ so it's fast to unit test.
 
 ## 10. Milestones
 
+0. **Screen design** — clickable mockups of songbook, song view, add song and tuner, in dark / red night / light themes. Final choices recorded here before milestone 1.
 1. **Scaffold** — `flutter create`, lints, theme, router, l10n, tests running.
 2. **Music core** — Note/Chord model, ChordPro parser, transposer (+ tests).
 3. **Songbook** — Drift schema, library list, search, editor, import/export.
