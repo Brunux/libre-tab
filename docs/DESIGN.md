@@ -111,6 +111,31 @@ microphone is refused, the screen says where to allow it. Tapping "A4 = 440 Hz"
 opens a slider (432–446 Hz) with "Back to 440". The tuner only listens while
 its tab is on screen and the app is in front, and keeps the screen on.
 
-## Not designed yet
+### 5. Setlists (milestone 6)
+- **Songbook, "Setlists" chip:** the list shows setlists instead of songs
+  (name, "7 songs"); search filters them by name. The floating button becomes
+  "New setlist", which asks for a name and opens the new setlist.
+- **Setlist screen:** header with back, name and ⋮ (Rename, Delete — delete
+  asks first; songs stay in the songbook). A "Play" button opens the first
+  song. Rows: position, title, artist · key, a drag handle to reorder and a
+  remove button. "Add songs" opens a sheet with every song and a checkbox;
+  songs already in the setlist are ticked, Done saves. Tapping a row plays
+  from that song.
+- **Playing a setlist:** the song view, and swiping left/right moves to the
+  next/previous song. The subtitle starts with the position ("2/7 · …").
+  Screen readers get the same through the page's scroll actions.
+- **Song view ⋮ → Add to setlist:** a sheet listing setlists with a checkbox
+  each, plus "New setlist".
+- Empty setlists list: "No setlists yet. Make one for your next campfire."
+  Empty setlist: "No songs in this setlist yet."
 
-Settings, setlist detail/editing. Design these when their milestone starts.
+### 6. Settings (milestone 6)
+Theme (Dark / Red night / Light) · **Songbook**: Export all songs (a `.zip` of
+`.cho` files through the share sheet), Import songs (`.zip` or a single song
+file; adds every song, skips files that aren't songs), Add starter songs
+(adds the public-domain starters that aren't in the songbook) · **About**:
+version, GPL-3.0 note and the licenses page.
+
+Starter songs are added automatically on the very first launch only; after
+that the songbook is the user's (deleting them is fine, they don't come back
+unless asked). The empty songbook also offers "Add starter songs".

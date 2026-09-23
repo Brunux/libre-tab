@@ -679,6 +679,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to 440'**
   String get a4Reset;
+
+  /// No description provided for @filterSetlists.
+  ///
+  /// In en, this message translates to:
+  /// **'Setlists'**
+  String get filterSetlists;
+
+  /// No description provided for @newSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'New setlist'**
+  String get newSetlist;
+
+  /// No description provided for @setlistNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get setlistNameLabel;
+
+  /// No description provided for @setlistNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday campfire'**
+  String get setlistNameHint;
+
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @noSetlists.
+  ///
+  /// In en, this message translates to:
+  /// **'No setlists yet.\nMake one for your next campfire.'**
+  String get noSetlists;
+
+  /// No description provided for @noSetlistMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No setlists match your search.'**
+  String get noSetlistMatches;
+
+  /// No description provided for @emptySetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs in this setlist yet.'**
+  String get emptySetlist;
+
+  /// No description provided for @setlistNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This setlist doesn\'t exist anymore.'**
+  String get setlistNotFound;
+
+  /// No description provided for @addSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Add songs'**
+  String get addSongs;
+
+  /// No description provided for @playSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get playSetlist;
+
+  /// No description provided for @renameSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get renameSetlist;
+
+  /// No description provided for @deleteSetlistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”?'**
+  String deleteSetlistTitle(String name);
+
+  /// No description provided for @deleteSetlistBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The songs stay in your songbook.'**
+  String get deleteSetlistBody;
+
+  /// No description provided for @removeFromSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {title} from the setlist'**
+  String removeFromSetlist(String title);
+
+  /// No description provided for @addToSetlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to setlist'**
+  String get addToSetlist;
+
+  /// No description provided for @swipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe for the next song'**
+  String get swipeHint;
+
+  /// No description provided for @songbookSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Songbook'**
+  String get songbookSection;
+
+  /// No description provided for @exportSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Export all songs'**
+  String get exportSongs;
+
+  /// No description provided for @exportSongsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A .zip file with one .cho per song'**
+  String get exportSongsHint;
+
+  /// No description provided for @importSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Import songs'**
+  String get importSongs;
+
+  /// No description provided for @importSongsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A .zip from Export, or a single song file'**
+  String get importSongsHint;
+
+  /// No description provided for @addStarterSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Add starter songs'**
+  String get addStarterSongs;
+
+  /// No description provided for @addStarterSongsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Public-domain campfire classics'**
+  String get addStarterSongsHint;
+
+  /// No description provided for @songsImported.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No songs found in that file.} =1{1 song added.} other{{count} songs added.}}'**
+  String songsImported(int count);
+
+  /// No description provided for @starterSongsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{The starter songs are already in your songbook.} =1{1 starter song added.} other{{count} starter songs added.}}'**
+  String starterSongsAdded(int count);
+
+  /// No description provided for @importError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read that file.'**
+  String get importError;
+
+  /// No description provided for @nothingToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songbook is empty. There\'s nothing to export.'**
+  String get nothingToExport;
+
+  /// No description provided for @aboutSection.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutSection;
+
+  /// No description provided for @aboutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre Tab is free software under the GNU GPL 3.0 or later. It works offline and collects no data.'**
+  String get aboutBody;
+
+  /// No description provided for @licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get licenses;
 }
 
 class _AppLocalizationsDelegate

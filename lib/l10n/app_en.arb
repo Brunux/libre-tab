@@ -185,5 +185,65 @@
   },
   "a4Title": "Reference pitch",
   "a4Help": "Almost all music uses A4 = 440 Hz. Change it only to match another instrument.",
-  "a4Reset": "Back to 440"
+  "a4Reset": "Back to 440",
+  "filterSetlists": "Setlists",
+  "newSetlist": "New setlist",
+  "setlistNameLabel": "Name",
+  "setlistNameHint": "Friday campfire",
+  "create": "Create",
+  "done": "Done",
+  "noSetlists": "No setlists yet.\nMake one for your next campfire.",
+  "noSetlistMatches": "No setlists match your search.",
+  "emptySetlist": "No songs in this setlist yet.",
+  "setlistNotFound": "This setlist doesn't exist anymore.",
+  "addSongs": "Add songs",
+  "playSetlist": "Play",
+  "renameSetlist": "Rename",
+  "deleteSetlistTitle": "Delete “{name}”?",
+  "@deleteSetlistTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSetlistBody": "The songs stay in your songbook.",
+  "removeFromSetlist": "Remove {title} from the setlist",
+  "@removeFromSetlist": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "addToSetlist": "Add to setlist",
+  "swipeHint": "Swipe for the next song",
+  "songbookSection": "Songbook",
+  "exportSongs": "Export all songs",
+  "exportSongsHint": "A .zip file with one .cho per song",
+  "importSongs": "Import songs",
+  "importSongsHint": "A .zip from Export, or a single song file",
+  "addStarterSongs": "Add starter songs",
+  "addStarterSongsHint": "Public-domain campfire classics",
+  "songsImported": "{count, plural, =0{No songs found in that file.} =1{1 song added.} other{{count} songs added.}}",
+  "@songsImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "starterSongsAdded": "{count, plural, =0{The starter songs are already in your songbook.} =1{1 starter song added.} other{{count} starter songs added.}}",
+  "@starterSongsAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importError": "Couldn't read that file.",
+  "nothingToExport": "Your songbook is empty. There's nothing to export.",
+  "aboutSection": "About",
+  "aboutBody": "Libre Tab is free software under the GNU GPL 3.0 or later. It works offline and collects no data.",
+  "licenses": "Licenses"
 }

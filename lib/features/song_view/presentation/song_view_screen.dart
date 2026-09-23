@@ -19,7 +19,9 @@ import 'package:libre_tab/core/music/music_key.dart';
 import 'package:libre_tab/core/music/transposition.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
+import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/chord_diagram.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
 import 'package:libre_tab/l10n/l10n.dart';
@@ -28,10 +30,13 @@ import 'package:libre_tab/l10n/l10n.dart';
 /// capo, resize text and auto-scroll, and chord diagrams on tap
 /// (docs/DESIGN.md § Song view).
 class SongViewScreen extends ConsumerWidget {
-  const SongViewScreen({required this.songId, super.key});
+  const SongViewScreen({required this.songId, this.position, super.key});
 
   /// Null when the route's id wasn't a number.
   final int? songId;
+
+  /// (n, total) while playing a setlist: shown as "n/total".
+  final (int, int)? position;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,17 +48,19 @@ class SongViewScreen extends ConsumerWidget {
           skipLoadingOnReload: true,
           loading: () => Scaffold(appBar: AppBar()),
           error: (_, _) => const _NotFound(),
-          data: (entry) => entry == null ? const _NotFound() : _SongView(entry),
+          data: (entry) =>
+              entry == null ? const _NotFound() : _SongView(entry, position),
         );
   }
 }
 
-enum _Action { chords, edit, share, delete }
+enum _Action { chords, addToSetlist, edit, share, delete }
 
 class _SongView extends ConsumerStatefulWidget {
-  const _SongView(this.entry);
+  const _SongView(this.entry, this.position);
 
   final SongEntry entry;
+  final (int, int)? position;
 
   @override
   ConsumerState<_SongView> createState() => _SongViewState();
@@ -171,13 +178,20 @@ class _SongViewState extends ConsumerState<_SongView>
     final fontSize = ref.watch(lyricsSizeProvider);
     final size = ref.read(lyricsSizeProvider.notifier);
 
-    final subtitle = t.capo > 0 && key != null
-        ? l10n.soundsIn(sounding!, t.capo, t.shapeKey(key).name)
-        : [
-            if (entry.artist.isNotEmpty) entry.artist,
-            if (sounding != null) l10n.keyLabel(sounding),
-            if (t.capo > 0) l10n.capoLabel(t.capo),
-          ].join(' · ');
+    final position = switch (widget.position) {
+      (final n, final total) => '$n/$total',
+      null => null,
+    };
+    final subtitle = [
+      ?position,
+      if (t.capo > 0 && key != null)
+        l10n.soundsIn(sounding!, t.capo, t.shapeKey(key).name)
+      else ...[
+        if (entry.artist.isNotEmpty) entry.artist,
+        if (sounding != null) l10n.keyLabel(sounding),
+        if (t.capo > 0) l10n.capoLabel(t.capo),
+      ],
+    ].join(' · ');
 
     final allChords = [
       ...{
@@ -233,6 +247,7 @@ class _SongViewState extends ConsumerState<_SongView>
             tooltip: l10n.moreActions,
             onSelected: (action) => switch (action) {
               _Action.chords => _showChords(allChords),
+              _Action.addToSetlist => _addToSetlist(),
               _Action.edit => context.push(Routes.editSong(entry.id)),
               _Action.share =>
                 ref
@@ -244,6 +259,10 @@ class _SongViewState extends ConsumerState<_SongView>
               PopupMenuItem(
                 value: _Action.chords,
                 child: Text(l10n.chordsMenu),
+              ),
+              PopupMenuItem(
+                value: _Action.addToSetlist,
+                child: Text(l10n.addToSetlist),
               ),
               PopupMenuItem(value: _Action.edit, child: Text(l10n.editSong)),
               PopupMenuItem(value: _Action.share, child: Text(l10n.share)),
@@ -326,6 +345,13 @@ class _SongViewState extends ConsumerState<_SongView>
       ),
     );
   }
+
+  Future<void> _addToSetlist() => showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => _AddToSetlistSheet(songId: widget.entry.id),
+  );
 
   Future<void> _confirmDelete(BuildContext context) async {
     final l10n = context.l10n;
@@ -579,6 +605,59 @@ class _ChordsSheet extends StatelessWidget {
                   ),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+/// Every setlist with a checkbox that adds or removes this song right away,
+/// plus "New setlist".
+class _AddToSetlistSheet extends ConsumerWidget {
+  const _AddToSetlistSheet({required this.songId});
+
+  final int songId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final setlists = ref.watch(allSetlistsProvider).value ?? const [];
+    final having = ref.watch(setlistsWithSongProvider(songId)).value ?? {};
+    final repository = ref.read(setlistRepositoryProvider);
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(bottom: 24),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+            child: Text(
+              l10n.addToSetlist,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          for (final setlist in setlists)
+            CheckboxListTile(
+              value: having.contains(setlist.id),
+              title: Text(setlist.name),
+              subtitle: Text(l10n.songCount(setlist.songCount)),
+              onChanged: (on) => on ?? false
+                  ? repository.addSong(setlist.id, songId)
+                  : repository.removeSong(setlist.id, songId),
+            ),
+          ListTile(
+            leading: const Icon(Icons.playlist_add),
+            title: Text(l10n.newSetlist),
+            onTap: () async {
+              final name = await showSetlistNameDialog(context);
+              if (name == null) return;
+              final id = await repository.create(name);
+              await repository.addSong(id, songId);
+            },
+          ),
+        ],
       ),
     );
   }

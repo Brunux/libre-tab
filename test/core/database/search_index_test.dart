@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/database/search_index.dart';
+import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 
 import '../../helpers/test_database.dart';
@@ -58,15 +59,39 @@ void main() {
       expect(titles, ['Oh! Susanna']);
       expect(await repo.getSong(1), isNotNull);
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.data.values.single, 2);
+      expect(version.data.values.single, 3);
       await db.close();
     });
   });
 
-  test('a new database starts at schema 2 with an empty index', () async {
+  test('upgrading from schema 2 adds setlists and keeps songs', () async {
+    final dir = Directory.systemTemp.createTempSync('libre_tab_db');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}/songs.sqlite');
+    AppDatabase open() => AppDatabase(
+      DatabaseConnection(NativeDatabase(file), closeStreamsSynchronously: true),
+    );
+
+    // A songbook from before setlists: no setlist tables, schema 2.
+    var db = open();
+    await SongRepository(db).addSong(SampleSongs.amazingGrace);
+    await db.customStatement('DROP TABLE setlist_songs');
+    await db.customStatement('DROP TABLE setlists');
+    await db.customStatement('PRAGMA user_version = 2');
+    await db.close();
+
+    db = open();
+    addTearDown(db.close);
+    final setlists = SetlistRepository(db);
+    final id = await setlists.create('Friday');
+    await setlists.addSong(id, 1);
+    expect(await setlists.songIds(id), [1]);
+  });
+
+  test('a new database starts at schema 3 with an empty index', () async {
     final db = testDatabase();
     addTearDown(db.close);
-    expect(db.schemaVersion, 2);
+    expect(db.schemaVersion, 3);
     final count = await db
         .customSelect('SELECT count(*) AS n FROM songs_fts')
         .getSingle();

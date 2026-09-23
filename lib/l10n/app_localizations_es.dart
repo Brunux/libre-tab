@@ -332,4 +332,125 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get a4Reset => 'Volver a 440';
+
+  @override
+  String get filterSetlists => 'Repertorios';
+
+  @override
+  String get newSetlist => 'Nuevo repertorio';
+
+  @override
+  String get setlistNameLabel => 'Nombre';
+
+  @override
+  String get setlistNameHint => 'Fogata del viernes';
+
+  @override
+  String get create => 'Crear';
+
+  @override
+  String get done => 'Listo';
+
+  @override
+  String get noSetlists =>
+      'Aún no hay repertorios.\nHaz uno para tu próxima fogata.';
+
+  @override
+  String get noSetlistMatches => 'Ningún repertorio coincide con tu búsqueda.';
+
+  @override
+  String get emptySetlist => 'Este repertorio aún no tiene canciones.';
+
+  @override
+  String get setlistNotFound => 'Este repertorio ya no existe.';
+
+  @override
+  String get addSongs => 'Agregar canciones';
+
+  @override
+  String get playSetlist => 'Tocar';
+
+  @override
+  String get renameSetlist => 'Cambiar nombre';
+
+  @override
+  String deleteSetlistTitle(String name) {
+    return '¿Borrar “$name”?';
+  }
+
+  @override
+  String get deleteSetlistBody => 'Las canciones se quedan en tu cancionero.';
+
+  @override
+  String removeFromSetlist(String title) {
+    return 'Quitar $title del repertorio';
+  }
+
+  @override
+  String get addToSetlist => 'Agregar a repertorio';
+
+  @override
+  String get swipeHint => 'Desliza para la siguiente canción';
+
+  @override
+  String get songbookSection => 'Cancionero';
+
+  @override
+  String get exportSongs => 'Exportar todas las canciones';
+
+  @override
+  String get exportSongsHint => 'Un archivo .zip con un .cho por canción';
+
+  @override
+  String get importSongs => 'Importar canciones';
+
+  @override
+  String get importSongsHint => 'Un .zip de Exportar, o un archivo de canción';
+
+  @override
+  String get addStarterSongs => 'Agregar canciones de ejemplo';
+
+  @override
+  String get addStarterSongsHint => 'Clásicos de fogata de dominio público';
+
+  @override
+  String songsImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Se agregaron $count canciones.',
+      one: 'Se agregó 1 canción.',
+      zero: 'No se encontraron canciones en ese archivo.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String starterSongsAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Se agregaron $count canciones de ejemplo.',
+      one: 'Se agregó 1 canción de ejemplo.',
+      zero: 'Las canciones de ejemplo ya están en tu cancionero.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importError => 'No se pudo leer ese archivo.';
+
+  @override
+  String get nothingToExport =>
+      'Tu cancionero está vacío. No hay nada que exportar.';
+
+  @override
+  String get aboutSection => 'Acerca de';
+
+  @override
+  String get aboutBody =>
+      'Libre Tab es software libre bajo la GNU GPL 3.0 o posterior. Funciona sin conexión y no recopila datos.';
+
+  @override
+  String get licenses => 'Licencias';
 }

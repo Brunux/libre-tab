@@ -340,4 +340,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a4Reset => 'Back to 440';
+
+  @override
+  String get filterSetlists => 'Setlists';
+
+  @override
+  String get newSetlist => 'New setlist';
+
+  @override
+  String get setlistNameLabel => 'Name';
+
+  @override
+  String get setlistNameHint => 'Friday campfire';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get noSetlists => 'No setlists yet.\nMake one for your next campfire.';
+
+  @override
+  String get noSetlistMatches => 'No setlists match your search.';
+
+  @override
+  String get emptySetlist => 'No songs in this setlist yet.';
+
+  @override
+  String get setlistNotFound => 'This setlist doesn\'t exist anymore.';
+
+  @override
+  String get addSongs => 'Add songs';
+
+  @override
+  String get playSetlist => 'Play';
+
+  @override
+  String get renameSetlist => 'Rename';
+
+  @override
+  String deleteSetlistTitle(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
+  String get deleteSetlistBody => 'The songs stay in your songbook.';
+
+  @override
+  String removeFromSetlist(String title) {
+    return 'Remove $title from the setlist';
+  }
+
+  @override
+  String get addToSetlist => 'Add to setlist';
+
+  @override
+  String get swipeHint => 'Swipe for the next song';
+
+  @override
+  String get songbookSection => 'Songbook';
+
+  @override
+  String get exportSongs => 'Export all songs';
+
+  @override
+  String get exportSongsHint => 'A .zip file with one .cho per song';
+
+  @override
+  String get importSongs => 'Import songs';
+
+  @override
+  String get importSongsHint => 'A .zip from Export, or a single song file';
+
+  @override
+  String get addStarterSongs => 'Add starter songs';
+
+  @override
+  String get addStarterSongsHint => 'Public-domain campfire classics';
+
+  @override
+  String songsImported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs added.',
+      one: '1 song added.',
+      zero: 'No songs found in that file.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String starterSongsAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count starter songs added.',
+      one: '1 starter song added.',
+      zero: 'The starter songs are already in your songbook.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importError => 'Couldn\'t read that file.';
+
+  @override
+  String get nothingToExport =>
+      'Your songbook is empty. There\'s nothing to export.';
+
+  @override
+  String get aboutSection => 'About';
+
+  @override
+  String get aboutBody =>
+      'Libre Tab is free software under the GNU GPL 3.0 or later. It works offline and collects no data.';
+
+  @override
+  String get licenses => 'Licenses';
 }

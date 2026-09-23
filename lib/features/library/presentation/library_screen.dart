@@ -6,6 +6,8 @@ import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
+import 'package:libre_tab/features/library/data/setlist_repository.dart';
+import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -33,7 +35,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final filter = ref.watch(libraryFilterProvider);
-    final songs = ref.watch(songListProvider);
+    final setlists = filter.view == LibraryView.setlists;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,63 +86,178 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  ChoiceChip(
-                    label: Text(l10n.filterAll),
-                    selected: !filter.favoritesOnly,
-                    onSelected: (_) => _filter.favoritesOnly = false,
-                  ),
-                  ChoiceChip(
-                    label: Text(l10n.filterFavorites),
-                    selected: filter.favoritesOnly,
-                    onSelected: (_) => _filter.favoritesOnly = true,
-                  ),
+                  for (final (view, label) in [
+                    (LibraryView.all, l10n.filterAll),
+                    (LibraryView.favorites, l10n.filterFavorites),
+                    (LibraryView.setlists, l10n.filterSetlists),
+                  ])
+                    ChoiceChip(
+                      label: Text(label),
+                      selected: filter.view == view,
+                      onSelected: (_) => _filter.view = view,
+                    ),
                 ],
               ),
             ),
           ),
           Expanded(
-            child: songs.when(
-              skipLoadingOnReload: true,
-              loading: () => const SizedBox.shrink(),
-              error: (_, _) => PlaceholderBody(message: l10n.loadError),
-              data: (list) => list.isEmpty
-                  ? PlaceholderBody(
-                      message: filter.query.trim().isNotEmpty
-                          ? l10n.noMatches
-                          : filter.favoritesOnly
-                          ? l10n.noFavorites
-                          : l10n.emptySongbook,
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 96),
-                      itemCount: list.length + 1,
-                      itemBuilder: (context, i) => i == 0
-                          ? _CountHeader(count: list.length)
-                          : _SongTile(song: list[i - 1]),
-                    ),
-            ),
+            child: setlists ? _SetlistList(filter) : _SongList(filter),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(Routes.addSong),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addSong),
+      floatingActionButton: setlists
+          ? FloatingActionButton.extended(
+              onPressed: _newSetlist,
+              icon: const Icon(Icons.playlist_add),
+              label: Text(l10n.newSetlist),
+            )
+          : FloatingActionButton.extended(
+              onPressed: () => context.push(Routes.addSong),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.addSong),
+            ),
+    );
+  }
+
+  Future<void> _newSetlist() async {
+    final name = await showSetlistNameDialog(context);
+    if (name == null) return;
+    final id = await ref.read(setlistRepositoryProvider).create(name);
+    if (mounted) await context.push(Routes.setlist(id));
+  }
+}
+
+class _SongList extends ConsumerWidget {
+  const _SongList(this.filter);
+
+  final LibraryFilter filter;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    return ref
+        .watch(songListProvider)
+        .when(
+          skipLoadingOnReload: true,
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          data: (list) => list.isEmpty
+              ? PlaceholderBody(
+                  message: filter.query.trim().isNotEmpty
+                      ? l10n.noMatches
+                      : filter.view == LibraryView.favorites
+                      ? l10n.noFavorites
+                      : l10n.emptySongbook,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 96),
+                  itemCount: list.length + 1,
+                  itemBuilder: (context, i) => i == 0
+                      ? _CountHeader(text: l10n.songCount(list.length))
+                      : _SongTile(song: list[i - 1]),
+                ),
+        );
+  }
+}
+
+class _SetlistList extends ConsumerWidget {
+  const _SetlistList(this.filter);
+
+  final LibraryFilter filter;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    return ref
+        .watch(setlistListProvider)
+        .when(
+          skipLoadingOnReload: true,
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          data: (list) => list.isEmpty
+              ? PlaceholderBody(
+                  message: filter.query.trim().isNotEmpty
+                      ? l10n.noSetlistMatches
+                      : l10n.noSetlists,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 96),
+                  itemCount: list.length,
+                  itemBuilder: (context, i) => _SetlistTile(list[i]),
+                ),
+        );
+  }
+}
+
+class _SetlistTile extends StatelessWidget {
+  const _SetlistTile(this.setlist);
+
+  final SetlistSummary setlist;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return MergeSemantics(
+      child: InkWell(
+        onTap: () => context.push(Routes.setlist(setlist.id)),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 64),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: colors.line)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: colors.surface2,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.queue_music, color: colors.chord),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      setlist.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      context.l10n.songCount(setlist.songCount),
+                      style: TextStyle(fontSize: 15, color: colors.muted),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: colors.muted),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class _CountHeader extends StatelessWidget {
-  const _CountHeader({required this.count});
+  const _CountHeader({required this.text});
 
-  final int count;
+  final String text;
 
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
     child: Text(
-      context.l10n.songCount(count).toUpperCase(),
+      text.toUpperCase(),
       style: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w700,
