@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/shell.dart';
-import 'package:libre_tab/features/editor/presentation/add_song_screen.dart';
+import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
@@ -13,7 +13,8 @@ abstract final class Routes {
   static const addSong = '/songs/new';
   static const tuner = '/tuner';
   static const settings = '/settings';
-  static String song(String id) => '/songs/$id';
+  static String song(int id) => '/songs/$id';
+  static String editSong(int id) => '/songs/$id/edit';
 }
 
 /// Two bottom tabs (Songbook, Tuner). Song view, Add song and Settings open
@@ -36,13 +37,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'new',
                     parentNavigatorKey: rootKey,
-                    builder: (_, _) => const AddSongScreen(),
+                    builder: (_, _) => const SongEditorScreen(),
                   ),
                   GoRoute(
                     path: ':id',
                     parentNavigatorKey: rootKey,
                     builder: (_, state) =>
-                        SongViewScreen(songId: state.pathParameters['id']!),
+                        SongViewScreen(songId: _songId(state)),
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        parentNavigatorKey: rootKey,
+                        builder: (_, state) => switch (_songId(state)) {
+                          final id? => SongEditorScreen(songId: id),
+                          null => const SongViewScreen(songId: null),
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -68,3 +79,6 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(router.dispose);
   return router;
 });
+
+int? _songId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['id'] ?? '');

@@ -4,13 +4,14 @@ import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
-import 'package:libre_tab/features/editor/presentation/add_song_screen.dart';
+import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
 import 'package:libre_tab/features/tuner/presentation/tuner_screen.dart';
 
 import '../helpers/pump_app.dart';
+import '../helpers/test_database.dart';
 
 void main() {
   testWidgets('back from Settings returns to the Songbook', (tester) async {
@@ -27,7 +28,9 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
-  testWidgets('Save is disabled until the importer exists', (tester) async {
+  testWidgets('Save is disabled until the song has a title and text', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await tester.tap(find.text('Add song'));
     await tester.pumpAndSettle();
@@ -120,7 +123,7 @@ void main() {
     await tester.tap(find.text('Add song'));
     await tester.pumpAndSettle();
     // Pushed routes don't change the base location, so check the screen.
-    expect(find.byType(AddSongScreen), findsOneWidget);
+    expect(find.byType(SongEditorScreen), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
 
     await tester.tap(find.byTooltip('Cancel'));
@@ -146,9 +149,12 @@ void main() {
   testWidgets('song view theme button cycles Dark → Red night → Light', (
     tester,
   ) async {
-    final container = await pumpApp(tester);
+    final container = await pumpApp(
+      tester,
+      songs: [SampleSongs.amazingGrace],
+    );
 
-    container.read(routerProvider).go(Routes.song('demo'));
+    container.read(routerProvider).go(Routes.song(1));
     await tester.pumpAndSettle();
     expect(find.byType(SongViewScreen), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);

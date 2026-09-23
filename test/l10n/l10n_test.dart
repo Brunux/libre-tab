@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/router.dart';
+import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 import '../helpers/pump_app.dart';
+import '../helpers/test_database.dart';
 
 Map<String, dynamic> arb(String locale) =>
     jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync())
@@ -72,9 +74,11 @@ void main() {
     expect(find.text('Guardar'), findsOneWidget);
     expect(find.byTooltip('Cancelar'), findsOneWidget);
 
-    router.go(Routes.song('demo'));
+    await container.read(songRepositoryProvider).addSong(SampleSongs.ohSusanna);
+    router.go(Routes.song(1));
     await tester.pumpAndSettle();
-    expect(find.text('Canción'), findsOneWidget);
+    expect(find.text('Stephen Foster · Tono C · Cejilla 2'), findsOneWidget);
     expect(find.byTooltip('Cambiar tema'), findsOneWidget);
+    expect(find.byTooltip('Agregar a favoritas'), findsOneWidget);
   });
 }

@@ -24,16 +24,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addSong => 'Add song';
 
   @override
+  String get editSong => 'Edit song';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
   String get save => 'Save';
-
-  @override
-  String get emptySongbook => 'Your songbook is empty.\nAdd your first song.';
-
-  @override
-  String get songTitlePlaceholder => 'Song';
 
   @override
   String get comingSoon => 'Coming in a later milestone.';
@@ -52,4 +49,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get switchTheme => 'Switch theme';
+
+  @override
+  String get searchHint => 'Search songs, artists or lyrics';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get filterAll => 'All songs';
+
+  @override
+  String get filterFavorites => 'Favorites';
+
+  @override
+  String songCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count songs',
+      one: '1 song',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get emptySongbook => 'Your songbook is empty.\nAdd your first song.';
+
+  @override
+  String get noFavorites =>
+      'No favorites yet.\nTap the star on a song to add it.';
+
+  @override
+  String get loadError => 'Couldn\'t open your songbook.';
+
+  @override
+  String get noMatches => 'No songs match your search.';
+
+  @override
+  String keyLabel(String key) {
+    return 'Key $key';
+  }
+
+  @override
+  String capoLabel(int fret) {
+    return 'Capo $fret';
+  }
+
+  @override
+  String get songNotFound => 'This song isn\'t in your songbook.';
+
+  @override
+  String get addFavorite => 'Add to favorites';
+
+  @override
+  String get removeFavorite => 'Remove from favorites';
+
+  @override
+  String get moreActions => 'More';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String deleteTitle(String title) {
+    return 'Delete “$title”?';
+  }
+
+  @override
+  String get deleteBody => 'This can\'t be undone.';
+
+  @override
+  String get chorusLabel => 'Chorus';
+
+  @override
+  String get bridgeLabel => 'Bridge';
+
+  @override
+  String get titleLabel => 'Title';
+
+  @override
+  String get titleRequired => 'Add a title';
+
+  @override
+  String get artistLabel => 'Artist';
+
+  @override
+  String get contentLabel => 'Paste chords over lyrics, or ChordPro';
+
+  @override
+  String get openFile => 'Open file';
+
+  @override
+  String get cameraLater => 'Camera (later)';
+
+  @override
+  String get notASongFile =>
+      'That file isn\'t a song (.cho, .chopro, .chordpro, .crd, .txt).';
+
+  @override
+  String get resultLabel => 'Result';
+
+  @override
+  String get previewTab => 'Preview';
+
+  @override
+  String get chordProTab => 'ChordPro';
+
+  @override
+  String importSummary(int chordLines, int sections) {
+    return 'Chord lines placed: $chordLines · Sections found: $sections';
+  }
+
+  @override
+  String get alreadyChordPro => 'Already in ChordPro format.';
+
+  @override
+  String get previewEmpty => 'The song will appear here as you type.';
+
+  @override
+  String get discardTitle => 'Discard changes?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get keepEditing => 'Keep editing';
+
+  @override
+  String get saveError => 'Couldn\'t save the song.';
 }

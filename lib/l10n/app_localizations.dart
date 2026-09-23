@@ -128,6 +128,12 @@ abstract class AppLocalizations {
   /// **'Add song'**
   String get addSong;
 
+  /// No description provided for @editSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit song'**
+  String get editSong;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -139,18 +145,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
-
-  /// No description provided for @emptySongbook.
-  ///
-  /// In en, this message translates to:
-  /// **'Your songbook is empty.\nAdd your first song.'**
-  String get emptySongbook;
-
-  /// No description provided for @songTitlePlaceholder.
-  ///
-  /// In en, this message translates to:
-  /// **'Song'**
-  String get songTitlePlaceholder;
 
   /// No description provided for @comingSoon.
   ///
@@ -187,6 +181,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switch theme'**
   String get switchTheme;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search songs, artists or lyrics'**
+  String get searchHint;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All songs'**
+  String get filterAll;
+
+  /// No description provided for @filterFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get filterFavorites;
+
+  /// No description provided for @songCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 song} other{{count} songs}}'**
+  String songCount(int count);
+
+  /// No description provided for @emptySongbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songbook is empty.\nAdd your first song.'**
+  String get emptySongbook;
+
+  /// No description provided for @noFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet.\nTap the star on a song to add it.'**
+  String get noFavorites;
+
+  /// No description provided for @loadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open your songbook.'**
+  String get loadError;
+
+  /// No description provided for @noMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs match your search.'**
+  String get noMatches;
+
+  /// No description provided for @keyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key {key}'**
+  String keyLabel(String key);
+
+  /// No description provided for @capoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Capo {fret}'**
+  String capoLabel(int fret);
+
+  /// No description provided for @songNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This song isn\'t in your songbook.'**
+  String get songNotFound;
+
+  /// No description provided for @addFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get addFavorite;
+
+  /// No description provided for @removeFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get removeFavorite;
+
+  /// No description provided for @moreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreActions;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @deleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{title}”?'**
+  String deleteTitle(String title);
+
+  /// No description provided for @deleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone.'**
+  String get deleteBody;
+
+  /// No description provided for @chorusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chorus'**
+  String get chorusLabel;
+
+  /// No description provided for @bridgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge'**
+  String get bridgeLabel;
+
+  /// No description provided for @titleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get titleLabel;
+
+  /// No description provided for @titleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a title'**
+  String get titleRequired;
+
+  /// No description provided for @artistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get artistLabel;
+
+  /// No description provided for @contentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste chords over lyrics, or ChordPro'**
+  String get contentLabel;
+
+  /// No description provided for @openFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open file'**
+  String get openFile;
+
+  /// No description provided for @cameraLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera (later)'**
+  String get cameraLater;
+
+  /// No description provided for @notASongFile.
+  ///
+  /// In en, this message translates to:
+  /// **'That file isn\'t a song (.cho, .chopro, .chordpro, .crd, .txt).'**
+  String get notASongFile;
+
+  /// No description provided for @resultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get resultLabel;
+
+  /// No description provided for @previewTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get previewTab;
+
+  /// No description provided for @chordProTab.
+  ///
+  /// In en, this message translates to:
+  /// **'ChordPro'**
+  String get chordProTab;
+
+  /// No description provided for @importSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord lines placed: {chordLines} · Sections found: {sections}'**
+  String importSummary(int chordLines, int sections);
+
+  /// No description provided for @alreadyChordPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in ChordPro format.'**
+  String get alreadyChordPro;
+
+  /// No description provided for @previewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The song will appear here as you type.'**
+  String get previewEmpty;
+
+  /// No description provided for @discardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get discardTitle;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @keepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get keepEditing;
+
+  /// No description provided for @saveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the song.'**
+  String get saveError;
 }
 
 class _AppLocalizationsDelegate

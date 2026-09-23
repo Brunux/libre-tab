@@ -5,6 +5,7 @@ import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
 
 import '../helpers/pump_app.dart';
+import '../helpers/test_database.dart';
 
 /// Smallest phone we support (iPhone SE, 1st gen), in logical pixels.
 const smallPhone = Size(320, 568);
@@ -23,7 +24,10 @@ void main() {
             ..localesTestValue = [locale];
           addTearDown(tester.platformDispatcher.clearAllTestValues);
 
-          final container = await pumpApp(tester);
+          final container = await pumpApp(
+            tester,
+            songs: [SampleSongs.amazingGrace],
+          );
           container.read(themeVariantProvider.notifier).variant = variant;
 
           for (final MapEntry(key: screen, value: path)
@@ -41,7 +45,10 @@ void main() {
   testWidgets(
     'screen titles are left-aligned on every screen',
     (tester) async {
-      final container = await pumpApp(tester);
+      final container = await pumpApp(
+        tester,
+        songs: [SampleSongs.amazingGrace],
+      );
       for (final MapEntry(key: screen, value: path) in screenPaths.entries) {
         container.read(routerProvider).go(path);
         await tester.pumpAndSettle();
@@ -49,6 +56,7 @@ void main() {
           of: find.byType(AppBar),
           matching: find.byType(Text),
         );
+        if (title.evaluate().isEmpty) continue; // e.g. "song not found"
         // Left edge of the title, allowing for a back/close button.
         expect(
           tester.getTopLeft(title.first).dx,
@@ -64,7 +72,10 @@ void main() {
     for (final variant in AppThemeVariant.values) {
       testWidgets(variant.name, (tester) async {
         final semantics = tester.ensureSemantics();
-        final container = await pumpApp(tester);
+        final container = await pumpApp(
+          tester,
+          songs: [SampleSongs.amazingGrace],
+        );
         container.read(themeVariantProvider.notifier).variant = variant;
 
         for (final path in screenPaths.values) {

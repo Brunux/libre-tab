@@ -115,6 +115,23 @@ ThemeData buildTheme(AppThemeVariant variant) {
         fontWeight: FontWeight.w700,
       ),
     ),
+    chipTheme: ChipThemeData(
+      showCheckmark: false,
+      shape: const StadiumBorder(),
+      side: BorderSide(color: c.line),
+      color: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? c.accent : c.bg,
+      ),
+      labelStyle: TextStyle(
+        fontFamily: AppFonts.body,
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: WidgetStateColor.resolveWith(
+          (states) =>
+              states.contains(WidgetState.selected) ? c.onAccent : c.text,
+        ),
+      ),
+    ),
     dividerTheme: DividerThemeData(color: c.line, space: 1),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
