@@ -622,4 +622,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchSetlistsHint => 'Search setlists';
+
+  @override
+  String get fileTooBig => 'That file is too big to be a song.';
 }

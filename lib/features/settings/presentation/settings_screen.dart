@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -192,7 +194,13 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _import(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
-    final file = await ref.read(songFilesProvider).pickFile();
+    final ({String name, Uint8List bytes})? file;
+    try {
+      file = await ref.read(songFilesProvider).pickFile();
+    } on FileTooBigException {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.fileTooBig)));
+      return;
+    }
     if (file == null) return;
     await importSongFile(
       ref.read(songRepositoryProvider),
@@ -222,6 +230,9 @@ Future<void> importSongFile(
     messenger.showSnackBar(
       SnackBar(content: Text(zipOrSong ? l10n.importError : l10n.notASongFile)),
     );
+    return;
+  } on FileTooBigException {
+    messenger.showSnackBar(SnackBar(content: Text(l10n.fileTooBig)));
     return;
   }
   final message = l10n.songsImported(await songs.importSongs(bodies));

@@ -99,6 +99,7 @@ Brand and app icon: see [branding/README.md](branding/README.md) (runs
 | [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes, fonts, and every screen: songbook, song view, editor, tuner, setlists, settings |
 | [docs/store/listing.md](docs/store/listing.md) | App Store / Google Play text (EN + ES), privacy answers, screenshots |
 | [PRIVACY.md](PRIVACY.md) | Privacy statement: no data collected |
+| [SECURITY.md](SECURITY.md) | Reporting vulnerabilities, security model, audit results |
 | [branding/README.md](branding/README.md) | Logo, app icon, social media versions, colors, taglines |
 
 ## Project layout

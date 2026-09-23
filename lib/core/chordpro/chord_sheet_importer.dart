@@ -27,19 +27,23 @@ abstract final class ChordSheetImporter {
     '$_sectionNames'
     r'\b[^\]]*\]|'
     '$_sectionNames'
-    r'(?:\s+\d+)?(?:\s*\(?x\d+\)?)?\s*:?)\s*$',
+    // Spaces before a colon only when there is one (else a long run of
+    // spaces would be tried in every split).
+    r'(?:\s+\d+)?(?:\s*\(?x\d+\)?)?(?:\s*:)?)\s*$',
     caseSensitive: false,
   );
 
   /// A line of guitar tab: `e|--0--2--|`, `B|-1-----|`.
   static final RegExp _tabLine = RegExp(
-    r'^\s*[A-Ga-g]?\s*\|[-0-9|hpbrx/\\~ ]*$',
+    // The spaces after the string name only count if there is a name, so a
+    // long run of spaces is read once, not in every possible split.
+    r'^\s*(?:[A-Ga-g]\s*)?\|[-0-9|hpbrx/\\~ ]*$',
   );
 
   static final RegExp _directiveLine = RegExp(
     r'^\s*\{[A-Za-z_]+(?::.*)?\}\s*$',
   );
-  static final RegExp _inlineChord = RegExp(r'\[([^\]]+)\]');
+  static final RegExp _inlineChord = RegExp(r'\[([^\[\]]+)\]');
 
   static bool isChordSymbol(String token) => _chord.hasMatch(token);
 
@@ -211,18 +215,26 @@ class _Converter {
   }
 
   /// Inserts each chord into the lyric at the column where it starts.
+  /// One pass, left to right, so very long lines stay fast.
   static String _merge(String chordLine, String lyric) {
-    final chords = RegExp(r'\S+').allMatches(chordLine).toList();
-    var merged = lyric.trimRight();
-    for (final m in chords.reversed) {
+    final text = lyric.trimRight();
+    final out = StringBuffer();
+    var column = 0; // how much of the lyric is written
+    for (final m in RegExp(r'\S+').allMatches(chordLine)) {
       final symbol = m.group(0)!;
       if (ChordSheetImporter._chordIn(symbol) == null) continue;
-      merged = merged.padRight(m.start);
-      merged =
-          '${merged.substring(0, m.start)}${_bracket(symbol)}'
-          '${merged.substring(m.start)}';
+      if (m.start > column) {
+        final end = m.start < text.length ? m.start : text.length;
+        if (end > column) out.write(text.substring(column, end));
+        // Past the end of the lyric: pad with spaces.
+        final past = m.start - (column > text.length ? column : text.length);
+        if (past > 0) out.write(' ' * past);
+        column = m.start;
+      }
+      out.write(_bracket(symbol));
     }
-    return merged.trimRight();
+    if (column < text.length) out.write(text.substring(column));
+    return out.toString().trimRight();
   }
 
   static String _chordsOnly(String line) =>

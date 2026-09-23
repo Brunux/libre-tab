@@ -404,9 +404,11 @@ final class IncomingFiles: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegat
     for url in contexts.map(\.url) where url.isFileURL {
       let scoped = url.startAccessingSecurityScopedResource()
       defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-      guard let data = try? Data(contentsOf: url), data.count <= Self.maxBytes else {
-        continue
-      }
+      // Check the size before reading, so a huge file is never loaded.
+      let size = (try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? Int.max
+      guard size <= Self.maxBytes, let data = try? Data(contentsOf: url),
+        data.count <= Self.maxBytes
+      else { continue }
       pending.append([
         "name": url.lastPathComponent,
         "bytes": FlutterStandardTypedData(bytes: data),

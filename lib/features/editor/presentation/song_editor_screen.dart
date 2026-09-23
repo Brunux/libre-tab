@@ -146,6 +146,8 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       if (text != null && mounted) _fill(SongHeader.split(text));
     } on FormatException {
       if (mounted) _snack(context.l10n.notASongFile);
+    } on FileTooBigException {
+      if (mounted) _snack(context.l10n.fileTooBig);
     }
   }
 

@@ -164,5 +164,6 @@
   "fretMuted": "no se toca",
   "fretOpen": "al aire",
   "diagramFrets": "Trastes desde la cuerda más gruesa: {frets}",
-  "searchSetlistsHint": "Buscar repertorios"
+  "searchSetlistsHint": "Buscar repertorios",
+  "fileTooBig": "Ese archivo es demasiado grande para ser una canción."
 }

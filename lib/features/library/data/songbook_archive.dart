@@ -23,9 +23,16 @@ abstract final class SongbookArchive {
     return ZipEncoder().encodeBytes(archive);
   }
 
+  /// Most songs read from one zip, and most text unpacked from it: generous
+  /// for a real songbook, and a stop for "zip bombs" that unpack to gigabytes.
+  static const int maxEntries = 5000;
+  static const int maxUnpackedBytes = 64 * 1024 * 1024;
+
   /// The songs (ChordPro, ready to save) in a file named [name]: every song
   /// file inside a `.zip`, or the file itself. Throws [FormatException] for
-  /// anything else, including a damaged zip.
+  /// anything else, including a damaged zip, and [FileTooBigException] for
+  /// files past the size limits. Songs in a zip over [SongFiles.maxSongBytes]
+  /// are skipped; sizes are checked before anything is unpacked.
   static List<String> songsFrom(String name, List<int> bytes) {
     if (name.toLowerCase().endsWith('.zip')) {
       // Every zip starts with "PK"; the decoder takes garbage for an empty
@@ -39,15 +46,29 @@ abstract final class SongbookArchive {
       } on Object {
         throw FormatException('Not a readable zip', name);
       }
-      return [
+      final songs = [
         for (final file in archive)
-          if (file.isFile && _isSong(file.name))
-            bodyFrom(file.name, SongFiles.decode(file.content)),
+          if (file.isFile &&
+              _isSong(file.name) &&
+              file.size <= SongFiles.maxSongBytes)
+            file,
+      ];
+      final unpacked = songs.fold(0, (total, f) => total + f.size);
+      if (songs.length > maxEntries || unpacked > maxUnpackedBytes) {
+        throw FileTooBigException(name);
+      }
+      return [
+        for (final file in songs)
+          // The declared size can lie; check what actually came out too.
+          if (file.content case final content
+              when content.length <= SongFiles.maxSongBytes)
+            bodyFrom(file.name, SongFiles.decode(content)),
       ];
     }
     if (!SongFiles.isSongFile(name)) {
       throw FormatException('Not a song file', name);
     }
+    if (bytes.length > SongFiles.maxSongBytes) throw FileTooBigException(name);
     return [bodyFrom(name, SongFiles.decode(bytes))];
   }
 

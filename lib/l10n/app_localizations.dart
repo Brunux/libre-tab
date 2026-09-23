@@ -1087,6 +1087,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search setlists'**
   String get searchSetlistsHint;
+
+  /// No description provided for @fileTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'That file is too big to be a song.'**
+  String get fileTooBig;
 }
 
 class _AppLocalizationsDelegate

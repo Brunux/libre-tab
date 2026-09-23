@@ -347,5 +347,6 @@
       }
     }
   },
-  "searchSetlistsHint": "Search setlists"
+  "searchSetlistsHint": "Search setlists",
+  "fileTooBig": "That file is too big to be a song."
 }

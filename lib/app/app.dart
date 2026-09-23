@@ -58,6 +58,13 @@ class _LibreTabAppState extends ConsumerState<LibreTabApp> {
           );
           return;
         }
+        if (file.bytes.length > SongFiles.maxSongBytes) {
+          final messenger = _messenger.currentState;
+          messenger?.showSnackBar(
+            SnackBar(content: Text(messenger.context.l10n.fileTooBig)),
+          );
+          return;
+        }
         unawaited(
           ref
               .read(routerProvider)

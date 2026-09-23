@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:archive/archive.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
+import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/features/library/data/songbook_archive.dart';
 
 import '../../helpers/test_database.dart';
@@ -96,5 +97,40 @@ void main() {
       () => SongbookArchive.songsFrom('broken.zip', [1, 2, 3]),
       throwsFormatException,
     );
+  });
+
+  group('size limits', () {
+    test('a song file over the limit is refused', () {
+      final big = utf8.encode('x' * (SongFiles.maxSongBytes + 1));
+      expect(
+        () => SongbookArchive.songsFrom('huge.cho', big),
+        throwsA(isA<FileTooBigException>()),
+      );
+    });
+
+    test('songs over the limit inside a zip are skipped', () {
+      final zip = zipOf({
+        'grace.cho': SampleSongs.amazingGrace,
+        'huge.cho': '{title: Huge}\n${'la ' * 100000}',
+      });
+      final songs = SongbookArchive.songsFrom('backup.zip', zip);
+      expect(
+        [for (final s in songs) ChordProParser.parse(s).title],
+        [
+          'Amazing Grace',
+        ],
+      );
+    });
+
+    test('a zip with too many songs is refused before unpacking', () {
+      final zip = zipOf({
+        for (var i = 0; i <= SongbookArchive.maxEntries; i++)
+          'song$i.cho': '{title: Song $i}',
+      });
+      expect(
+        () => SongbookArchive.songsFrom('bomb.zip', zip),
+        throwsA(isA<FileTooBigException>()),
+      );
+    });
   });
 }

@@ -8,7 +8,7 @@ abstract final class ChordProParser {
   static final RegExp _directive = RegExp(
     r'^\{\s*([A-Za-z_]+)\s*(?::(.*))?\}$',
   );
-  static final RegExp _chord = RegExp(r'\[([^\]]*)\]');
+  static final RegExp _chord = RegExp(r'\[([^\[\]]*)\]');
 
   static const Map<String, SectionKind> _sectionStarts = {
     'start_of_verse': SectionKind.verse,

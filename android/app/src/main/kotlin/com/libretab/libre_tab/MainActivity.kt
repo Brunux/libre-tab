@@ -54,7 +54,9 @@ class MainActivity : FlutterActivity() {
             Intent.ACTION_SEND -> streamOf(intent)?.let(::read)
                 ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
                     // Text shared from a page: treat it like a .txt file.
-                    mapOf("name" to "shared.txt", "bytes" to it.toByteArray())
+                    val bytes = it.toByteArray()
+                    if (bytes.size > MAX_BYTES) null
+                    else mapOf("name" to "shared.txt", "bytes" to bytes)
                 }
             else -> null
         } ?: return
@@ -70,15 +72,34 @@ class MainActivity : FlutterActivity() {
             intent.getParcelableExtra(Intent.EXTRA_STREAM)
         }
 
-    private fun read(uri: Uri): Map<String, Any>? = try {
-        val bytes = contentResolver.openInputStream(uri)?.use { input ->
-            val data = input.readBytes()
-            if (data.size > MAX_BYTES) null else data
+    private fun read(uri: Uri): Map<String, Any>? {
+        // Only files another app shares through a content provider. A
+        // file:// path could point at Libre Tab's own private files (its
+        // database), which must not be opened on another app's say-so.
+        if (uri.scheme != "content") return null
+        return try {
+            val bytes = contentResolver.openInputStream(uri)?.use { input ->
+                // Read at most one byte past the limit, never the whole file.
+                val data = input.readNBytesCompat(MAX_BYTES + 1)
+                if (data.size > MAX_BYTES) null else data
+            }
+            bytes?.let { mapOf("name" to nameOf(uri), "bytes" to it) }
+        } catch (e: Exception) {
+            // Unreadable (permission gone, file deleted): nothing to open.
+            null
         }
-        bytes?.let { mapOf("name" to nameOf(uri), "bytes" to it) }
-    } catch (e: Exception) {
-        // Unreadable (permission gone, file deleted): nothing to open.
-        null
+    }
+
+    /** Up to [limit] bytes from the stream (InputStream.readNBytes is API 33+). */
+    private fun java.io.InputStream.readNBytesCompat(limit: Int): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        val buffer = ByteArray(16 * 1024)
+        while (out.size() < limit) {
+            val read = read(buffer, 0, minOf(buffer.size, limit - out.size()))
+            if (read < 0) break
+            out.write(buffer, 0, read)
+        }
+        return out.toByteArray()
     }
 
     /** The file's name, with ".txt" added to plain text that has none. */

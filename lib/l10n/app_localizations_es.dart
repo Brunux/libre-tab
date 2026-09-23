@@ -615,4 +615,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchSetlistsHint => 'Buscar repertorios';
+
+  @override
+  String get fileTooBig =>
+      'Ese archivo es demasiado grande para ser una canción.';
 }

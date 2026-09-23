@@ -205,7 +205,7 @@ class _VersionGroup extends StatelessWidget {
   /// The first line of lyrics, without chords, to tell versions apart.
   static String _firstLyric(String body) {
     for (final line in body.split('\n')) {
-      final text = line.replaceAll(RegExp(r'\[[^\]]*\]'), '').trim();
+      final text = line.replaceAll(RegExp(r'\[[^\[\]]*\]'), '').trim();
       if (text.isNotEmpty && !text.startsWith('{') && !text.startsWith('#')) {
         return text;
       }

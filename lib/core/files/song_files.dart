@@ -11,6 +11,13 @@ final songFilesProvider = Provider<SongFiles>((ref) => const SongFiles());
 class SongFiles {
   const SongFiles();
 
+  /// The biggest song file read. Real songs are a few KB; the limit keeps a
+  /// huge or crafted file from freezing the app (docs/SONG_FORMAT.md § Files).
+  static const int maxSongBytes = 256 * 1024;
+
+  /// The biggest file Import songs reads (a songbook .zip).
+  static const int maxImportBytes = 32 * 1024 * 1024;
+
   /// Extensions accepted as songs (docs/SONG_FORMAT.md § Files).
   static const extensions = {'cho', 'chopro', 'chordpro', 'crd', 'txt'};
 
@@ -21,6 +28,9 @@ class SongFiles {
     if (file == null) return null;
     if (!isSongFile(file.name)) {
       throw FormatException('Not a song file', file.name);
+    }
+    if ((await file.length() ?? 0) > maxSongBytes) {
+      throw FileTooBigException(file.name);
     }
     return decode(await file.xFile.readAsBytes());
   }
@@ -42,6 +52,9 @@ class SongFiles {
   Future<({String name, Uint8List bytes})?> pickFile() async {
     final file = await FilePicker.pickFile();
     if (file == null) return null;
+    if ((await file.length() ?? 0) > maxImportBytes) {
+      throw FileTooBigException(file.name);
+    }
     return (name: file.name, bytes: await file.xFile.readAsBytes());
   }
 
@@ -72,4 +85,14 @@ class SongFiles {
         .trim();
     return cleaned.isEmpty ? 'song' : cleaned;
   }
+}
+
+/// A file over the size limits in [SongFiles].
+class FileTooBigException implements Exception {
+  const FileTooBigException(this.name);
+
+  final String name;
+
+  @override
+  String toString() => 'FileTooBigException: $name';
 }

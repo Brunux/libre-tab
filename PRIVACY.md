@@ -7,10 +7,12 @@ no crash reporting, and it never connects to the internet.
 
 ## What stays on your device
 
-- **Your songs, setlists and settings** are stored only on your phone, in the
+- **Your songs, setlists and settings** are stored on your phone, in the
   app's own storage. They leave it only when you choose to: sharing a song or
   exporting your songbook sends the file to the app or person you pick in the
-  system share sheet.
+  system share sheet. If you back up your phone (iCloud, or Google on
+  Android), that backup includes them, like any app's data; Libre Tab never
+  sees it.
 - **Files you open in Libre Tab** (from Files, Mail, a browser or a chat app)
   are read once to add the song. On iPhone, the copy the system hands over is
   then removed.
@@ -57,10 +59,12 @@ reportes de errores, y nunca se conecta a internet.
 
 ## Lo que se queda en tu dispositivo
 
-- **Tus canciones, repertorios y ajustes** se guardan solo en tu teléfono,
+- **Tus canciones, repertorios y ajustes** se guardan en tu teléfono,
   dentro del almacenamiento de la app. Solo salen de ahí cuando tú lo
   decides: compartir una canción o exportar tu cancionero envía el archivo a
-  la app o persona que elijas en el menú de compartir del sistema.
+  la app o persona que elijas en el menú de compartir del sistema. Si
+  respaldas tu teléfono (iCloud, o Google en Android), ese respaldo las
+  incluye, como los datos de cualquier app; Libre Tab nunca lo ve.
 - **Los archivos que abres en Libre Tab** (desde Archivos, Mail, un navegador
   o una app de chat) se leen una vez para agregar la canción. En iPhone, la
   copia que entrega el sistema se elimina después.
