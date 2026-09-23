@@ -72,7 +72,7 @@ class _SongViewState extends ConsumerState<_SongView>
   static const _defaultSpeed = 2;
 
   final _scroll = ScrollController();
-  late final Ticker _ticker = createTicker(_tick);
+  late final Ticker _ticker;
   Duration _lastTick = Duration.zero;
   late final KeepAwake _keepAwake = ref.read(keepAwakeProvider);
 
@@ -84,11 +84,18 @@ class _SongViewState extends ConsumerState<_SongView>
     _speeds.length,
   );
 
-  bool get _playing => _ticker.isActive;
+  /// Whether auto-scroll is on (the Play button). It only moves while no
+  /// finger is on the lyrics and the user isn't scrolling them.
+  bool _playing = false;
+  int _fingers = 0;
+  bool _userScrolling = false;
+
+  bool get _moving => _playing && _fingers == 0 && !_userScrolling;
 
   @override
   void initState() {
     super.initState();
+    _ticker = createTicker(_tick);
     unawaited(_keepAwake.enable());
   }
 
@@ -117,14 +124,40 @@ class _SongViewState extends ConsumerState<_SongView>
 
   void _setPlaying(bool play) {
     if (play == _playing) return;
-    setState(() {
-      if (play) {
-        _lastTick = Duration.zero;
-        unawaited(_ticker.start());
-      } else {
-        _ticker.stop();
-      }
-    });
+    setState(() => _playing = play);
+    _syncTicker();
+  }
+
+  void _syncTicker() {
+    if (_moving == _ticker.isActive) return;
+    if (_moving) {
+      _lastTick = Duration.zero;
+      unawaited(_ticker.start());
+    } else {
+      _ticker.stop();
+    }
+  }
+
+  /// Scrolling by hand moves the song; auto-scroll then carries on from
+  /// there once the scroll (and any fling) has settled.
+  bool _onScroll(ScrollNotification n) {
+    if (n is ScrollStartNotification && n.dragDetails != null) {
+      _userScrolling = true;
+    } else if (n is ScrollEndNotification && _userScrolling) {
+      _userScrolling = false;
+    }
+    _syncTicker();
+    return false;
+  }
+
+  void _fingerDown() {
+    _fingers++;
+    _syncTicker();
+  }
+
+  void _fingerUp() {
+    if (_fingers > 0) _fingers--;
+    _syncTicker();
   }
 
   void _togglePlay() {
@@ -270,26 +303,29 @@ class _SongViewState extends ConsumerState<_SongView>
           ),
         ],
       ),
-      body: NotificationListener<ScrollStartNotification>(
-        // Dragging the song yourself pauses auto-scroll.
-        onNotification: (n) {
-          if (n.dragDetails != null) _setPlaying(false);
-          return false;
-        },
-        child: GestureDetector(
-          // Tap the lyrics to pause or resume. The dock's play button is the
-          // accessible control for the same thing.
-          behavior: HitTestBehavior.translucent,
-          excludeFromSemantics: true,
-          onTap: _togglePlay,
-          child: SingleChildScrollView(
-            controller: _scroll,
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
-            child: SongSheet(
-              song: song,
-              fontSize: fontSize,
-              chordLabel: shown,
-              onChordTap: (chord) => _showChords([chord]),
+      // A finger on the lyrics holds auto-scroll still, so the text isn't
+      // pulled out from under it.
+      body: Listener(
+        onPointerDown: (_) => _fingerDown(),
+        onPointerUp: (_) => _fingerUp(),
+        onPointerCancel: (_) => _fingerUp(),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _onScroll,
+          child: GestureDetector(
+            // Tap the lyrics to pause or resume. The dock's play button is
+            // the accessible control for the same thing.
+            behavior: HitTestBehavior.translucent,
+            excludeFromSemantics: true,
+            onTap: _togglePlay,
+            child: SingleChildScrollView(
+              controller: _scroll,
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
+              child: SongSheet(
+                song: song,
+                fontSize: fontSize,
+                chordLabel: shown,
+                onChordTap: (chord) => _showChords([chord]),
+              ),
             ),
           ),
         ),

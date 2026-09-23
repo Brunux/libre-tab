@@ -83,7 +83,10 @@ chord opens a bottom sheet with its diagram. Bottom dock:
 Screen stays awake; auto-scroll stops at the end.
 
 Details (milestone 4):
-- Tap anywhere on the lyrics to pause/resume auto-scroll; dragging pauses it.
+- Tap anywhere on the lyrics to pause/resume auto-scroll. While a finger is
+  on the lyrics auto-scroll holds still; scrolling by hand moves the song and
+  auto-scroll carries on from there once the scroll settles (no second tap).
+  Scrolling while paused stays paused.
   Play at the end of the song starts again from the top.
 - Speeds 1–6 (6–45 px/s at 22 px text, scaled with text size); the last speed
   is remembered per song.

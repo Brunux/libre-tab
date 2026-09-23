@@ -192,6 +192,65 @@ void main() {
       expect(find.byTooltip('Start auto-scroll'), findsOneWidget);
     });
 
+    testWidgets('dragging moves the song, then auto-scroll carries on', (
+      tester,
+    ) async {
+      await openSong(tester, longSong);
+      await tester.tap(find.byTooltip('Start auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final before = scrollOffset(tester);
+      await tester.drag(find.text('line3'), const Offset(0, -300));
+      for (var i = 0; i < 60; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      final afterDrag = scrollOffset(tester);
+      expect(afterDrag, greaterThan(before + 200));
+      // Still playing: no second tap needed.
+      expect(find.byTooltip('Pause auto-scroll'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 2));
+      expect(scrollOffset(tester), greaterThan(afterDrag));
+    });
+
+    testWidgets('a finger on the lyrics holds the song still', (tester) async {
+      await openSong(tester, longSong);
+      await tester.tap(find.byTooltip('Start auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final finger = await tester.startGesture(
+        tester.getCenter(find.text('line4')),
+      );
+      await tester.pump();
+      final held = scrollOffset(tester);
+      await tester.pump(const Duration(seconds: 2));
+      expect(scrollOffset(tester), held);
+
+      // Moving the finger turns it into a scroll; auto-scroll then goes on.
+      await finger.moveBy(const Offset(0, -60));
+      await finger.moveBy(const Offset(0, -60));
+      await finger.up();
+      for (var i = 0; i < 60; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      expect(find.byTooltip('Pause auto-scroll'), findsOneWidget);
+      final settled = scrollOffset(tester);
+      await tester.pump(const Duration(seconds: 2));
+      expect(scrollOffset(tester), greaterThan(settled));
+    });
+
+    testWidgets('dragging while paused stays paused', (tester) async {
+      await openSong(tester, longSong);
+      await tester.drag(find.text('line3'), const Offset(0, -300));
+      await tester.pumpAndSettle();
+      final after = scrollOffset(tester);
+      expect(find.byTooltip('Start auto-scroll'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      expect(scrollOffset(tester), after);
+    });
+
     testWidgets('it stops at the end of the song', (tester) async {
       await openSong(tester, longSong);
       await tester.tap(find.byTooltip('Start auto-scroll'));
