@@ -181,4 +181,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveError => 'Couldn\'t save the song.';
+
+  @override
+  String get chordsMenu => 'Chords';
+
+  @override
+  String get noChords => 'This song has no chords.';
+
+  @override
+  String get noDiagram => 'No diagram for this chord yet.';
+
+  @override
+  String get diagramLegend => '× don\'t play · ○ open string';
+
+  @override
+  String get keyStepper => 'Key';
+
+  @override
+  String get capoStepper => 'Capo';
+
+  @override
+  String get capoNone => 'None';
+
+  @override
+  String get transposeDown => 'Transpose down';
+
+  @override
+  String get transposeUp => 'Transpose up';
+
+  @override
+  String get capoDown => 'Capo down';
+
+  @override
+  String get capoUp => 'Capo up';
+
+  @override
+  String get textSize => 'Text';
+
+  @override
+  String get smallerText => 'Smaller text';
+
+  @override
+  String get largerText => 'Larger text';
+
+  @override
+  String get slower => 'Scroll slower';
+
+  @override
+  String get faster => 'Scroll faster';
+
+  @override
+  String get startScroll => 'Start auto-scroll';
+
+  @override
+  String get pauseScroll => 'Pause auto-scroll';
+
+  @override
+  String speedLabel(int speed) {
+    return 'Speed $speed';
+  }
+
+  @override
+  String soundsIn(String key, int fret, String shapes) {
+    return 'Sounds in $key · Capo $fret · $shapes shapes';
+  }
 }

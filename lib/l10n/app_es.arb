@@ -14,7 +14,6 @@
   "themeRedNight": "Noche roja",
   "themeLight": "Claro",
   "switchTheme": "Cambiar tema",
-
   "searchHint": "Buscar canciones, artistas o letras",
   "clearSearch": "Borrar búsqueda",
   "filterAll": "Todas",
@@ -26,7 +25,6 @@
   "noMatches": "Ninguna canción coincide con tu búsqueda.",
   "keyLabel": "Tono {key}",
   "capoLabel": "Cejilla {fret}",
-
   "songNotFound": "Esta canción no está en tu cancionero.",
   "addFavorite": "Agregar a favoritas",
   "removeFavorite": "Quitar de favoritas",
@@ -37,7 +35,6 @@
   "deleteBody": "No se puede deshacer.",
   "chorusLabel": "Coro",
   "bridgeLabel": "Puente",
-
   "titleLabel": "Título",
   "titleRequired": "Escribe un título",
   "artistLabel": "Artista",
@@ -54,5 +51,25 @@
   "discardTitle": "¿Descartar cambios?",
   "discard": "Descartar",
   "keepEditing": "Seguir editando",
-  "saveError": "No se pudo guardar la canción."
+  "saveError": "No se pudo guardar la canción.",
+  "chordsMenu": "Acordes",
+  "noChords": "Esta canción no tiene acordes.",
+  "noDiagram": "Aún no hay diagrama para este acorde.",
+  "diagramLegend": "× no tocar · ○ cuerda al aire",
+  "keyStepper": "Tono",
+  "capoStepper": "Cejilla",
+  "capoNone": "Sin",
+  "transposeDown": "Bajar tono",
+  "transposeUp": "Subir tono",
+  "capoDown": "Bajar cejilla",
+  "capoUp": "Subir cejilla",
+  "textSize": "Letra",
+  "smallerText": "Letra más pequeña",
+  "largerText": "Letra más grande",
+  "slower": "Más lento",
+  "faster": "Más rápido",
+  "startScroll": "Iniciar desplazamiento",
+  "pauseScroll": "Pausar desplazamiento",
+  "speedLabel": "Velocidad {speed}",
+  "soundsIn": "Suena en {key} · Cejilla {fret} · posiciones de {shapes}"
 }

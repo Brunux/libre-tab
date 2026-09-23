@@ -64,6 +64,43 @@ void main() {
     expect(t.chord('A#', g), 'A#');
   });
 
+  group('songs written for a capo ({capo: 2})', () {
+    final c = MusicKey.tryParse('C')!;
+
+    test('opening as written shows the written shapes', () {
+      const t = Transposition.asWritten(2);
+      expect(t.capo, 2);
+      expect(t.chord('C', c), 'C');
+      expect(t.chord('G7', c), 'G7');
+    });
+
+    test('the song sounds two semitones above the written key', () {
+      const t = Transposition.asWritten(2);
+      expect(t.soundingKey(c).name, 'D');
+      expect(t.shapeKey(c).name, 'C');
+    });
+
+    test('taking the capo off shows the sounding chords', () {
+      final t = const Transposition.asWritten(2).copyWith(capo: 0);
+      expect(t.soundingKey(c).name, 'D');
+      expect(['C', 'F', 'G7'].map((x) => t.chord(x, c)), ['D', 'G', 'A7']);
+    });
+
+    test('moving the capo keeps the song in the same key', () {
+      final t = const Transposition.asWritten(2).copyWith(capo: 4);
+      expect(t.soundingKey(c).name, 'D');
+      expect(t.shapeKey(c).name, 'Bb');
+      expect(t.chord('G', c), 'F');
+    });
+
+    test('no {capo} behaves like capo 0', () {
+      const t = Transposition.asWritten(null);
+      expect(t.capo, 0);
+      expect(t.writtenCapo, 0);
+      expect(t.chord('C', c), 'C');
+    });
+  });
+
   test('copyWith', () {
     const t = Transposition(semitones: 1, capo: 2);
     expect(t.copyWith(capo: 0).capo, 0);

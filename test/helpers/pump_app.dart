@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/app.dart';
 import 'package:libre_tab/app/router.dart';
+import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
+import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 
@@ -16,12 +18,18 @@ Future<ProviderContainer> pumpApp(
   WidgetTester tester, {
   List<String> songs = const [],
   FakeSongFiles? files,
+  FakeKeepAwake? keepAwake,
+  SettingsStore? settings,
 }) async {
   final db = testDatabase();
   final container = ProviderContainer(
     overrides: [
       appDatabaseProvider.overrideWithValue(db),
       songFilesProvider.overrideWithValue(files ?? FakeSongFiles()),
+      keepAwakeProvider.overrideWithValue(keepAwake ?? FakeKeepAwake()),
+      settingsStoreProvider.overrideWithValue(
+        settings ?? MemorySettingsStore(),
+      ),
     ],
   );
   // Tear-downs run last-registered-first: dispose the providers (and their
@@ -83,4 +91,15 @@ class FakeSongFiles implements SongFiles {
   @override
   Future<void> share({required String title, required String body}) async =>
       shared.add((title: title, body: body));
+}
+
+/// Records whether the screen is being kept awake.
+class FakeKeepAwake implements KeepAwake {
+  bool awake = false;
+
+  @override
+  Future<void> enable() async => awake = true;
+
+  @override
+  Future<void> disable() async => awake = false;
 }

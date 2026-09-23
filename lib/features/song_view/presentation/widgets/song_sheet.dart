@@ -8,12 +8,24 @@ import 'package:libre_tab/l10n/l10n.dart';
 /// (docs/DESIGN.md § Song view). Lines wrap between words, never between a
 /// chord and its syllable, so alignment survives any screen width.
 class SongSheet extends StatelessWidget {
-  const SongSheet({required this.song, this.fontSize = 22, super.key});
+  const SongSheet({
+    required this.song,
+    this.fontSize = 22,
+    this.chordLabel,
+    this.onChordTap,
+    super.key,
+  });
 
   final Song song;
 
   /// Lyric size; chords are drawn at 85 % of it.
   final double fontSize;
+
+  /// How to show a chord as written (e.g. transposed); as written if null.
+  final String Function(String chord)? chordLabel;
+
+  /// Called with the shown chord when it's tapped.
+  final ValueChanged<String>? onChordTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +35,14 @@ class SongSheet extends StatelessWidget {
       switch (block) {
         case SectionBlock():
           if (block.kind == SectionKind.chorus) lastChorus = block;
-          sections.add(_Section(block: block, fontSize: fontSize));
+          sections.add(_Section(block: block, sheet: this));
         case ChorusRepeat(:final label):
           sections.add(
             lastChorus == null
                 ? _SectionLabel(label ?? context.l10n.chorusLabel)
                 : _Section(
                     block: lastChorus,
-                    fontSize: fontSize,
+                    sheet: this,
                     labelOverride: label,
                   ),
           );
@@ -51,13 +63,15 @@ class SongSheet extends StatelessWidget {
 class _Section extends StatelessWidget {
   const _Section({
     required this.block,
-    required this.fontSize,
+    required this.sheet,
     this.labelOverride,
   });
 
   final SectionBlock block;
-  final double fontSize;
+  final SongSheet sheet;
   final String? labelOverride;
+
+  double get fontSize => sheet.fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +92,7 @@ class _Section extends StatelessWidget {
             children: [
               for (final line in block.lines)
                 switch (line) {
-                  LyricLine() => _LyricLine(line: line, fontSize: fontSize),
+                  LyricLine() => _LyricLine(line: line, sheet: sheet),
                   CommentLine(:final text) => _Comment(text, fontSize),
                   EmptyLine() => SizedBox(height: fontSize * 0.6),
                   TabLine(:final text) => Text(text),
@@ -179,10 +193,12 @@ class _Tab extends StatelessWidget {
 typedef _Unit = ({String? chord, String text});
 
 class _LyricLine extends StatelessWidget {
-  const _LyricLine({required this.line, required this.fontSize});
+  const _LyricLine({required this.line, required this.sheet});
 
   final LyricLine line;
-  final double fontSize;
+  final SongSheet sheet;
+
+  double get fontSize => sheet.fontSize;
 
   static final _words = RegExp(r'\S*\s*');
 
@@ -231,6 +247,24 @@ class _LyricLine extends StatelessWidget {
     final hasChords = line.segments.any((s) => s.chord != null);
     final chordRow = fontSize * 0.85 * 1.25;
 
+    Widget chord(String written) {
+      final shown = sheet.chordLabel?.call(written) ?? written;
+      final label = Padding(
+        padding: EdgeInsets.only(right: fontSize * 0.3),
+        child: Text(shown, style: chordStyle, softWrap: false),
+      );
+      final onTap = sheet.onChordTap;
+      if (onTap == null) return label;
+      // Too small to be a good accessible button; screen-reader users get
+      // every diagram from the song's "Chords" menu item instead.
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        onTap: () => onTap(shown),
+        child: label,
+      );
+    }
+
     Widget unit(_Unit u) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,12 +272,7 @@ class _LyricLine extends StatelessWidget {
         if (hasChords)
           SizedBox(
             height: chordRow,
-            child: u.chord == null
-                ? null
-                : Padding(
-                    padding: EdgeInsets.only(right: fontSize * 0.3),
-                    child: Text(u.chord!, style: chordStyle, softWrap: false),
-                  ),
+            child: u.chord == null ? null : chord(u.chord!),
           ),
         // Non-breaking spaces keep the space width at the end of a word.
         Text(

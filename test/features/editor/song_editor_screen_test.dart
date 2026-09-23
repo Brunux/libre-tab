@@ -54,7 +54,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SongViewScreen), findsOneWidget);
-    expect(find.text('John Newton'), findsOneWidget);
+    // No {key} given: it's guessed from the first chord.
+    expect(find.text('John Newton · Key G'), findsOneWidget);
     final saved = await container.read(songRepositoryProvider).getSong(1);
     expect(
       saved!.body,

@@ -14,22 +14,38 @@
   "themeRedNight": "Red night",
   "themeLight": "Light",
   "switchTheme": "Switch theme",
-
   "searchHint": "Search songs, artists or lyrics",
   "clearSearch": "Clear search",
   "filterAll": "All songs",
   "filterFavorites": "Favorites",
   "songCount": "{count, plural, =1{1 song} other{{count} songs}}",
-  "@songCount": {"placeholders": {"count": {"type": "int"}}},
+  "@songCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "emptySongbook": "Your songbook is empty.\nAdd your first song.",
   "noFavorites": "No favorites yet.\nTap the star on a song to add it.",
   "loadError": "Couldn't open your songbook.",
   "noMatches": "No songs match your search.",
   "keyLabel": "Key {key}",
-  "@keyLabel": {"placeholders": {"key": {"type": "String"}}},
+  "@keyLabel": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
   "capoLabel": "Capo {fret}",
-  "@capoLabel": {"placeholders": {"fret": {"type": "int"}}},
-
+  "@capoLabel": {
+    "placeholders": {
+      "fret": {
+        "type": "int"
+      }
+    }
+  },
   "songNotFound": "This song isn't in your songbook.",
   "addFavorite": "Add to favorites",
   "removeFavorite": "Remove from favorites",
@@ -37,11 +53,16 @@
   "share": "Share",
   "delete": "Delete",
   "deleteTitle": "Delete “{title}”?",
-  "@deleteTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@deleteTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "deleteBody": "This can't be undone.",
   "chorusLabel": "Chorus",
   "bridgeLabel": "Bridge",
-
   "titleLabel": "Title",
   "titleRequired": "Add a title",
   "artistLabel": "Artist",
@@ -54,12 +75,59 @@
   "chordProTab": "ChordPro",
   "importSummary": "Chord lines placed: {chordLines} · Sections found: {sections}",
   "@importSummary": {
-    "placeholders": {"chordLines": {"type": "int"}, "sections": {"type": "int"}}
+    "placeholders": {
+      "chordLines": {
+        "type": "int"
+      },
+      "sections": {
+        "type": "int"
+      }
+    }
   },
   "alreadyChordPro": "Already in ChordPro format.",
   "previewEmpty": "The song will appear here as you type.",
   "discardTitle": "Discard changes?",
   "discard": "Discard",
   "keepEditing": "Keep editing",
-  "saveError": "Couldn't save the song."
+  "saveError": "Couldn't save the song.",
+  "chordsMenu": "Chords",
+  "noChords": "This song has no chords.",
+  "noDiagram": "No diagram for this chord yet.",
+  "diagramLegend": "× don't play · ○ open string",
+  "keyStepper": "Key",
+  "capoStepper": "Capo",
+  "capoNone": "None",
+  "transposeDown": "Transpose down",
+  "transposeUp": "Transpose up",
+  "capoDown": "Capo down",
+  "capoUp": "Capo up",
+  "textSize": "Text",
+  "smallerText": "Smaller text",
+  "largerText": "Larger text",
+  "slower": "Scroll slower",
+  "faster": "Scroll faster",
+  "startScroll": "Start auto-scroll",
+  "pauseScroll": "Pause auto-scroll",
+  "speedLabel": "Speed {speed}",
+  "@speedLabel": {
+    "placeholders": {
+      "speed": {
+        "type": "int"
+      }
+    }
+  },
+  "soundsIn": "Sounds in {key} · Capo {fret} · {shapes} shapes",
+  "@soundsIn": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      },
+      "fret": {
+        "type": "int"
+      },
+      "shapes": {
+        "type": "String"
+      }
+    }
+  }
 }

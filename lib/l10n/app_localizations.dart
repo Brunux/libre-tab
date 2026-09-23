@@ -409,6 +409,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t save the song.'**
   String get saveError;
+
+  /// No description provided for @chordsMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords'**
+  String get chordsMenu;
+
+  /// No description provided for @noChords.
+  ///
+  /// In en, this message translates to:
+  /// **'This song has no chords.'**
+  String get noChords;
+
+  /// No description provided for @noDiagram.
+  ///
+  /// In en, this message translates to:
+  /// **'No diagram for this chord yet.'**
+  String get noDiagram;
+
+  /// No description provided for @diagramLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'× don\'t play · ○ open string'**
+  String get diagramLegend;
+
+  /// No description provided for @keyStepper.
+  ///
+  /// In en, this message translates to:
+  /// **'Key'**
+  String get keyStepper;
+
+  /// No description provided for @capoStepper.
+  ///
+  /// In en, this message translates to:
+  /// **'Capo'**
+  String get capoStepper;
+
+  /// No description provided for @capoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get capoNone;
+
+  /// No description provided for @transposeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose down'**
+  String get transposeDown;
+
+  /// No description provided for @transposeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose up'**
+  String get transposeUp;
+
+  /// No description provided for @capoDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Capo down'**
+  String get capoDown;
+
+  /// No description provided for @capoUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Capo up'**
+  String get capoUp;
+
+  /// No description provided for @textSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get textSize;
+
+  /// No description provided for @smallerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller text'**
+  String get smallerText;
+
+  /// No description provided for @largerText.
+  ///
+  /// In en, this message translates to:
+  /// **'Larger text'**
+  String get largerText;
+
+  /// No description provided for @slower.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll slower'**
+  String get slower;
+
+  /// No description provided for @faster.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll faster'**
+  String get faster;
+
+  /// No description provided for @startScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Start auto-scroll'**
+  String get startScroll;
+
+  /// No description provided for @pauseScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause auto-scroll'**
+  String get pauseScroll;
+
+  /// No description provided for @speedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed {speed}'**
+  String speedLabel(int speed);
+
+  /// No description provided for @soundsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds in {key} · Capo {fret} · {shapes} shapes'**
+  String soundsIn(String key, int fret, String shapes);
 }
 
 class _AppLocalizationsDelegate

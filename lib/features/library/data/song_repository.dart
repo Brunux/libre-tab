@@ -92,6 +92,12 @@ class SongRepository {
     await _db.customStatement('DELETE FROM songs_fts WHERE rowid = ?', [id]);
   });
 
+  /// Remembers the auto-scroll speed last used for a song.
+  Future<void> setScrollSpeed(int id, int speed) =>
+      (_db.update(_db.songs)..where((s) => s.id.equals(id))).write(
+        SongsCompanion(scrollSpeed: Value(speed)),
+      );
+
   Future<void> setFavorite(int id, {required bool favorite}) =>
       (_db.update(_db.songs)..where((s) => s.id.equals(id))).write(
         SongsCompanion(favorite: Value(favorite)),

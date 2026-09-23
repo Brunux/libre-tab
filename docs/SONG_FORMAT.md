@@ -42,8 +42,8 @@ are lossless) but is ignored when rendering.
 |---|---|---|
 | `{title: …}` | `{t: …}` | Song title (required; import asks for one if missing) |
 | `{artist: …}` | `{a: …}` | Artist |
-| `{key: …}` | | Original key, e.g. `G`, `Am` |
-| `{capo: n}` | | Suggested capo fret |
+| `{key: …}` | | Key of the chords as written, e.g. `G`, `Am` |
+| `{capo: n}` | | The chords are the shapes played with a capo on fret *n* (the song sounds *n* semitones higher) |
 | `{tempo: n}` | | BPM, used as the default auto-scroll hint |
 
 ### Section directives
@@ -94,8 +94,12 @@ original chords unless the user explicitly chooses "Save in this key".
   sharps (so the six-accidental keys are F# major and Ebm).
 - With no `{key}`, the key is guessed from the first chord.
 - When the shift is zero (or a whole octave) chords are shown exactly as written.
-- Capo: with capo on fret *n*, shown chord shapes are shifted down *n* semitones
-  so the player reads the shapes they actually finger.
+- Capo: written chords are the shapes for the song's own `{capo}` (0 if
+  none). The song opens with the capo control at that fret, showing the chords
+  exactly as written. With the capo on fret *c* and the song moved *t*
+  semitones, shown shapes are shifted by `{capo} + t − c`. Example: `{key: C}`
+  `{capo: 2}` sounds in D; taking the capo off shows D shapes, capo 4 shows Bb
+  shapes.
 
 ## Importing chords-over-lyrics
 

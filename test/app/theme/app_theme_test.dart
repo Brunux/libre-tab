@@ -32,7 +32,8 @@ void main() {
       });
 
       test('text, muted and chord colors are readable (≥ 4.5:1)', () {
-        for (final background in [c.bg, c.surface]) {
+        // surface2 backs the song screen's dock and the list's key badges.
+        for (final background in [c.bg, c.surface, c.surface2]) {
           expect(contrast(c.text, background), greaterThanOrEqualTo(4.5));
           expect(contrast(c.muted, background), greaterThanOrEqualTo(4.5));
           expect(contrast(c.chord, background), greaterThanOrEqualTo(4.5));

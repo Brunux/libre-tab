@@ -77,7 +77,11 @@ void main() {
     await container.read(songRepositoryProvider).addSong(SampleSongs.ohSusanna);
     router.go(Routes.song(1));
     await tester.pumpAndSettle();
-    expect(find.text('Stephen Foster · Tono C · Cejilla 2'), findsOneWidget);
+    // {key: C} {capo: 2}: C shapes with a capo on 2 sound in D.
+    expect(
+      find.text('Suena en D · Cejilla 2 · posiciones de C'),
+      findsOneWidget,
+    );
     expect(find.byTooltip('Cambiar tema'), findsOneWidget);
     expect(find.byTooltip('Agregar a favoritas'), findsOneWidget);
   });

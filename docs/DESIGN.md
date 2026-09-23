@@ -29,7 +29,7 @@ icon) that cycles Dark → Red night → Light; the default comes from Settings.
 | `surface2` | `#282119` | `#1E0606` | `#F1EADF` |
 | `line` | `#3A3027` | `#3A0C0A` | `#E3D8C8` |
 | `text` | `#F4EDE3` | `#FF6A5C` | `#1E1812` |
-| `muted` | `#A99C8B` | `#D2473B` | `#6A5D4F` |
+| `muted` | `#A99C8B` | `#DA4C40` | `#6A5D4F` |
 | `chord` | `#F4A93A` | `#FFA094` | `#A94C06` |
 | `accent` | `#F4A93A` | `#FF5A4B` | `#B8480A` |
 | `onAccent` | `#1A1107` | `#000000` | `#FFFFFF` |
@@ -64,8 +64,10 @@ floating "Add song" button · bottom tabs.
 
 ### 2. Song view (campfire mode)
 Header: back, title, "artist · Key G" (with capo: "Sounds in A · Capo 2 · play G
-shapes"), favorite star, theme switch, ⋮ menu (Edit song, Share, Delete — delete
-asks first). Body: sections with small uppercase labels; each lyric
+shapes"), favorite star, theme switch, ⋮ menu (Chords, Edit song, Share,
+Delete — delete asks first). "Chords" shows diagrams for every chord in the song;
+it's also how screen-reader users reach diagrams, since chords in the lyrics are
+too small to be good accessible buttons. Body: sections with small uppercase labels; each lyric
 line is a wrapping row of chord/lyric pairs, chord above its syllable. Tapping a
 chord opens a bottom sheet with its diagram. Bottom dock:
 - Row 1: Key − / + (transpose), Capo − / +
@@ -73,8 +75,14 @@ chord opens a bottom sheet with its diagram. Bottom dock:
 
 Screen stays awake; auto-scroll stops at the end.
 
-Built in milestone 3: header, menu and the chords-over-lyrics body. The dock,
-chord diagrams and wakelock come in milestone 4.
+Details (milestone 4):
+- Tap anywhere on the lyrics to pause/resume auto-scroll; dragging pauses it.
+  Play at the end of the song starts again from the top.
+- Speeds 1–6 (6–45 px/s at 22 px text, scaled with text size); the last speed
+  is remembered per song.
+- The song opens at its own `{capo}`, showing chords as written. Transpose
+  range ±11 semitones, capo 0–11.
+- Text size (16–36, step 2) and the theme are remembered between launches.
 
 ### 3. Add / edit song
 One screen for both. Header: cancel (asks "Discard changes?" if anything

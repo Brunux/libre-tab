@@ -182,4 +182,68 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get saveError => 'No se pudo guardar la canción.';
+
+  @override
+  String get chordsMenu => 'Acordes';
+
+  @override
+  String get noChords => 'Esta canción no tiene acordes.';
+
+  @override
+  String get noDiagram => 'Aún no hay diagrama para este acorde.';
+
+  @override
+  String get diagramLegend => '× no tocar · ○ cuerda al aire';
+
+  @override
+  String get keyStepper => 'Tono';
+
+  @override
+  String get capoStepper => 'Cejilla';
+
+  @override
+  String get capoNone => 'Sin';
+
+  @override
+  String get transposeDown => 'Bajar tono';
+
+  @override
+  String get transposeUp => 'Subir tono';
+
+  @override
+  String get capoDown => 'Bajar cejilla';
+
+  @override
+  String get capoUp => 'Subir cejilla';
+
+  @override
+  String get textSize => 'Letra';
+
+  @override
+  String get smallerText => 'Letra más pequeña';
+
+  @override
+  String get largerText => 'Letra más grande';
+
+  @override
+  String get slower => 'Más lento';
+
+  @override
+  String get faster => 'Más rápido';
+
+  @override
+  String get startScroll => 'Iniciar desplazamiento';
+
+  @override
+  String get pauseScroll => 'Pausar desplazamiento';
+
+  @override
+  String speedLabel(int speed) {
+    return 'Velocidad $speed';
+  }
+
+  @override
+  String soundsIn(String key, int fret, String shapes) {
+    return 'Suena en $key · Cejilla $fret · posiciones de $shapes';
+  }
 }

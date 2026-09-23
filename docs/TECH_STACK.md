@@ -42,7 +42,7 @@ Written in-house (no package) on purpose — small, core to the app, and easy to
 - **ChordPro parser + renderer**
 - **Chord-over-lyrics importer** (converts the common "chords on the line above" text into ChordPro)
 - **Transposer** (sharps/flats aware, capo aware)
-- **Chord diagram painter** (`CustomPainter` + a bundled JSON of open-position voicings)
+- **Chord diagram painter** (`CustomPainter`; voicings in `core/music/chord_voicings.dart`: common open shapes, everything else as movable E/A-shape barre chords)
 - **Pitch detector** (McLeod Pitch Method)
 
 ## 4. Song format decision
@@ -203,7 +203,7 @@ so it's fast to unit test.
 1. **Scaffold** ✅ — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
 2. **Music core** ✅ — Note/Chord/Key model, ChordPro parser, transposer (+ tests).
 3. **Songbook** ✅ — Drift schema + FTS5 search, library list, add/edit song with chords-over-lyrics importer, open file, share `.cho`, delete. (Whole-songbook `.zip` export moved to milestone 6.)
-4. **Campfire mode** — song view, auto-scroll, transpose/capo, chord diagrams, wakelock.
+4. **Campfire mode** ✅ — dock (transpose, capo, text size, auto-scroll speed), tap-to-pause auto-scroll, chord diagrams, screen kept awake, theme and text size remembered. (Pinch-to-zoom replaced by A−/A+; setlist swipe moves to milestone 6.)
 5. **Tuner** — mic permission, audio stream, MPM isolate, tuner UI, alternate tunings.
 6. **Polish** — setlists, starter songs, app icon, store assets.
 7. **Camera import** — photo → OCR with word boxes → same chords-over-lyrics importer → ChordPro.

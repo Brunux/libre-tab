@@ -38,7 +38,7 @@ class LibreColors extends ThemeExtension<LibreColors> {
     surface2: Color(0xFF1E0606),
     line: Color(0xFF3A0C0A),
     text: Color(0xFFFF6A5C),
-    muted: Color(0xFFD2473B),
+    muted: Color(0xFFDA4C40),
     chord: Color(0xFFFFA094),
     accent: Color(0xFFFF5A4B),
     onAccent: Color(0xFF000000),
