@@ -1045,6 +1045,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Libre Tab can\'t use the camera. You can allow it in Settings.'**
   String get cameraDenied;
+
+  /// No description provided for @readingPhotoOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading photo {current} of {total}…'**
+  String readingPhotoOf(int current, int total);
+
+  /// No description provided for @startOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over'**
+  String get startOver;
+
+  /// No description provided for @startedOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Title, artist and text cleared.'**
+  String get startedOver;
 }
 
 class _AppLocalizationsDelegate

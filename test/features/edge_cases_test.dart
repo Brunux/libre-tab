@@ -124,14 +124,15 @@ void main() {
     ) async {
       final container = await pumpApp(tester, songs: [longSong]);
       await goTo(tester, container, Routes.song(1));
-      final scroller = songScroller(tester)
-        ..jumpTo(songScroller(tester).position.maxScrollExtent);
+      final scroller = songScroller(tester);
+      final start = scroller.offset; // the song's first line at the top
+      scroller.jumpTo(scroller.position.maxScrollExtent);
       await tester.pump();
-      expect(scroller.offset, greaterThan(100));
+      expect(scroller.offset, greaterThan(start + 100));
 
       await tester.tap(find.byTooltip('Start auto-scroll'));
       await tester.pump();
-      expect(scroller.offset, lessThan(10));
+      expect(scroller.offset, start);
       expect(find.byTooltip('Pause auto-scroll'), findsOneWidget);
     });
 
@@ -162,11 +163,12 @@ void main() {
         settings: MemorySettingsStore({SettingsKeys.lyricsSize: 33}),
       );
       await goTo(tester, container, Routes.song(1));
+      final start = songScroller(tester).offset;
       await tester.tap(find.byTooltip('Start auto-scroll'));
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
       // Speed 2 is 10 px/s at 22 px text, so 15 px/s at 33 px.
-      expect(songScroller(tester).offset, closeTo(30, 3));
+      expect(songScroller(tester).offset - start, closeTo(30, 3));
     });
 
     testWidgets('a very long title is cut with an ellipsis, not overflow', (

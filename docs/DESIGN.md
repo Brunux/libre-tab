@@ -87,6 +87,11 @@ Details (milestone 4):
   on the lyrics auto-scroll holds still; scrolling by hand moves the song and
   auto-scroll carries on from there once the scroll settles (no second tap).
   Scrolling while paused stays paused.
+- The song has room above and below it, half the visible height (no more),
+  so it can scroll past its ends: auto-scroll brings the last lines up to the
+  middle of the screen instead of stopping with them at the bottom edge. It
+  opens scrolled past the top room, so the first line is at the top; Play at
+  the end starts again from there.
   Play at the end of the song starts again from the top.
 - Speeds 1–6 (6–45 px/s at 22 px text, scaled with text size); the last speed
   is remembered per song.
@@ -104,11 +109,14 @@ or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Result with
 Preview / ChordPro toggle and a summary ("Chord lines placed: 4 · Sections
 found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
 **Scan photo** (milestone 7) asks "Take a photo" or "Choose from photos"
-(the system picker: no permission, only that photo is shared), shows
-"Reading the photo…", then fills Title/Artist (if empty) and the text box
-with chords-over-lyrics, and says "Check the chords against the photo
-before saving." A second scan is added below the first, for two-page songs.
+(the system picker: no permission, only the photos chosen are shared; up to
+10, read in the order picked, "Reading photo 2 of 3…"). It then fills
+Title/Artist (if empty) from the first page and puts each page's
+chords-over-lyrics in the text box, one below the other, and says "Check the
+chords against the photo before saving." Another scan is added below too.
 Refused camera, no text found and unreadable photos each get a plain message.
+Add song also has **Start over** (disabled while empty), which empties title,
+artist and text to begin another song, with Undo.
 A song file opened from another app ("Open in Libre Tab", "Share to") lands
 here the same way, already filled in (docs/SONG_FORMAT.md § Files).
 

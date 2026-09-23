@@ -157,5 +157,8 @@
   "noTextFound": "No se encontró texto en esa foto. Prueba una foto más cercana y nítida, con buena luz.",
   "scanDone": "Revisa los acordes contra la foto antes de guardar.",
   "scanError": "No se pudo leer esa foto.",
-  "cameraDenied": "Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes."
+  "cameraDenied": "Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes.",
+  "readingPhotoOf": "Leyendo la foto {current} de {total}…",
+  "startOver": "Empezar de nuevo",
+  "startedOver": "Se vaciaron el título, el artista y el texto."
 }

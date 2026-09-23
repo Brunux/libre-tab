@@ -163,12 +163,12 @@ class FakeIncomingFiles implements IncomingFiles {
       _onFile?.call((name: name, bytes: bytes));
 }
 
-/// A camera and photo library that return a preset photo path.
+/// A camera and photo library that return preset photo paths.
 class FakePhotoPicker implements PhotoPicker {
-  FakePhotoPicker({this.path = '/photos/song.jpg', this.error});
+  FakePhotoPicker({this.paths = const ['/photos/song.jpg'], this.error});
 
-  /// What picking returns; null means the user cancelled.
-  String? path;
+  /// What picking returns; empty means the user cancelled.
+  List<String> paths;
 
   /// Thrown instead, e.g. a PlatformException when the camera is refused.
   Exception? error;
@@ -180,18 +180,24 @@ class FakePhotoPicker implements PhotoPicker {
   Future<void> discard(String path) async => discarded.add(path);
 
   @override
-  Future<String?> pick(PhotoSource source) async {
+  Future<List<String>> pick(PhotoSource source) async {
     picked.add(source);
     if (error case final Exception e) throw e;
-    return path;
+    return paths;
   }
 }
 
-/// Text recognition that "reads" preset words from any photo.
+/// Text recognition that "reads" preset words: [pages] by photo path, else
+/// [words] from any photo.
 class FakeTextRecognizer implements TextRecognizer {
-  FakeTextRecognizer({this.words = const [], this.error});
+  FakeTextRecognizer({
+    this.words = const [],
+    this.pages = const {},
+    this.error,
+  });
 
   List<RecognizedWord> words;
+  Map<String, List<RecognizedWord>> pages;
   TextRecognitionException? error;
   final read = <String>[];
 
@@ -199,7 +205,7 @@ class FakeTextRecognizer implements TextRecognizer {
   Future<List<RecognizedWord>> recognize(String imagePath) async {
     read.add(imagePath);
     if (error case final e?) throw e;
-    return words;
+    return pages[imagePath] ?? words;
   }
 }
 

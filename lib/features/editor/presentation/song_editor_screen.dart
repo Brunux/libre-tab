@@ -16,6 +16,7 @@ import 'package:libre_tab/core/ocr/ocr_layout.dart';
 import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
@@ -46,7 +47,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
   bool _missing = false;
   bool _saving = false;
   bool _showSource = false;
-  bool _scanning = false;
+
+  /// While photos are being read: (photo, of how many).
+  (int, int)? _scanning;
   String _savedState = _stateOf('', '', '');
 
   bool get _isNew => widget.songId == null;
@@ -176,42 +179,89 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     );
     if (source == null || !mounted) return;
 
-    final String? path;
+    final List<String> paths;
     try {
-      path = await ref.read(photoPickerProvider).pick(source);
+      paths = await ref.read(photoPickerProvider).pick(source);
     } on PlatformException {
       // The camera was refused (or isn't there).
       if (mounted) _snack(l10n.cameraDenied);
       return;
     }
-    if (path == null || !mounted) return;
+    if (paths.isEmpty || !mounted) return;
 
-    setState(() => _scanning = true);
+    final recognizer = ref.read(textRecognizerProvider);
+    final photos = ref.read(photoPickerProvider);
+    var readAny = false;
+    var failed = false;
     try {
-      final words = await ref.read(textRecognizerProvider).recognize(path);
-      if (!mounted) return;
-      final scanned = OcrLayout.read(words);
-      if (scanned.isEmpty) {
-        _snack(l10n.noTextFound);
-        return;
+      // Pages in the order picked, each added below the last.
+      for (final (i, path) in paths.indexed) {
+        setState(() => _scanning = (i + 1, paths.length));
+        try {
+          final scanned = OcrLayout.read(await recognizer.recognize(path));
+          if (!mounted) return;
+          if (scanned.isEmpty) continue;
+          readAny = true;
+          if (scanned.title case final title? when _title.text.trim().isEmpty) {
+            _title.text = title;
+          }
+          if (scanned.artist case final artist?
+              when _artist.text.trim().isEmpty) {
+            _artist.text = artist;
+          }
+          if (scanned.text.isEmpty) continue;
+          final before = _content.text.trimRight();
+          _content.text = before.isEmpty
+              ? scanned.text
+              : '$before\n\n${scanned.text}';
+        } on TextRecognitionException {
+          failed = true;
+        } finally {
+          unawaited(photos.discard(path));
+        }
       }
-      if (scanned.title case final title? when _title.text.trim().isEmpty) {
-        _title.text = title;
-      }
-      if (scanned.artist case final artist? when _artist.text.trim().isEmpty) {
-        _artist.text = artist;
-      }
-      final before = _content.text.trimRight();
-      _content.text = before.isEmpty
-          ? scanned.text
-          : '$before\n\n${scanned.text}';
-      _snack(l10n.scanDone);
-    } on TextRecognitionException {
-      if (mounted) _snack(l10n.scanError);
     } finally {
-      unawaited(ref.read(photoPickerProvider).discard(path));
-      if (mounted) setState(() => _scanning = false);
+      if (mounted) setState(() => _scanning = null);
     }
+    if (!mounted) return;
+    _snack(
+      readAny
+          ? l10n.scanDone
+          : failed
+          ? l10n.scanError
+          : l10n.noTextFound,
+    );
+  }
+
+  bool get _isBlank => [
+    _title,
+    _artist,
+    _content,
+  ].every((c) => c.text.trim().isEmpty);
+
+  /// Add song only: empties title, artist and text to begin another song,
+  /// with Undo in case it was tapped by mistake.
+  void _startOver() {
+    final l10n = context.l10n;
+    final (title, artist, content) = (
+      _title.text,
+      _artist.text,
+      _content.text,
+    );
+    _title.clear();
+    _artist.clear();
+    _content.clear();
+    showUndoSnackBar(
+      ScaffoldMessenger.of(context),
+      l10n,
+      message: l10n.startedOver,
+      onUndo: () async {
+        if (!mounted) return;
+        _title.text = title;
+        _artist.text = artist;
+        _content.text = content;
+      },
+    );
   }
 
   /// Replaces any message still showing, so the latest one is seen now.
@@ -264,6 +314,12 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
           ),
           title: Text(_isNew ? l10n.addSong : l10n.editSong),
           actions: [
+            if (_isNew)
+              IconButton(
+                tooltip: l10n.startOver,
+                icon: const Icon(Icons.restart_alt),
+                onPressed: _isBlank ? null : _startOver,
+              ),
             FilledButton(
               onPressed: canSave ? _save : null,
               child: Text(l10n.save),
@@ -319,18 +375,18 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
           runSpacing: 8,
           children: [
             OutlinedButton.icon(
-              onPressed: _scanning ? null : _openFile,
+              onPressed: _scanning != null ? null : _openFile,
               icon: const Icon(Icons.file_open_outlined),
               label: Text(l10n.openFile),
             ),
             OutlinedButton.icon(
-              onPressed: _scanning ? null : _scan,
+              onPressed: _scanning != null ? null : _scan,
               icon: const Icon(Icons.document_scanner_outlined),
               label: Text(l10n.scanPhoto),
             ),
           ],
         ),
-        if (_scanning) ...[
+        if (_scanning case (final current, final total)) ...[
           const SizedBox(height: 12),
           Semantics(
             liveRegion: true,
@@ -341,7 +397,11 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
                 const SizedBox(width: 12),
-                Text(l10n.readingPhoto),
+                Text(
+                  total == 1
+                      ? l10n.readingPhoto
+                      : l10n.readingPhotoOf(current, total),
+                ),
               ],
             ),
           ),

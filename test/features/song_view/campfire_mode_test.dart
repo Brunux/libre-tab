@@ -167,13 +167,13 @@ void main() {
   group('auto-scroll', () {
     testWidgets('Play scrolls the song; Pause stops it', (tester) async {
       await openSong(tester, longSong);
-      expect(scrollOffset(tester), 0);
+      final start = scrollOffset(tester);
 
       await tester.tap(find.byTooltip('Start auto-scroll'));
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
       final moved = scrollOffset(tester);
-      expect(moved, greaterThan(0));
+      expect(moved, greaterThan(start));
 
       await tester.tap(find.byTooltip('Pause auto-scroll'));
       await tester.pump();
@@ -241,6 +241,27 @@ void main() {
       expect(scrollOffset(tester), greaterThan(settled));
     });
 
+    testWidgets('the song opens at its first line, with room around it', (
+      tester,
+    ) async {
+      await openSong(tester, longSong);
+      final view = tester.getRect(find.byType(SingleChildScrollView));
+      final room = scrollOffset(tester);
+      // Room of half the visible height above the song, scrolled past.
+      expect(room, closeTo(view.height / 2, 1));
+      expect(tester.getTopLeft(find.text('line0')).dy, lessThan(view.top + 80));
+
+      // Scrolled to the very end, the last line sits around the middle.
+      final scroller = tester
+          .widget<SingleChildScrollView>(find.byType(SingleChildScrollView))
+          .controller!;
+      scroller.jumpTo(scroller.position.maxScrollExtent);
+      await tester.pump();
+      final last = tester.getTopLeft(find.text('line59')).dy;
+      expect(last, lessThan(view.center.dy));
+      expect(last, greaterThan(view.top));
+    });
+
     testWidgets('dragging while paused stays paused', (tester) async {
       await openSong(tester, longSong);
       await tester.drag(find.text('line3'), const Offset(0, -300));
@@ -275,11 +296,12 @@ void main() {
       final saved = await container.read(songRepositoryProvider).getSong(1);
       expect(saved!.scrollSpeed, 3);
 
+      final start = scrollOffset(tester);
       await tester.tap(find.byTooltip('Start auto-scroll'));
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
       // Speed 3 is 15 px/s at the default text size.
-      expect(scrollOffset(tester), closeTo(30, 3));
+      expect(scrollOffset(tester) - start, closeTo(30, 3));
     });
   });
 

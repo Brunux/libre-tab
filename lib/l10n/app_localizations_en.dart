@@ -596,4 +596,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cameraDenied =>
       'Libre Tab can\'t use the camera. You can allow it in Settings.';
+
+  @override
+  String readingPhotoOf(int current, int total) {
+    return 'Reading photo $current of $total…';
+  }
+
+  @override
+  String get startOver => 'Start over';
+
+  @override
+  String get startedOver => 'Title, artist and text cleared.';
 }

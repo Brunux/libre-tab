@@ -16,20 +16,32 @@ class PhotoPicker {
   /// (which also turns them upright).
   static const maxSide = 3000.0;
 
-  /// The photo's file path, or null if the user cancelled. The library uses
-  /// the system photo picker, which needs no permission and shares only the
-  /// photo picked.
-  Future<String?> pick(PhotoSource source) async {
-    final photo = await ImagePicker().pickImage(
-      source: switch (source) {
-        PhotoSource.camera => ImageSource.camera,
-        PhotoSource.library => ImageSource.gallery,
-      },
-      maxWidth: maxSide,
-      maxHeight: maxSide,
-      requestFullMetadata: false,
-    );
-    return photo?.path;
+  /// Most photos read in one go (a song over several pages).
+  static const maxPhotos = 10;
+
+  /// The photos' file paths, in the order picked; empty if the user
+  /// cancelled. The camera takes one; the library, which uses the system
+  /// photo picker (no permission, shares only the photos picked), up to
+  /// [maxPhotos].
+  Future<List<String>> pick(PhotoSource source) async {
+    switch (source) {
+      case PhotoSource.camera:
+        final photo = await ImagePicker().pickImage(
+          source: ImageSource.camera,
+          maxWidth: maxSide,
+          maxHeight: maxSide,
+          requestFullMetadata: false,
+        );
+        return [?photo?.path];
+      case PhotoSource.library:
+        final photos = await ImagePicker().pickMultiImage(
+          maxWidth: maxSide,
+          maxHeight: maxSide,
+          limit: maxPhotos,
+          requestFullMetadata: false,
+        );
+        return [for (final photo in photos) photo.path];
+    }
   }
 
   /// Deletes the picker's copy of a photo once it's been read, so photos

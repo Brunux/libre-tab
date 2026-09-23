@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -212,11 +214,36 @@ void main() {
       expect(twice, '$once\n\n$once');
     });
 
+    testWidgets('several photos are read in the order picked', (
+      tester,
+    ) async {
+      RecognizedWord w(String t, double l, double top) =>
+          RecognizedWord(t, left: l, top: top, right: l + 60, bottom: top + 20);
+      final photos = FakePhotoPicker(paths: ['/p/1.jpg', '/p/2.jpg']);
+      final recognizer = FakeTextRecognizer(
+        pages: {
+          '/p/1.jpg': [w('Page', 40, 0), w('one', 110, 0)],
+          '/p/2.jpg': [w('Page', 40, 0), w('two', 110, 0)],
+        },
+      );
+      await pumpApp(tester, photos: photos, recognizer: recognizer);
+      await tester.tap(find.text('Add song'));
+      await tester.pumpAndSettle();
+      await scanFrom(tester, 'Choose from photos');
+
+      expect(recognizer.read, ['/p/1.jpg', '/p/2.jpg']);
+      expect(photos.discarded, ['/p/1.jpg', '/p/2.jpg']);
+      expect(
+        tester.widget<TextField>(contentField).controller!.text,
+        'Page one\n\nPage two',
+      );
+    });
+
     testWidgets('cancelling picks nothing and changes nothing', (tester) async {
       final recognizer = FakeTextRecognizer(words: photoOfGrace());
       await pumpApp(
         tester,
-        photos: FakePhotoPicker(path: null),
+        photos: FakePhotoPicker(paths: []),
         recognizer: recognizer,
       );
       await tester.tap(find.text('Add song'));
@@ -256,6 +283,51 @@ void main() {
       await tester.pumpAndSettle();
       await scanFrom(tester, 'Take a photo');
       expect(find.textContaining("can't use the camera"), findsOneWidget);
+    });
+  });
+
+  group('Start over', () {
+    testWidgets('is off until something is typed', (tester) async {
+      await openEditor(tester);
+      final button = find.widgetWithIcon(IconButton, Icons.restart_alt);
+      expect(tester.widget<IconButton>(button).onPressed, isNull);
+      await tester.enterText(titleField, 'Hymn');
+      await tester.pump();
+      expect(tester.widget<IconButton>(button).onPressed, isNotNull);
+    });
+
+    testWidgets('clears everything, and Undo brings it back', (tester) async {
+      await openEditor(tester);
+      await tester.enterText(titleField, 'Hymn');
+      await tester.enterText(artistField, 'Someone');
+      await tester.enterText(contentField, '[G]Hello');
+      await tester.pump();
+
+      await tester.tap(find.byTooltip('Start over'));
+      await tester.pump();
+      expect(tester.widget<TextField>(titleField).controller!.text, isEmpty);
+      expect(tester.widget<TextField>(contentField).controller!.text, isEmpty);
+      expect(find.text('Title, artist and text cleared.'), findsOneWidget);
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(titleField).controller!.text, 'Hymn');
+      expect(tester.widget<TextField>(artistField).controller!.text, 'Someone');
+      expect(
+        tester.widget<TextField>(contentField).controller!.text,
+        '[G]Hello',
+      );
+    });
+
+    testWidgets('is only in Add song, not Edit song', (tester) async {
+      final container = await pumpApp(
+        tester,
+        songs: [SampleSongs.amazingGrace],
+      );
+      unawaited(container.read(routerProvider).push(Routes.editSong(1)));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Start over'), findsNothing);
     });
   });
 

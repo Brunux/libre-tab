@@ -323,5 +323,18 @@
   "noTextFound": "No text found in that photo. Try a closer, sharper photo in good light.",
   "scanDone": "Check the chords against the photo before saving.",
   "scanError": "Couldn't read that photo.",
-  "cameraDenied": "Libre Tab can't use the camera. You can allow it in Settings."
+  "cameraDenied": "Libre Tab can't use the camera. You can allow it in Settings.",
+  "readingPhotoOf": "Reading photo {current} of {total}…",
+  "@readingPhotoOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "startOver": "Start over",
+  "startedOver": "Title, artist and text cleared."
 }

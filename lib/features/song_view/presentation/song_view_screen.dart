@@ -71,7 +71,12 @@ class _SongViewState extends ConsumerState<_SongView>
   static const _speeds = [6.0, 10.0, 15.0, 22.0, 32.0, 45.0];
   static const _defaultSpeed = 2;
 
-  final _scroll = ScrollController();
+  /// Room to scroll past the song's first and last lines: half the visible
+  /// height, so auto-scroll can bring the last lines up to the middle. The
+  /// song opens scrolled past the top room, so it starts at the top.
+  double _room = 0;
+  late final ScrollController _scroll;
+  bool _scrollReady = false;
   late final Ticker _ticker;
   Duration _lastTick = Duration.zero;
   late final KeepAwake _keepAwake = ref.read(keepAwakeProvider);
@@ -102,7 +107,7 @@ class _SongViewState extends ConsumerState<_SongView>
   @override
   void dispose() {
     _ticker.dispose();
-    _scroll.dispose();
+    if (_scrollReady) _scroll.dispose();
     unawaited(_keepAwake.disable());
     super.dispose();
   }
@@ -150,6 +155,27 @@ class _SongViewState extends ConsumerState<_SongView>
     return false;
   }
 
+  /// Sets the room above and below the song. The first time, the scroll
+  /// view opens past the top room; later (rotation) the song keeps its place.
+  void _fitRoom(double room) {
+    if (!_scrollReady) {
+      _room = room;
+      _scroll = ScrollController(initialScrollOffset: room);
+      _scrollReady = true;
+      return;
+    }
+    if (room == _room) return;
+    final shift = room - _room;
+    _room = room;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scroll.hasClients) {
+        _scroll.jumpTo(
+          (_scroll.offset + shift).clamp(0, _scroll.position.maxScrollExtent),
+        );
+      }
+    });
+  }
+
   void _fingerDown() {
     _fingers++;
     _syncTicker();
@@ -165,7 +191,7 @@ class _SongViewState extends ConsumerState<_SongView>
     if (!_playing && _scroll.hasClients) {
       final p = _scroll.position;
       if (p.maxScrollExtent > 0 && p.pixels >= p.maxScrollExtent - 1) {
-        _scroll.jumpTo(0);
+        _scroll.jumpTo(_room);
       }
     }
     _setPlaying(!_playing);
@@ -317,15 +343,20 @@ class _SongViewState extends ConsumerState<_SongView>
             behavior: HitTestBehavior.translucent,
             excludeFromSemantics: true,
             onTap: _togglePlay,
-            child: SingleChildScrollView(
-              controller: _scroll,
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
-              child: SongSheet(
-                song: song,
-                fontSize: fontSize,
-                chordLabel: shown,
-                onChordTap: (chord) => _showChords([chord]),
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                _fitRoom(constraints.maxHeight / 2);
+                return SingleChildScrollView(
+                  controller: _scroll,
+                  padding: EdgeInsets.fromLTRB(20, 12 + _room, 20, 48 + _room),
+                  child: SongSheet(
+                    song: song,
+                    fontSize: fontSize,
+                    chordLabel: shown,
+                    onChordTap: (chord) => _showChords([chord]),
+                  ),
+                );
+              },
             ),
           ),
         ),
