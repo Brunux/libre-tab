@@ -6,7 +6,7 @@ Approved 2026-09-22 (milestone 0). Clickable mockups:
 ## Navigation
 
 ```
-Bottom tabs:  [ Songbook ]  [ Tuner ]
+Bottom tabs:  [ Songbook ]  [ Setlists ]  [ Tuner ]
 
 Songbook ──tap song──▶ Song view ──back──▶ Songbook
     │  └─settings icon─▶ Settings
@@ -14,7 +14,7 @@ Songbook ──tap song──▶ Song view ──back──▶ Songbook
                           └──Cancel──▶ Songbook
 ```
 
-- Two bottom tabs only. Settings open from the icon in the Songbook header.
+- Three bottom tabs. Settings open from the gear in the Songbook header.
 - Song view and Add song are full-screen routes on top of the tabs (no bottom bar).
 
 ## Themes
@@ -84,8 +84,8 @@ Review 5.1.1(iv)). The system asks only once, so a refusal always offers
 ## Screens
 
 ### 1. Songbook
-Header (title + settings gear) · search field · chips: All songs / Favorites /
-Setlists · song rows (key badge, title, artist · capo, favorite star) ·
+Header (title + settings gear) · search field · chips: All songs / Favorites
+· song rows (key badge, title, artist · capo, favorite star) ·
 floating "Add song" button · bottom tabs.
 
 **Play history** (kept on the device only; schema 4): opening a song stamps
@@ -199,9 +199,9 @@ the gauge are in view together; only a very short screen (a phone on its side)
 scrolls.
 
 ### 5. Setlists (milestone 6)
-- **Songbook, "Setlists" chip:** the list shows setlists instead of songs
-  (name, "7 songs"); search filters them by name. The floating button becomes
-  "New setlist", which asks for a name and opens the new setlist.
+- **Setlists tab** (its own tab since the setlist is the night's plan, not
+  a filter of the songbook): search by name, setlist rows (name, "7 songs"),
+  and a "New setlist" button that asks for a name and opens the new setlist.
 - **Setlist screen:** header with back, name and ⋮ (Rename, Delete — delete
   asks first; songs stay in the songbook). A "Play" button opens the first
   song. Rows: position, title, artist · key, a drag handle to reorder and a
@@ -210,6 +210,11 @@ scrolls.
   from that song.
 - **Playing a setlist:** the song view, and swiping left/right moves to the
   next/previous song. The subtitle starts with the position ("2/7 · …").
+  After the last line, an **Up next** card names the next song; tap it to
+  go. When auto-scroll carried the song to its end (hands free), the card
+  counts down "Next song in 5…" and then moves on and keeps scrolling there
+  (after a second at the top); **Stay** or any touch on the song stops it.
+  The last song has no card.
   Screen readers get the same through the page's scroll actions.
 - **Song view ⋮ → Add to setlist:** a sheet listing setlists with a checkbox
   each, plus "New setlist".

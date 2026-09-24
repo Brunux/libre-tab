@@ -346,7 +346,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a4Reset => 'Back to 440';
 
   @override
-  String get filterSetlists => 'Setlists';
+  String get tabSetlists => 'Setlists';
 
   @override
   String get newSetlist => 'New setlist';
@@ -723,4 +723,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String jumpToLetter(String letter) {
     return 'Jump to $letter';
   }
+
+  @override
+  String get upNext => 'Up next';
+
+  @override
+  String nextSongIn(int seconds) {
+    return 'Next song in $seconds';
+  }
+
+  @override
+  String get stay => 'Stay';
 }

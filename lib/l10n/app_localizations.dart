@@ -686,11 +686,11 @@ abstract class AppLocalizations {
   /// **'Back to 440'**
   String get a4Reset;
 
-  /// No description provided for @filterSetlists.
+  /// No description provided for @tabSetlists.
   ///
   /// In en, this message translates to:
   /// **'Setlists'**
-  String get filterSetlists;
+  String get tabSetlists;
 
   /// No description provided for @newSetlist.
   ///
@@ -1249,6 +1249,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Jump to {letter}'**
   String jumpToLetter(String letter);
+
+  /// No description provided for @upNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next'**
+  String get upNext;
+
+  /// No description provided for @nextSongIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next song in {seconds}'**
+  String nextSongIn(int seconds);
+
+  /// No description provided for @stay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get stay;
 }
 
 class _AppLocalizationsDelegate

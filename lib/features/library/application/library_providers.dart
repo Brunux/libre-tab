@@ -6,8 +6,8 @@ import 'package:libre_tab/features/library/application/song_order.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 
-/// The songbook's chips: every song, favorites, or setlists.
-enum LibraryView { all, favorites, setlists }
+/// The songbook's chips: every song, or favorites.
+enum LibraryView { all, favorites }
 
 /// What the songbook list is showing.
 final class LibraryFilter {
@@ -94,10 +94,23 @@ final StreamProviderFamily<SongEntry?, int> songProvider = StreamProvider
       (ref, id) => ref.watch(songRepositoryProvider).watchSong(id),
     );
 
-/// The setlists matching the songbook's search.
+/// The Setlists tab's search.
+final setlistQueryProvider = NotifierProvider<SetlistQueryController, String>(
+  SetlistQueryController.new,
+);
+
+class SetlistQueryController extends Notifier<String> {
+  @override
+  String build() => '';
+
+  String get query => state;
+  set query(String value) => state = value;
+}
+
+/// The setlists matching the Setlists tab's search.
 final StreamProvider<List<SetlistSummary>> setlistListProvider =
     StreamProvider.autoDispose<List<SetlistSummary>>((ref) {
-      final query = ref.watch(libraryFilterProvider.select((f) => f.query));
+      final query = ref.watch(setlistQueryProvider);
       return ref.watch(setlistRepositoryProvider).watchSetlists(query: query);
     });
 

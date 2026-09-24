@@ -34,11 +34,13 @@ Future<List<int>> songIds(ProviderContainer container, int setlist) =>
     container.read(setlistRepositoryProvider).songIds(setlist);
 
 void main() {
-  testWidgets('the Setlists chip lists setlists, with an empty message', (
+  testWidgets('the Setlists tab lists setlists, with an empty message', (
     tester,
   ) async {
     await pumpApp(tester, songs: _all);
-    await tester.tap(find.text('Setlists'));
+    // A tab of its own now, not a chip in the songbook.
+    expect(find.widgetWithText(ChoiceChip, 'Setlists'), findsNothing);
+    await tester.tap(navItem('Setlists'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('No setlists yet'), findsOneWidget);
@@ -73,7 +75,7 @@ void main() {
         .first;
     expect(list.single.name, 'Friday campfire');
 
-    // Back in the songbook it's listed with its count.
+    // Back in the Setlists tab it's listed with its count.
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Friday campfire'), findsOneWidget);
@@ -125,6 +127,80 @@ void main() {
     await tester.fling(find.byType(PageView), const Offset(600, 0), 1500);
     await tester.pumpAndSettle();
     expect(find.text('Amazing Grace'), findsOneWidget);
+  });
+
+  group('up next', () {
+    /// A song longer than the screen, so auto-scroll has somewhere to go.
+    String long(String title) => [
+      '{title: $title}',
+      for (var i = 0; i < 40; i++) '[G]$title line $i',
+    ].join('\n');
+
+    Future<void> play(WidgetTester tester) async {
+      final container = await pumpApp(
+        tester,
+        songs: [long('First song'), long('Second song')],
+      );
+      final setlists = container.read(setlistRepositoryProvider);
+      final id = await setlists.create('Friday');
+      await setlists.setSongs(id, [1, 2]);
+      unawaited(container.read(routerProvider).push(Routes.playSetlist(id, 0)));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> scrollToTheEnd(WidgetTester tester) async {
+      await tester.tap(find.byTooltip('Start auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(minutes: 10));
+      await tester.pump();
+    }
+
+    testWidgets('after the last line, the next song is a tap away', (
+      tester,
+    ) async {
+      await play(tester);
+      await tester.ensureVisible(find.text('UP NEXT'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Second song'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('2/2 · '), findsOneWidget);
+      // The last song has nothing after it.
+      expect(find.text('UP NEXT'), findsNothing);
+    });
+
+    testWidgets('auto-scroll to the end moves on, and keeps scrolling', (
+      tester,
+    ) async {
+      await play(tester);
+      await scrollToTheEnd(tester);
+      expect(find.text('NEXT SONG IN 5'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 5));
+      // The page slide (not pumpAndSettle: that would also run the next
+      // song's auto-scroll to its end).
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(find.textContaining('2/2 · '), findsOneWidget);
+      expect(find.byTooltip('Start auto-scroll'), findsOneWidget);
+      // A second at the top, then it scrolls on its own.
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
+      expect(find.byTooltip('Pause auto-scroll'), findsOneWidget);
+      await tester.tap(find.byTooltip('Pause auto-scroll'));
+      await tester.pump();
+    });
+
+    testWidgets('Stay stops the countdown', (tester) async {
+      await play(tester);
+      await scrollToTheEnd(tester);
+      await tester.tap(find.text('Stay'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('1/2 · '), findsOneWidget);
+      expect(find.text('UP NEXT'), findsOneWidget);
+    });
   });
 
   testWidgets('tapping a row plays from that song', (tester) async {

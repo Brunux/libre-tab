@@ -35,6 +35,11 @@ class AppShell extends StatelessWidget {
                     label: Text(l10n.tabSongbook),
                   ),
                   NavigationRailDestination(
+                    icon: const Icon(Icons.queue_music_outlined),
+                    selectedIcon: const Icon(Icons.queue_music),
+                    label: Text(l10n.tabSetlists),
+                  ),
+                  NavigationRailDestination(
                     icon: const Icon(Icons.speed_outlined),
                     selectedIcon: const Icon(Icons.speed),
                     label: Text(l10n.tabTuner),
@@ -59,6 +64,11 @@ class AppShell extends StatelessWidget {
             icon: const Icon(Icons.menu_book_outlined),
             selectedIcon: const Icon(Icons.menu_book),
             label: l10n.tabSongbook,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.queue_music_outlined),
+            selectedIcon: const Icon(Icons.queue_music),
+            label: l10n.tabSetlists,
           ),
           NavigationDestination(
             icon: const Icon(Icons.speed_outlined),

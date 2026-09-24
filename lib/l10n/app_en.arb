@@ -187,7 +187,7 @@
   "a4Title": "Reference pitch",
   "a4Help": "Almost all music uses A4 = 440 Hz. Change it only to match another instrument.",
   "a4Reset": "Back to 440",
-  "filterSetlists": "Setlists",
+  "tabSetlists": "Setlists",
   "newSetlist": "New setlist",
   "setlistNameLabel": "Name",
   "setlistNameHint": "Friday campfire",
@@ -384,5 +384,9 @@
   "playedOn": "Played {date}",
   "@playedOn": {"placeholders": {"date": {"type": "String"}}},
   "jumpToLetter": "Jump to {letter}",
-  "@jumpToLetter": {"placeholders": {"letter": {"type": "String"}}}
+  "@jumpToLetter": {"placeholders": {"letter": {"type": "String"}}},
+  "upNext": "Up next",
+  "nextSongIn": "Next song in {seconds}",
+  "@nextSongIn": {"placeholders": {"seconds": {"type": "int"}}},
+  "stay": "Stay"
 }

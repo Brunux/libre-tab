@@ -5,6 +5,7 @@ import 'package:libre_tab/app/shell.dart';
 import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/library/presentation/setlist_screen.dart';
+import 'package:libre_tab/features/library/presentation/setlists_screen.dart';
 import 'package:libre_tab/features/settings/presentation/duplicates_screen.dart';
 import 'package:libre_tab/features/settings/presentation/privacy_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
@@ -15,6 +16,7 @@ import 'package:libre_tab/features/tuner/presentation/tuner_screen.dart';
 abstract final class Routes {
   static const songbook = '/songs';
   static const addSong = '/songs/new';
+  static const setlists = '/setlists';
   static const tuner = '/tuner';
   static const settings = '/settings';
   static const duplicates = '/settings/duplicates';
@@ -28,8 +30,9 @@ abstract final class Routes {
       '/setlists/$id/play/$position';
 }
 
-/// Two bottom tabs (Songbook, Tuner). Song view, Add song and Settings open
-/// full screen on the root navigator, above the tab bar (docs/DESIGN.md).
+/// Three bottom tabs (Songbook, Setlists, Tuner). Song view, a setlist, Add
+/// song and Settings open full screen on the root navigator, above the tab
+/// bar (docs/DESIGN.md).
 final routerProvider = Provider<GoRouter>((ref) {
   final rootKey = GlobalKey<NavigatorState>();
   final router = GoRouter(
@@ -80,6 +83,35 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: Routes.setlists,
+                builder: (_, _) => const SetlistsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    parentNavigatorKey: rootKey,
+                    builder: (_, state) => SetlistScreen(setlistId: _id(state)),
+                    routes: [
+                      GoRoute(
+                        path: 'play/:position',
+                        parentNavigatorKey: rootKey,
+                        builder: (_, state) => SetlistPlayerScreen(
+                          setlistId: _id(state),
+                          start:
+                              int.tryParse(
+                                state.pathParameters['position'] ?? '',
+                              ) ??
+                              0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: Routes.tuner,
                 builder: (_, _) => const TunerScreen(),
               ),
@@ -101,21 +133,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'privacy',
             parentNavigatorKey: rootKey,
             builder: (_, _) => const PrivacyScreen(),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/setlists/:id',
-        parentNavigatorKey: rootKey,
-        builder: (_, state) => SetlistScreen(setlistId: _id(state)),
-        routes: [
-          GoRoute(
-            path: 'play/:position',
-            parentNavigatorKey: rootKey,
-            builder: (_, state) => SetlistPlayerScreen(
-              setlistId: _id(state),
-              start: int.tryParse(state.pathParameters['position'] ?? '') ?? 0,
-            ),
           ),
         ],
       ),

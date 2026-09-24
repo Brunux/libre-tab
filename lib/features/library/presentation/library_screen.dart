@@ -15,8 +15,6 @@ import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/application/song_order.dart';
-import 'package:libre_tab/features/library/data/setlist_repository.dart';
-import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/l10n/l10n.dart';
@@ -46,7 +44,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final filter = ref.watch(libraryFilterProvider);
-    final setlists = filter.view == LibraryView.setlists;
 
     return Scaffold(
       appBar: AppBar(
@@ -75,9 +72,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 onChanged: (value) => _filter.query = value,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
-                  hintText: setlists
-                      ? l10n.searchSetlistsHint
-                      : l10n.searchHint,
+                  hintText: l10n.searchHint,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: filter.query.isEmpty
                       ? null
@@ -100,7 +95,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     for (final (view, label) in [
                       (LibraryView.all, l10n.filterAll),
                       (LibraryView.favorites, l10n.filterFavorites),
-                      (LibraryView.setlists, l10n.filterSetlists),
                     ])
                       ChoiceChip(
                         label: Text(label),
@@ -112,45 +106,28 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
             ),
             Expanded(
-              child: setlists
-                  ? _SetlistList(
-                      filter,
-                      onClearSearch: _clearSearch,
-                      onNew: _newSetlist,
-                    )
-                  : _SongList(
-                      filter,
-                      onClearSearch: _clearSearch,
-                      onBrowse: () => _filter.view = LibraryView.all,
-                    ),
+              child: _SongList(
+                filter,
+                onClearSearch: _clearSearch,
+                onBrowse: () => _filter.view = LibraryView.all,
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: setlists
-          ? FloatingActionButton.extended(
-              onPressed: _newSetlist,
-              icon: const Icon(Icons.playlist_add),
-              label: Text(l10n.newSetlist),
-            )
-          : FloatingActionButton.extended(
-              onPressed: () => context.push(Routes.addSong),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.addSong),
-            ),
+      floatingActionButton: FloatingActionButton.extended(
+        // Each tab keeps its page alive, so each button needs its own tag.
+        heroTag: 'addSong',
+        onPressed: () => context.push(Routes.addSong),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.addSong),
+      ),
     );
   }
 
   void _clearSearch() {
     _search.clear();
     _filter.query = '';
-  }
-
-  Future<void> _newSetlist() async {
-    final name = await showSetlistNameDialog(context);
-    if (name == null) return;
-    final id = await ref.read(setlistRepositoryProvider).create(name);
-    if (mounted) await context.push(Routes.setlist(id));
   }
 }
 
@@ -536,116 +513,6 @@ class _LetterIndexState extends State<_LetterIndex> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SetlistList extends ConsumerWidget {
-  const _SetlistList(
-    this.filter, {
-    required this.onClearSearch,
-    required this.onNew,
-  });
-
-  final LibraryFilter filter;
-  final VoidCallback onClearSearch;
-  final VoidCallback onNew;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    return ref
-        .watch(setlistListProvider)
-        .when(
-          skipLoadingOnReload: true,
-          loading: () => const SizedBox.shrink(),
-          error: (_, _) => PlaceholderBody(
-            icon: Icons.error_outline,
-            message: l10n.loadError,
-          ),
-          data: (list) => list.isEmpty
-              ? filter.query.trim().isNotEmpty
-                    ? PlaceholderBody(
-                        icon: Icons.search_off,
-                        message: l10n.noSetlistMatches,
-                        action: TextButton(
-                          onPressed: onClearSearch,
-                          child: Text(l10n.clearSearch),
-                        ),
-                      )
-                    : PlaceholderBody(
-                        icon: Icons.queue_music,
-                        message: l10n.noSetlists,
-                        action: OutlinedButton.icon(
-                          onPressed: onNew,
-                          icon: const Icon(Icons.playlist_add),
-                          label: Text(l10n.newSetlist),
-                        ),
-                      )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 96),
-                  itemCount: list.length,
-                  itemBuilder: (context, i) => _SetlistTile(list[i]),
-                ),
-        );
-  }
-}
-
-class _SetlistTile extends StatelessWidget {
-  const _SetlistTile(this.setlist);
-
-  final SetlistSummary setlist;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return MergeSemantics(
-      child: InkWell(
-        onTap: () => context.push(Routes.setlist(setlist.id)),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 64),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: colors.line)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: colors.surface2,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.queue_music, color: colors.chord),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      setlist.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      context.l10n.songCount(setlist.songCount),
-                      style: TextStyle(fontSize: 15, color: colors.muted),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, color: colors.muted),
-            ],
-          ),
-        ),
       ),
     );
   }

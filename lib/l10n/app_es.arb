@@ -98,7 +98,7 @@
   "a4Title": "Tono de referencia",
   "a4Help": "Casi toda la música usa La4 = 440 Hz. Cámbialo solo para igualar otro instrumento.",
   "a4Reset": "Volver a 440",
-  "filterSetlists": "Repertorios",
+  "tabSetlists": "Repertorios",
   "newSetlist": "Nuevo repertorio",
   "setlistNameLabel": "Nombre",
   "setlistNameHint": "Fogata del viernes",
@@ -191,5 +191,8 @@
   "playedYesterday": "Tocada ayer",
   "playedDaysAgo": "Tocada hace {days} días",
   "playedOn": "Tocada el {date}",
-  "jumpToLetter": "Ir a la {letter}"
+  "jumpToLetter": "Ir a la {letter}",
+  "upNext": "A continuación",
+  "nextSongIn": "Siguiente canción en {seconds}",
+  "stay": "Quedarme"
 }

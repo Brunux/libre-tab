@@ -31,13 +31,25 @@ import 'package:libre_tab/l10n/l10n.dart';
 /// capo, resize text and auto-scroll, and chord diagrams on tap
 /// (docs/DESIGN.md § Song view).
 class SongViewScreen extends ConsumerWidget {
-  const SongViewScreen({required this.songId, this.position, super.key});
+  const SongViewScreen({
+    required this.songId,
+    this.position,
+    this.upNext,
+    this.autoPlay = false,
+    super.key,
+  });
 
   /// Null when the route's id wasn't a number.
   final int? songId;
 
   /// (n, total) while playing a setlist: shown as "n/total".
   final (int, int)? position;
+
+  /// In a setlist: the next song, shown after this one's last line.
+  final UpNext? upNext;
+
+  /// Starts auto-scrolling on its own (the previous song ran into this one).
+  final bool autoPlay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,19 +61,36 @@ class SongViewScreen extends ConsumerWidget {
           skipLoadingOnReload: true,
           loading: () => Scaffold(appBar: AppBar()),
           error: (_, _) => const _NotFound(),
-          data: (entry) =>
-              entry == null ? const _NotFound() : _SongView(entry, position),
+          data: (entry) => entry == null
+              ? const _NotFound()
+              : _SongView(entry, position, upNext, autoPlay: autoPlay),
         );
   }
 }
 
 enum _Action { chords, addToSetlist, edit, share, delete }
 
+/// The song after this one in a setlist, and how to go to it
+/// (`autoPlay`: keep auto-scrolling there).
+final class UpNext {
+  const UpNext({required this.title, required this.go});
+
+  final String title;
+  final void Function({required bool autoPlay}) go;
+}
+
 class _SongView extends ConsumerStatefulWidget {
-  const _SongView(this.entry, this.position);
+  const _SongView(
+    this.entry,
+    this.position,
+    this.upNext, {
+    required this.autoPlay,
+  });
 
   final SongEntry entry;
   final (int, int)? position;
+  final UpNext? upNext;
+  final bool autoPlay;
 
   @override
   ConsumerState<_SongView> createState() => _SongViewState();
@@ -104,6 +133,12 @@ class _SongViewState extends ConsumerState<_SongView>
 
   bool get _moving => _playing && _fingers == 0 && !_userScrolling;
 
+  /// Seconds until the next song in a setlist, once auto-scroll has
+  /// reached the end; null when not counting down.
+  int? _countdown;
+  Timer? _countdownTimer;
+  static const _countdownFrom = 5;
+
   @override
   void initState() {
     super.initState();
@@ -111,11 +146,18 @@ class _SongViewState extends ConsumerState<_SongView>
     unawaited(_keepAwake.enable());
     // For "Recently played" and "Played 12×" in the songbook.
     unawaited(ref.read(songRepositoryProvider).recordOpened(widget.entry.id));
+    if (widget.autoPlay) {
+      // A moment at the top first, to see where the song starts.
+      _countdownTimer = Timer(const Duration(seconds: 1), () {
+        if (mounted) _setPlaying(true);
+      });
+    }
   }
 
   @override
   void dispose() {
     _ticker.dispose();
+    _countdownTimer?.cancel();
     _progress.dispose();
     if (_scrollReady) _scroll.dispose();
     unawaited(_keepAwake.disable());
@@ -132,6 +174,8 @@ class _SongViewState extends ConsumerState<_SongView>
     if (next >= position.maxScrollExtent) {
       _scroll.jumpTo(position.maxScrollExtent);
       _setPlaying(false);
+      // Hands-free to the end of a setlist song: on to the next one.
+      if (widget.upNext != null) _startCountdown();
     } else {
       _scroll.jumpTo(next);
     }
@@ -196,7 +240,30 @@ class _SongViewState extends ConsumerState<_SongView>
     });
   }
 
+  void _startCountdown() {
+    _countdownTimer?.cancel();
+    setState(() => _countdown = _countdownFrom);
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final left = (_countdown ?? 0) - 1;
+      if (left > 0) {
+        setState(() => _countdown = left);
+        return;
+      }
+      timer.cancel();
+      setState(() => _countdown = null);
+      widget.upNext?.go(autoPlay: true);
+    });
+  }
+
+  /// "Stay", or any touch on the song: no moving on.
+  void _stopCountdown() {
+    if (_countdown == null) return;
+    _countdownTimer?.cancel();
+    setState(() => _countdown = null);
+  }
+
   void _fingerDown() {
+    _stopCountdown();
     _fingers++;
     _syncTicker();
   }
@@ -392,11 +459,25 @@ class _SongViewState extends ConsumerState<_SongView>
                       20,
                       48 + _room,
                     ),
-                    child: SongSheet(
-                      song: song,
-                      fontSize: fontSize,
-                      chordLabel: shown,
-                      onChordTap: (chord) => _showChords([chord]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SongSheet(
+                          song: song,
+                          fontSize: fontSize,
+                          chordLabel: shown,
+                          onChordTap: (chord) => _showChords([chord]),
+                        ),
+                        if (widget.upNext case final next?)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 32),
+                            child: _UpNextCard(
+                              next: next,
+                              countdown: _countdown,
+                              onStay: _stopCountdown,
+                            ),
+                          ),
+                      ],
                     ),
                   );
                 },
@@ -502,6 +583,71 @@ class _SongViewState extends ConsumerState<_SongView>
     final repository = ref.read(songRepositoryProvider);
     context.pop();
     await repository.deleteSong(entry.id);
+  }
+}
+
+/// After the last line of a setlist song: the next one, to go to it, or a
+/// countdown to it after auto-scroll got here (with "Stay").
+class _UpNextCard extends StatelessWidget {
+  const _UpNextCard({
+    required this.next,
+    required this.countdown,
+    required this.onStay,
+  });
+
+  final UpNext next;
+  final int? countdown;
+  final VoidCallback onStay;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final seconds = countdown;
+    return Material(
+      color: colors.surface2,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => next.go(autoPlay: false),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(18, 14, 10, 14),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      (seconds == null ? l10n.upNext : l10n.nextSongIn(seconds))
+                          .toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                        color: colors.accent,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      next.title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (seconds != null)
+                TextButton(onPressed: onStay, child: Text(l10n.stay))
+              else
+                Icon(Icons.arrow_forward, color: colors.accent),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
