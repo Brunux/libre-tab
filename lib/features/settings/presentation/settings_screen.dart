@@ -92,6 +92,11 @@ class SettingsScreen extends ConsumerWidget {
               child: Text(l10n.aboutBody),
             ),
             ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: Text(l10n.privacyTitle),
+              onTap: () => context.push(Routes.privacy),
+            ),
+            ListTile(
               leading: const Icon(Icons.description_outlined),
               title: Text(l10n.licenses),
               onTap: () => showLicensePage(

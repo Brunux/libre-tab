@@ -1093,6 +1093,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That file is too big to be a song.'**
   String get fileTooBig;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacyTitle;
+
+  /// No description provided for @privacySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre Tab collects no data. It has no account, no ads and no analytics, and it never connects to the internet.'**
+  String get privacySummary;
+
+  /// No description provided for @privacySongsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songs'**
+  String get privacySongsTitle;
+
+  /// No description provided for @privacySongsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songs, setlists and settings stay on this device. They leave it only when you share or export them. Your device\'s own backup includes them, like any app\'s data.'**
+  String get privacySongsBody;
+
+  /// No description provided for @privacyMicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get privacyMicTitle;
+
+  /// No description provided for @privacyMicBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The tuner listens only while the Tuner tab is on screen. The sound is analyzed on the device and thrown away at once: nothing is recorded, saved or sent.'**
+  String get privacyMicBody;
+
+  /// No description provided for @privacyPhotosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and photos'**
+  String get privacyPhotosTitle;
+
+  /// No description provided for @privacyPhotosBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan photo reads a song from a photo you take or choose. The text is read on the device and the photo isn\'t kept. When you choose photos, the app only sees the ones you pick.'**
+  String get privacyPhotosBody;
+
+  /// No description provided for @privacyMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Full privacy policy and questions:'**
+  String get privacyMore;
 }
 
 class _AppLocalizationsDelegate

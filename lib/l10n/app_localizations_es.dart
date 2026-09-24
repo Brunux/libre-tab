@@ -619,4 +619,35 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get fileTooBig =>
       'Ese archivo es demasiado grande para ser una canción.';
+
+  @override
+  String get privacyTitle => 'Privacidad';
+
+  @override
+  String get privacySummary =>
+      'Libre Tab no recopila datos. No tiene cuenta, anuncios ni analíticas, y nunca se conecta a internet.';
+
+  @override
+  String get privacySongsTitle => 'Tus canciones';
+
+  @override
+  String get privacySongsBody =>
+      'Tus canciones, repertorios y ajustes se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.';
+
+  @override
+  String get privacyMicTitle => 'Micrófono';
+
+  @override
+  String get privacyMicBody =>
+      'El afinador solo escucha mientras la pestaña Afinador está en pantalla. El sonido se analiza en el dispositivo y se descarta al instante: nada se graba, guarda ni envía.';
+
+  @override
+  String get privacyPhotosTitle => 'Cámara y fotos';
+
+  @override
+  String get privacyPhotosBody =>
+      'Escanear foto lee una canción de una foto que tomas o eliges. El texto se lee en el dispositivo y la foto no se guarda. Al elegir fotos, la app solo ve las que eliges.';
+
+  @override
+  String get privacyMore => 'Política de privacidad completa y preguntas:';
 }

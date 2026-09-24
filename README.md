@@ -72,7 +72,7 @@ See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
 ## Platforms
 
-iOS 14+ and Android 7.0+ (API 24).
+iOS 14+ (iPhone and iPad) and Android 7.0+ (API 24).
 
 ## Development
 
@@ -98,6 +98,7 @@ Brand and app icon: see [branding/README.md](branding/README.md) (runs
 | [docs/SONG_FORMAT.md](docs/SONG_FORMAT.md) | The ChordPro subset Libre Tab reads and writes, imports, file types, export/import |
 | [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes, fonts, and every screen: songbook, song view, editor, tuner, setlists, settings |
 | [docs/store/listing.md](docs/store/listing.md) | App Store / Google Play text (EN + ES), privacy answers, screenshots |
+| [docs/store/app-review.md](docs/store/app-review.md) | App Store submission: build checks, App Store Connect answers, reviewer notes, guideline check |
 | [PRIVACY.md](PRIVACY.md) | Privacy statement: no data collected |
 | [SECURITY.md](SECURITY.md) | Reporting vulnerabilities, security model, audit results |
 | [branding/README.md](branding/README.md) | Logo, app icon, social media versions, colors, taglines |

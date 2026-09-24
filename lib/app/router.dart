@@ -6,6 +6,7 @@ import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
 import 'package:libre_tab/features/library/presentation/library_screen.dart';
 import 'package:libre_tab/features/library/presentation/setlist_screen.dart';
 import 'package:libre_tab/features/settings/presentation/duplicates_screen.dart';
+import 'package:libre_tab/features/settings/presentation/privacy_screen.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/setlist_player_screen.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
@@ -17,6 +18,7 @@ abstract final class Routes {
   static const tuner = '/tuner';
   static const settings = '/settings';
   static const duplicates = '/settings/duplicates';
+  static const privacy = '/settings/privacy';
   static String song(int id) => '/songs/$id';
   static String editSong(int id) => '/songs/$id/edit';
   static String setlist(int id) => '/setlists/$id';
@@ -91,6 +93,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'duplicates',
             parentNavigatorKey: rootKey,
             builder: (_, _) => const DuplicatesScreen(),
+          ),
+          GoRoute(
+            path: 'privacy',
+            parentNavigatorKey: rootKey,
+            builder: (_, _) => const PrivacyScreen(),
           ),
         ],
       ),

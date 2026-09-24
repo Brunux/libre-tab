@@ -31,6 +31,13 @@ Future<void> pumpUntilFound(WidgetTester tester, Finder finder) async {
   expect(finder, findsOneWidget);
 }
 
+/// Scrolls the settings list until [text]'s tile is fully on screen.
+Future<void> showTile(WidgetTester tester, String text) async {
+  await tester.scrollUntilVisible(find.text(text), 100);
+  await tester.ensureVisible(find.text(text));
+  await tester.pumpAndSettle();
+}
+
 Future<int> songCount(ProviderContainer c) =>
     c.read(songRepositoryProvider).allSongs().then((s) => s.length);
 
@@ -145,7 +152,7 @@ void main() {
   ) async {
     final container = await pumpApp(tester);
     await openSettings(tester, container);
-    await tester.scrollUntilVisible(find.text('Licenses'), 100);
+    await showTile(tester, 'Licenses');
     expect(find.textContaining('GNU GPL 3.0 or later'), findsOneWidget);
 
     await tester.tap(find.text('Licenses'));
@@ -269,5 +276,26 @@ void main() {
       await openDuplicates(tester);
       expect(find.text('No duplicates found.'), findsOneWidget);
     });
+  });
+
+  testWidgets('Privacy is one tap away, and works offline', (tester) async {
+    final container = await pumpApp(tester);
+    await openSettings(tester, container);
+    await showTile(tester, 'Privacy');
+    await tester.tap(find.text('Privacy'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Libre Tab collects no data'), findsOneWidget);
+    expect(find.text('Microphone'), findsOneWidget);
+    expect(find.text('Camera and photos'), findsOneWidget);
+    await tester.dragUntilVisible(
+      find.byType(SelectableText),
+      find.byType(ListView),
+      const Offset(0, -200),
+    );
+    final link = tester.widget<SelectableText>(find.byType(SelectableText));
+    expect(link.data, endsWith('PRIVACY.md'));
+    // Nothing here names another platform (App Store guideline 2.3.10).
+    expect(find.textContaining('Android'), findsNothing);
   });
 }

@@ -10,9 +10,8 @@ no crash reporting, and it never connects to the internet.
 - **Your songs, setlists and settings** are stored on your phone, in the
   app's own storage. They leave it only when you choose to: sharing a song or
   exporting your songbook sends the file to the app or person you pick in the
-  system share sheet. If you back up your phone (iCloud, or Google on
-  Android), that backup includes them, like any app's data; Libre Tab never
-  sees it.
+  system share sheet. If you back up your phone (for example to iCloud),
+  that backup includes them, like any app's data; Libre Tab never sees it.
 - **Files you open in Libre Tab** (from Files, Mail, a browser or a chat app)
   are read once to add the song. On iPhone, the copy the system hands over is
   then removed.
@@ -29,12 +28,13 @@ tuner keeps working.
 
 ## Camera and photos
 
-"Scan photo" reads a song sheet from a photo you take or choose. The text is
-recognized on your phone (Apple's built-in text recognition on iPhone,
-Tesseract bundled in the app on Android); the photo is never sent anywhere
-and isn't kept. Choosing a photo uses the system photo picker, so Libre Tab
-only ever sees the one photo you pick, never your library. The camera is only
-used when you tap "Take a photo", after the system asks for your permission.
+"Scan photo" reads a song sheet from photos you take or choose. The text is
+recognized on your phone (with the text recognition built into iPhone and
+iPad, or an open-source engine included in the app on other phones); the
+photos are never sent anywhere and aren't kept. Choosing photos uses the
+system photo picker, so Libre Tab only ever sees the photos you pick, never
+your library. The camera is only used when you tap "Take a photo", after the
+system asks for your permission.
 
 ## Children
 
@@ -63,7 +63,7 @@ reportes de errores, y nunca se conecta a internet.
   dentro del almacenamiento de la app. Solo salen de ahí cuando tú lo
   decides: compartir una canción o exportar tu cancionero envía el archivo a
   la app o persona que elijas en el menú de compartir del sistema. Si
-  respaldas tu teléfono (iCloud, o Google en Android), ese respaldo las
+  respaldas tu teléfono (por ejemplo en iCloud), ese respaldo las
   incluye, como los datos de cualquier app; Libre Tab nunca lo ve.
 - **Los archivos que abres en Libre Tab** (desde Archivos, Mail, un navegador
   o una app de chat) se leen una vez para agregar la canción. En iPhone, la
@@ -81,14 +81,13 @@ sigue funcionando.
 
 ## Cámara y fotos
 
-"Escanear foto" lee una canción con acordes a partir de una foto que tomas o
-eliges. El
-texto se reconoce en tu teléfono (el reconocimiento de texto integrado de
-Apple en iPhone, Tesseract incluido en la app en Android); la foto nunca se
-envía a ningún lado y no se guarda. Elegir una foto usa el selector de fotos
-del sistema, así que Libre Tab solo ve la foto que eliges, nunca tu fototeca.
-La cámara solo se usa cuando tocas "Tomar una foto", después de que el
-sistema te pide permiso.
+"Escanear foto" lee una canción con acordes a partir de fotos que tomas o
+eliges. El texto se reconoce en tu teléfono (con el reconocimiento de texto
+integrado en iPhone y iPad, o un motor de código abierto incluido en la app
+en otros teléfonos); las fotos nunca se envían a ningún lado y no se guardan.
+Elegir fotos usa el selector de fotos del sistema, así que Libre Tab solo ve
+las fotos que eliges, nunca tu fototeca. La cámara solo se usa cuando tocas
+"Tomar una foto", después de que el sistema te pide permiso.
 
 ## Niños
 

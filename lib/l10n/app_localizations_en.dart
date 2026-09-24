@@ -625,4 +625,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileTooBig => 'That file is too big to be a song.';
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get privacySummary =>
+      'Libre Tab collects no data. It has no account, no ads and no analytics, and it never connects to the internet.';
+
+  @override
+  String get privacySongsTitle => 'Your songs';
+
+  @override
+  String get privacySongsBody =>
+      'Your songs, setlists and settings stay on this device. They leave it only when you share or export them. Your device\'s own backup includes them, like any app\'s data.';
+
+  @override
+  String get privacyMicTitle => 'Microphone';
+
+  @override
+  String get privacyMicBody =>
+      'The tuner listens only while the Tuner tab is on screen. The sound is analyzed on the device and thrown away at once: nothing is recorded, saved or sent.';
+
+  @override
+  String get privacyPhotosTitle => 'Camera and photos';
+
+  @override
+  String get privacyPhotosBody =>
+      'Scan photo reads a song from a photo you take or choose. The text is read on the device and the photo isn\'t kept. When you choose photos, the app only sees the ones you pick.';
+
+  @override
+  String get privacyMore => 'Full privacy policy and questions:';
 }

@@ -165,5 +165,14 @@
   "fretOpen": "al aire",
   "diagramFrets": "Trastes desde la cuerda más gruesa: {frets}",
   "searchSetlistsHint": "Buscar repertorios",
-  "fileTooBig": "Ese archivo es demasiado grande para ser una canción."
+  "fileTooBig": "Ese archivo es demasiado grande para ser una canción.",
+  "privacyTitle": "Privacidad",
+  "privacySummary": "Libre Tab no recopila datos. No tiene cuenta, anuncios ni analíticas, y nunca se conecta a internet.",
+  "privacySongsTitle": "Tus canciones",
+  "privacySongsBody": "Tus canciones, repertorios y ajustes se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.",
+  "privacyMicTitle": "Micrófono",
+  "privacyMicBody": "El afinador solo escucha mientras la pestaña Afinador está en pantalla. El sonido se analiza en el dispositivo y se descarta al instante: nada se graba, guarda ni envía.",
+  "privacyPhotosTitle": "Cámara y fotos",
+  "privacyPhotosBody": "Escanear foto lee una canción de una foto que tomas o eliges. El texto se lee en el dispositivo y la foto no se guarda. Al elegir fotos, la app solo ve las que eliges.",
+  "privacyMore": "Política de privacidad completa y preguntas:"
 }

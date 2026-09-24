@@ -348,5 +348,14 @@
     }
   },
   "searchSetlistsHint": "Search setlists",
-  "fileTooBig": "That file is too big to be a song."
+  "fileTooBig": "That file is too big to be a song.",
+  "privacyTitle": "Privacy",
+  "privacySummary": "Libre Tab collects no data. It has no account, no ads and no analytics, and it never connects to the internet.",
+  "privacySongsTitle": "Your songs",
+  "privacySongsBody": "Your songs, setlists and settings stay on this device. They leave it only when you share or export them. Your device's own backup includes them, like any app's data.",
+  "privacyMicTitle": "Microphone",
+  "privacyMicBody": "The tuner listens only while the Tuner tab is on screen. The sound is analyzed on the device and thrown away at once: nothing is recorded, saved or sent.",
+  "privacyPhotosTitle": "Camera and photos",
+  "privacyPhotosBody": "Scan photo reads a song from a photo you take or choose. The text is read on the device and the photo isn't kept. When you choose photos, the app only sees the ones you pick.",
+  "privacyMore": "Full privacy policy and questions:"
 }
