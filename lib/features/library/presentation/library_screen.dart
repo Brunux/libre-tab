@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +57,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
         actions: [
           IconButton(
             tooltip: l10n.settingsTitle,
-            icon: const Icon(Icons.tune),
+            icon: const Icon(Icons.settings_outlined),
             onPressed: () => context.push(Routes.settings),
           ),
           const SizedBox(width: 8),
@@ -79,10 +82,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                       : IconButton(
                           tooltip: l10n.clearSearch,
                           icon: const Icon(Icons.close),
-                          onPressed: () {
-                            _search.clear();
-                            _filter.query = '';
-                          },
+                          onPressed: _clearSearch,
                         ),
                 ),
               ),
@@ -110,7 +110,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
             ),
             Expanded(
-              child: setlists ? _SetlistList(filter) : _SongList(filter),
+              child: setlists
+                  ? _SetlistList(
+                      filter,
+                      onClearSearch: _clearSearch,
+                      onNew: _newSetlist,
+                    )
+                  : _SongList(
+                      filter,
+                      onClearSearch: _clearSearch,
+                      onBrowse: () => _filter.view = LibraryView.all,
+                    ),
             ),
           ],
         ),
@@ -129,6 +139,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 
+  void _clearSearch() {
+    _search.clear();
+    _filter.query = '';
+  }
+
   Future<void> _newSetlist() async {
     final name = await showSetlistNameDialog(context);
     if (name == null) return;
@@ -138,9 +153,17 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
 }
 
 class _SongList extends ConsumerWidget {
-  const _SongList(this.filter);
+  const _SongList(
+    this.filter, {
+    required this.onClearSearch,
+    required this.onBrowse,
+  });
 
   final LibraryFilter filter;
+  final VoidCallback onClearSearch;
+
+  /// From an empty Favorites to all songs.
+  final VoidCallback onBrowse;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,13 +173,31 @@ class _SongList extends ConsumerWidget {
         .when(
           skipLoadingOnReload: true,
           loading: () => const SizedBox.shrink(),
-          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          error: (_, _) => PlaceholderBody(
+            icon: Icons.error_outline,
+            message: l10n.loadError,
+          ),
           data: (list) => list.isEmpty
               ? filter.query.trim().isNotEmpty
-                    ? PlaceholderBody(message: l10n.noMatches)
+                    ? PlaceholderBody(
+                        icon: Icons.search_off,
+                        message: l10n.noMatches,
+                        action: TextButton(
+                          onPressed: onClearSearch,
+                          child: Text(l10n.clearSearch),
+                        ),
+                      )
                     : filter.view == LibraryView.favorites
-                    ? PlaceholderBody(message: l10n.noFavorites)
+                    ? PlaceholderBody(
+                        icon: Icons.star_outline_rounded,
+                        message: l10n.noFavorites,
+                        action: OutlinedButton(
+                          onPressed: onBrowse,
+                          child: Text(l10n.browseSongs),
+                        ),
+                      )
                     : PlaceholderBody(
+                        mark: true,
                         message: l10n.emptySongbook,
                         action: OutlinedButton.icon(
                           onPressed: () => addStarterSongs(context, ref),
@@ -179,9 +220,15 @@ class _SongList extends ConsumerWidget {
 }
 
 class _SetlistList extends ConsumerWidget {
-  const _SetlistList(this.filter);
+  const _SetlistList(
+    this.filter, {
+    required this.onClearSearch,
+    required this.onNew,
+  });
 
   final LibraryFilter filter;
+  final VoidCallback onClearSearch;
+  final VoidCallback onNew;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -191,13 +238,29 @@ class _SetlistList extends ConsumerWidget {
         .when(
           skipLoadingOnReload: true,
           loading: () => const SizedBox.shrink(),
-          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          error: (_, _) => PlaceholderBody(
+            icon: Icons.error_outline,
+            message: l10n.loadError,
+          ),
           data: (list) => list.isEmpty
-              ? PlaceholderBody(
-                  message: filter.query.trim().isNotEmpty
-                      ? l10n.noSetlistMatches
-                      : l10n.noSetlists,
-                )
+              ? filter.query.trim().isNotEmpty
+                    ? PlaceholderBody(
+                        icon: Icons.search_off,
+                        message: l10n.noSetlistMatches,
+                        action: TextButton(
+                          onPressed: onClearSearch,
+                          child: Text(l10n.clearSearch),
+                        ),
+                      )
+                    : PlaceholderBody(
+                        icon: Icons.queue_music,
+                        message: l10n.noSetlists,
+                        action: OutlinedButton.icon(
+                          onPressed: onNew,
+                          icon: const Icon(Icons.playlist_add),
+                          label: Text(l10n.newSetlist),
+                        ),
+                      )
               : ListView.builder(
                   padding: const EdgeInsets.only(bottom: 96),
                   itemCount: list.length,
@@ -286,6 +349,12 @@ class _CountHeader extends StatelessWidget {
   );
 }
 
+/// A light tap under the finger, then [action].
+void _click(VoidCallback action) {
+  unawaited(HapticFeedback.selectionClick());
+  action();
+}
+
 class _SongTile extends ConsumerWidget {
   const _SongTile({required this.song});
 
@@ -316,21 +385,24 @@ class _SongTile extends ConsumerWidget {
         extentRatio: 0.72,
         children: [
           SlidableAction(
-            onPressed: (_) => addToSetlist(),
+            onPressed: (_) => _click(addToSetlist),
             backgroundColor: colors.surface2,
             foregroundColor: colors.text,
             icon: Icons.playlist_add,
             label: l10n.swipeSetlist,
           ),
           SlidableAction(
-            onPressed: (_) => share(),
+            onPressed: (_) => _click(share),
             backgroundColor: colors.surface,
             foregroundColor: colors.text,
             icon: Icons.ios_share,
             label: l10n.share,
           ),
           SlidableAction(
-            onPressed: (_) => delete(),
+            onPressed: (_) {
+              unawaited(HapticFeedback.mediumImpact());
+              delete();
+            },
             backgroundColor: scheme.error,
             foregroundColor: scheme.onError,
             icon: Icons.delete_outline,

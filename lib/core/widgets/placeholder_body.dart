@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 
 /// Centered muted message for empty and error states, with an optional
-/// [action] button under it.
+/// [icon] above it and an [action] button under it.
 class PlaceholderBody extends StatelessWidget {
-  const PlaceholderBody({required this.message, this.action, super.key});
+  const PlaceholderBody({
+    required this.message,
+    this.icon,
+    this.mark = false,
+    this.action,
+    super.key,
+  });
 
   final String message;
+  final IconData? icon;
+
+  /// The flame mark instead of an icon (an empty songbook).
+  final bool mark;
   final Widget? action;
 
   @override
@@ -29,6 +39,26 @@ class PlaceholderBody extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (mark)
+              const ExcludeSemantics(
+                child: Image(
+                  image: AssetImage('assets/images/mark.png'),
+                  width: 96,
+                  height: 96,
+                ),
+              )
+            else if (icon case final icon?)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.colors.surface2,
+                  shape: BoxShape.circle,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Icon(icon, size: 36, color: context.colors.accent),
+                ),
+              ),
+            if (mark || icon != null) const SizedBox(height: 20),
             Text(
               message,
               textAlign: TextAlign.center,

@@ -92,7 +92,10 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
         child: songs.when(
           skipLoadingOnReload: true,
           loading: () => const SizedBox.shrink(),
-          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          error: (_, _) => PlaceholderBody(
+            icon: Icons.error_outline,
+            message: l10n.loadError,
+          ),
           data: (fromDb) {
             final list = _dragged ?? fromDb;
             final buttons = _Buttons(
@@ -105,7 +108,12 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
               return Column(
                 children: [
                   buttons,
-                  Expanded(child: PlaceholderBody(message: l10n.emptySetlist)),
+                  Expanded(
+                    child: PlaceholderBody(
+                      icon: Icons.playlist_add,
+                      message: l10n.emptySetlist,
+                    ),
+                  ),
                 ],
               );
             }
@@ -413,6 +421,9 @@ class _NotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(),
-    body: PlaceholderBody(message: context.l10n.setlistNotFound),
+    body: PlaceholderBody(
+      icon: Icons.search_off,
+      message: context.l10n.setlistNotFound,
+    ),
   );
 }

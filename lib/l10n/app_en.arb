@@ -15,6 +15,7 @@
   "switchTheme": "Switch theme",
   "searchHint": "Search songs, artists or lyrics",
   "clearSearch": "Clear search",
+  "browseSongs": "Browse songs",
   "filterAll": "All songs",
   "filterFavorites": "Favorites",
   "songCount": "{count, plural, =1{1 song} other{{count} songs}}",
@@ -245,6 +246,13 @@
   "aboutSection": "About",
   "aboutBody": "Libre Tab is free software under the GNU GPL 3.0 or later. It works offline and collects no data.",
   "licenses": "Licenses",
+  "versionLabel": "Version {version} ({build})",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {"type": "String"},
+      "build": {"type": "int"}
+    }
+  },
   "dangerZone": "Danger zone",
   "deleteAllSongs": "Delete all songs",
   "deleteAllSongsHint": "Removes every song from this phone",

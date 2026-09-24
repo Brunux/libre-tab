@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Clear search'**
   String get clearSearch;
 
+  /// No description provided for @browseSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse songs'**
+  String get browseSongs;
+
   /// No description provided for @filterAll.
   ///
   /// In en, this message translates to:
@@ -865,6 +871,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} ({build})'**
+  String versionLabel(String version, int build);
 
   /// No description provided for @dangerZone.
   ///

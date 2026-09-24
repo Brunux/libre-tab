@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:libre_tab/app/app_version.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
@@ -91,6 +92,13 @@ class SettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: Text(l10n.aboutBody),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              child: Text(
+                l10n.versionLabel(appVersion, appBuild),
+                style: TextStyle(color: context.colors.muted),
+              ),
+            ),
             ListTile(
               leading: const Icon(Icons.privacy_tip_outlined),
               title: Text(l10n.privacyTitle),
@@ -102,6 +110,7 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => showLicensePage(
                 context: context,
                 applicationName: l10n.appTitle,
+                applicationVersion: appVersion,
                 applicationLegalese: 'GNU GPL 3.0 or later',
               ),
             ),

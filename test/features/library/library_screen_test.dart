@@ -94,6 +94,26 @@ void main() {
     expect(shownTitles(tester), hasLength(3));
   });
 
+  testWidgets('empty states offer the way out', (tester) async {
+    await pumpApp(tester, songs: _all);
+
+    // No favorites: "Browse songs" goes back to all of them.
+    await tester.tap(find.text('Favorites'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Browse songs'));
+    await tester.pumpAndSettle();
+    expect(shownTitles(tester), hasLength(3));
+
+    // No matches: the button under the message clears the search.
+    await tester.enterText(find.byType(TextField), 'zzz');
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Clear search'));
+    await tester.pumpAndSettle();
+    expect(shownTitles(tester), hasLength(3));
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.controller!.text, isEmpty);
+  });
+
   testWidgets('tapping a song opens it', (tester) async {
     await pumpApp(tester, songs: _all);
 

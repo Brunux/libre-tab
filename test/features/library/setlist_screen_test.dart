@@ -42,7 +42,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('No setlists yet'), findsOneWidget);
-    expect(find.text('New setlist'), findsOneWidget);
+    // The floating button, and the same action under the message.
+    expect(
+      find.widgetWithText(FloatingActionButton, 'New setlist'),
+      findsOneWidget,
+    );
+    expect(find.widgetWithText(OutlinedButton, 'New setlist'), findsOneWidget);
     expect(find.text('Add song'), findsNothing);
   });
 
@@ -50,7 +55,7 @@ void main() {
     final container = await pumpApp(tester, songs: _all);
     await tester.tap(find.text('Setlists'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('New setlist'));
+    await tester.tap(find.widgetWithText(FloatingActionButton, 'New setlist'));
     await tester.pumpAndSettle();
 
     final create = find.widgetWithText(TextButton, 'Create');

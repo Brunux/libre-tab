@@ -80,7 +80,7 @@ Review 5.1.1(iv)). The system asks only once, so a refusal always offers
 ## Screens
 
 ### 1. Songbook
-Header (title + settings icon) · search field · chips: All songs / Favorites /
+Header (title + settings gear) · search field · chips: All songs / Favorites /
 Setlists · song rows (key badge, title, artist · capo, favorite star) ·
 floating "Add song" button · bottom tabs.
 
@@ -102,7 +102,14 @@ chord opens a bottom sheet with its diagram. Diagrams show fret numbers down
 the left and, under each string, the fret to press (C: × 3 2 0 1 0), so shapes
 are easy to learn; screen readers hear the same, string by string. Bottom dock:
 - Row 1: Key − / + (transpose), Capo − / +
-- Row 2: A− / A+ (text size), Speed − / ▶ Speed N / +
+- Row 2: A− / A+ (text size), Speed − / ▶ / + (the play button shows the
+  speed under its icon: "▶ SPEED 2")
+
+While auto-scroll plays, the dock folds down to just the speed control (−,
+pause, +), so the song gets the room; pausing (the button, or a tap on the
+lyrics) brings the whole dock back. A thin line under the title shows how far
+through the song it has scrolled. A light haptic tap confirms play/pause, the
+dock's steppers and the favorite star.
 
 Screen stays awake; auto-scroll stops at the end.
 
@@ -145,9 +152,15 @@ A song file opened from another app ("Open in Libre Tab", "Share to") lands
 here the same way, already filled in (docs/SONG_FORMAT.md § Files).
 
 ### Empty and error states
-- Empty songbook: "Your songbook is empty. Add your first song."
-- Search with no results: "No songs match your search."
+Each has an icon in a soft circle (the flame mark for an empty songbook),
+the message, and the way out as a button:
+- Empty songbook: "Your songbook is empty. Add your first song." · Add
+  starter songs
+- Search with no results: "No songs match your search." · Clear search
 - Favorites with none: "No favorites yet. Tap the star on a song to add it."
+  · Browse songs
+- No setlists: "No setlists yet. Make one for your next campfire." · New
+  setlist
 - Unknown or deleted song: "This song isn't in your songbook."
 
 ### 4. Tuner
@@ -188,7 +201,8 @@ Theme (Dark / Red night / Light) · **Songbook**: Export all songs (a `.zip` of
 `.cho` files through the share sheet), Import songs (`.zip` or a single song
 file; adds every song, skips files that aren't songs), Add starter songs
 (adds the public-domain starters that aren't in the songbook) · **About**:
-version, GPL-3.0 note and the licenses page. · **Danger zone** (last, in the
+GPL-3.0 note, "Version 1.0.0 (1)" (`lib/app/app_version.dart`, checked
+against pubspec.yaml by a test), Privacy and the licenses page. · **Danger zone** (last, in the
 error color): Delete all songs.
 
 **Find duplicates** (Songbook section, needs 2+ songs) groups songs whose title

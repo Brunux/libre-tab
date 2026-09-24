@@ -181,6 +181,43 @@ void main() {
       expect(scrollOffset(tester), moved);
     });
 
+    testWidgets('while playing the dock folds down to the speed control', (
+      tester,
+    ) async {
+      await openSong(tester, longSong);
+      expect(find.byTooltip('Transpose up'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Start auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      // Key, capo and text size step aside; speed and pause stay.
+      expect(find.byTooltip('Transpose up'), findsNothing);
+      expect(find.byTooltip('Larger text'), findsNothing);
+      expect(find.byTooltip('Scroll faster'), findsOneWidget);
+      expect(find.text('SPEED 2'), findsOneWidget);
+
+      // Pausing (here by tapping the lyrics) brings the whole dock back.
+      await tester.tap(find.byTooltip('Pause auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byTooltip('Transpose up'), findsOneWidget);
+    });
+
+    testWidgets('the line under the title follows the song', (tester) async {
+      await openSong(tester, longSong);
+      double progress() => tester
+          .widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator))
+          .value!;
+      expect(progress(), 0);
+
+      await tester.tap(find.byTooltip('Start auto-scroll'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
+      expect(progress(), greaterThan(0));
+      expect(progress(), lessThan(1));
+    });
+
     testWidgets('tapping the lyrics pauses and resumes', (tester) async {
       await openSong(tester, longSong);
       await tester.tap(find.text('line0'));
@@ -288,11 +325,11 @@ void main() {
       tester,
     ) async {
       final container = await openSong(tester, longSong);
-      expect(find.text('Speed 2'), findsOneWidget);
+      expect(find.text('SPEED 2'), findsOneWidget);
 
       await tester.tap(find.byTooltip('Scroll faster'));
       await tester.pumpAndSettle();
-      expect(find.text('Speed 3'), findsOneWidget);
+      expect(find.text('SPEED 3'), findsOneWidget);
       final saved = await container.read(songRepositoryProvider).getSong(1);
       expect(saved!.scrollSpeed, 3);
 

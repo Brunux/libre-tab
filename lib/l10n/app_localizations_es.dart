@@ -54,6 +54,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clearSearch => 'Borrar búsqueda';
 
   @override
+  String get browseSongs => 'Ver canciones';
+
+  @override
   String get filterAll => 'Todas';
 
   @override
@@ -451,6 +454,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get licenses => 'Licencias';
+
+  @override
+  String versionLabel(String version, int build) {
+    return 'Versión $version ($build)';
+  }
 
   @override
   String get dangerZone => 'Zona de riesgo';

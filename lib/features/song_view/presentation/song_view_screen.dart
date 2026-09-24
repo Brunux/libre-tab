@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
@@ -76,7 +77,12 @@ class _SongViewState extends ConsumerState<_SongView>
   /// height, so auto-scroll can bring the last lines up to the middle. The
   /// song opens scrolled past the top room, so it starts at the top.
   double _room = 0;
+  double? _roomWidth;
   late final ScrollController _scroll;
+
+  /// How far through the song auto-scroll has got (0–1), for the line under
+  /// the title.
+  final _progress = ValueNotifier<double>(0);
   bool _scrollReady = false;
   late final Ticker _ticker;
   Duration _lastTick = Duration.zero;
@@ -108,6 +114,7 @@ class _SongViewState extends ConsumerState<_SongView>
   @override
   void dispose() {
     _ticker.dispose();
+    _progress.dispose();
     if (_scrollReady) _scroll.dispose();
     unawaited(_keepAwake.disable());
     super.dispose();
@@ -153,19 +160,29 @@ class _SongViewState extends ConsumerState<_SongView>
       _userScrolling = false;
     }
     _syncTicker();
+    // From the first line at the top (past the room) to the end.
+    final m = n.metrics;
+    if (m.maxScrollExtent > _room) {
+      _progress.value = ((m.pixels - _room) / (m.maxScrollExtent - _room))
+          .clamp(0.0, 1.0);
+    }
     return false;
   }
 
   /// Sets the room above and below the song. The first time, the scroll
   /// view opens past the top room; later (rotation) the song keeps its place.
-  void _fitRoom(double room) {
+  /// Only a new width (rotation, split view) changes it: the dock folding
+  /// away while playing shouldn't nudge the song.
+  void _fitRoom(double room, double width) {
     if (!_scrollReady) {
       _room = room;
+      _roomWidth = width;
       _scroll = ScrollController(initialScrollOffset: room);
       _scrollReady = true;
       return;
     }
-    if (room == _room) return;
+    if (width == _roomWidth || room == _room) return;
+    _roomWidth = width;
     final shift = room - _room;
     _room = room;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -188,6 +205,7 @@ class _SongViewState extends ConsumerState<_SongView>
   }
 
   void _togglePlay() {
+    unawaited(HapticFeedback.lightImpact());
     // At the end already: start again from the top.
     if (!_playing && _scroll.hasClients) {
       final p = _scroll.position;
@@ -293,9 +311,14 @@ class _SongViewState extends ConsumerState<_SongView>
               entry.favorite ? Icons.star_rounded : Icons.star_outline_rounded,
               color: entry.favorite ? context.colors.accent : null,
             ),
-            onPressed: () => ref
-                .read(songRepositoryProvider)
-                .setFavorite(entry.id, favorite: !entry.favorite),
+            onPressed: () {
+              unawaited(HapticFeedback.selectionClick());
+              unawaited(
+                ref
+                    .read(songRepositoryProvider)
+                    .setFavorite(entry.id, favorite: !entry.favorite),
+              );
+            },
           ),
           IconButton(
             tooltip: l10n.switchTheme,
@@ -329,6 +352,20 @@ class _SongViewState extends ConsumerState<_SongView>
             ],
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(2),
+          child: ExcludeSemantics(
+            child: ValueListenableBuilder(
+              valueListenable: _progress,
+              builder: (context, progress, _) => LinearProgressIndicator(
+                value: progress,
+                minHeight: 2,
+                backgroundColor: Colors.transparent,
+                color: context.colors.accent.withValues(alpha: 0.7),
+              ),
+            ),
+          ),
+        ),
       ),
       // A finger on the lyrics holds auto-scroll still, so the text isn't
       // pulled out from under it.
@@ -348,7 +385,7 @@ class _SongViewState extends ConsumerState<_SongView>
               onTap: _togglePlay,
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  _fitRoom(constraints.maxHeight / 2);
+                  _fitRoom(constraints.maxHeight / 2, constraints.maxWidth);
                   return SingleChildScrollView(
                     controller: _scroll,
                     padding: EdgeInsets.fromLTRB(
@@ -370,53 +407,72 @@ class _SongViewState extends ConsumerState<_SongView>
           ),
         ),
       ),
-      bottomNavigationBar: _Dock(
-        rows: [
-          [
-            _StepperModel(
-              label: l10n.keyStepper,
-              value: sounding == null
-                  ? semitoneLabel.trim()
-                  : '$sounding$semitoneLabel',
-              minus: (
-                l10n.transposeDown,
-                t.semitones > -11 ? () => _transpose(-1) : null,
+      // While auto-scroll plays, the dock folds down to the speed control,
+      // leaving the song the room; pausing (tap the lyrics) brings it back.
+      bottomNavigationBar: AnimatedSize(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        alignment: Alignment.topCenter,
+        child: _Dock(
+          compact: _playing,
+          rows: [
+            if (!_playing)
+              [
+                _StepperModel(
+                  label: l10n.keyStepper,
+                  value: sounding == null
+                      ? semitoneLabel.trim()
+                      : '$sounding$semitoneLabel',
+                  minus: (
+                    l10n.transposeDown,
+                    t.semitones > -11 ? () => _transpose(-1) : null,
+                  ),
+                  plus: (
+                    l10n.transposeUp,
+                    t.semitones < 11 ? () => _transpose(1) : null,
+                  ),
+                ),
+                _StepperModel(
+                  label: l10n.capoStepper,
+                  value: t.capo == 0 ? l10n.capoNone : '${t.capo}',
+                  minus: (
+                    l10n.capoDown,
+                    t.capo > 0 ? () => _moveCapo(-1) : null,
+                  ),
+                  plus: (l10n.capoUp, t.capo < 11 ? () => _moveCapo(1) : null),
+                ),
+              ],
+            [
+              if (!_playing)
+                _StepperModel(
+                  label: l10n.textSize,
+                  value: '${fontSize.round()}',
+                  minus: (
+                    l10n.smallerText,
+                    size.canShrink ? size.shrink : null,
+                  ),
+                  plus: (l10n.largerText, size.canGrow ? size.grow : null),
+                ),
+              _StepperModel(
+                label: l10n.speedLabel(_speed),
+                value: '',
+                minus: (
+                  l10n.slower,
+                  _speed > 1 ? () => _changeSpeed(-1) : null,
+                ),
+                plus: (
+                  l10n.faster,
+                  _speed < _speeds.length ? () => _changeSpeed(1) : null,
+                ),
+                center: _PlayButton(
+                  playing: _playing,
+                  label: l10n.speedLabel(_speed),
+                  onPressed: _togglePlay,
+                ),
               ),
-              plus: (
-                l10n.transposeUp,
-                t.semitones < 11 ? () => _transpose(1) : null,
-              ),
-            ),
-            _StepperModel(
-              label: l10n.capoStepper,
-              value: t.capo == 0 ? l10n.capoNone : '${t.capo}',
-              minus: (l10n.capoDown, t.capo > 0 ? () => _moveCapo(-1) : null),
-              plus: (l10n.capoUp, t.capo < 11 ? () => _moveCapo(1) : null),
-            ),
+            ],
           ],
-          [
-            _StepperModel(
-              label: l10n.textSize,
-              value: '${fontSize.round()}',
-              minus: (l10n.smallerText, size.canShrink ? size.shrink : null),
-              plus: (l10n.largerText, size.canGrow ? size.grow : null),
-            ),
-            _StepperModel(
-              label: l10n.speedLabel(_speed),
-              value: '',
-              minus: (l10n.slower, _speed > 1 ? () => _changeSpeed(-1) : null),
-              plus: (
-                l10n.faster,
-                _speed < _speeds.length ? () => _changeSpeed(1) : null,
-              ),
-              center: _PlayButton(
-                playing: _playing,
-                speed: _speed,
-                onPressed: _togglePlay,
-              ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
@@ -470,9 +526,12 @@ class _StepperModel {
 }
 
 class _Dock extends StatelessWidget {
-  const _Dock({required this.rows});
+  const _Dock({required this.rows, this.compact = false});
 
   final List<List<_StepperModel>> rows;
+
+  /// Just the speed control, narrow and centered (while playing).
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -487,6 +546,7 @@ class _Dock extends StatelessWidget {
         // Full-width background; the controls themselves stay phone-sized
         // on big screens.
         child: ReadableWidth(
+          maxWidth: compact ? 280 : 760,
           fillHeight: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -521,8 +581,25 @@ class _Stepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final (minusTip, onMinus) = model.minus;
-    final (plusTip, onPlus) = model.plus;
+    final (minusTip, minus) = model.minus;
+    final (plusTip, plus) = model.plus;
+    VoidCallback? withClick(VoidCallback? action) => action == null
+        ? null
+        : () {
+            unawaited(HapticFeedback.selectionClick());
+            action();
+          };
+    final onMinus = withClick(minus);
+    final onPlus = withClick(plus);
+    final label = Text(
+      model.label.toUpperCase(),
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.8,
+        color: colors.muted,
+      ),
+    );
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -537,32 +614,27 @@ class _Stepper extends StatelessWidget {
             onPressed: onMinus,
           ),
           Expanded(
-            child:
-                model.center ??
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        model.label.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.8,
-                          color: colors.muted,
-                        ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // A center control (play) carries its own caption.
+                  if (model.center case final center?)
+                    center
+                  else ...[
+                    label,
+                    Text(
+                      model.value,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Text(
-                        model.value,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
           IconButton(
             tooltip: plusTip,
@@ -575,15 +647,16 @@ class _Stepper extends StatelessWidget {
   }
 }
 
+/// Play / pause, with the speed it plays at under the icon ("SPEED 2").
 class _PlayButton extends StatelessWidget {
   const _PlayButton({
     required this.playing,
-    required this.speed,
+    required this.label,
     required this.onPressed,
   });
 
   final bool playing;
-  final int speed;
+  final String label;
   final VoidCallback onPressed;
 
   @override
@@ -594,19 +667,24 @@ class _PlayButton extends StatelessWidget {
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          minimumSize: const Size(0, 44),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          minimumSize: const Size(72, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(playing ? Icons.pause : Icons.play_arrow),
-              const SizedBox(width: 4),
-              Text(l10n.speedLabel(speed)),
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(playing ? Icons.pause : Icons.play_arrow, size: 22),
+            Text(
+              label.toUpperCase(),
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.8,
+                height: 1.1,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -692,6 +770,9 @@ class _NotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(),
-    body: PlaceholderBody(message: context.l10n.songNotFound),
+    body: PlaceholderBody(
+      icon: Icons.music_off_outlined,
+      message: context.l10n.songNotFound,
+    ),
   );
 }

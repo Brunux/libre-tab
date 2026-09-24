@@ -189,7 +189,7 @@ void main() {
     final container = await pumpApp(tester, songs: [SampleSongs.ohSusanna]);
     await goTo(tester, container, Routes.song(1));
 
-    for (final label in ['TONO', 'CEJILLA', 'LETRA', 'Velocidad 2']) {
+    for (final label in ['TONO', 'CEJILLA', 'LETRA', 'VELOCIDAD 2']) {
       expect(find.text(label), findsOneWidget, reason: label);
     }
     for (final tooltip in [

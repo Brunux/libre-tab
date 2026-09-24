@@ -72,11 +72,17 @@ class _DuplicatesScreenState extends ConsumerState<DuplicatesScreen> {
           builder: (context, snapshot) {
             final groups = snapshot.data;
             if (snapshot.hasError) {
-              return PlaceholderBody(message: l10n.loadError);
+              return PlaceholderBody(
+                icon: Icons.error_outline,
+                message: l10n.loadError,
+              );
             }
             if (groups == null) return const SizedBox.shrink();
             if (groups.isEmpty) {
-              return PlaceholderBody(message: l10n.noDuplicates);
+              return PlaceholderBody(
+                icon: Icons.check_circle_outline,
+                message: l10n.noDuplicates,
+              );
             }
             final copies = [
               for (final g in groups)
