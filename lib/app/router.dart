@@ -35,6 +35,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
     navigatorKey: rootKey,
     initialLocation: Routes.songbook,
+    // The app has no links of its own; anything unknown goes home rather
+    // than to an error page.
+    onException: (_, _, router) => router.go(Routes.songbook),
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),

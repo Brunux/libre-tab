@@ -14,6 +14,20 @@ import '../helpers/pump_app.dart';
 import '../helpers/test_database.dart';
 
 void main() {
+  testWidgets('an unknown location, like a file URI, opens the Songbook', (
+    tester,
+  ) async {
+    // Android hands a file opened from another app to Flutter as a route
+    // unless deep linking is off; either way it must not be an error page.
+    final container = await pumpApp(tester);
+    container
+        .read(routerProvider)
+        .go('content://media/external/file/1000000020');
+    await tester.pumpAndSettle();
+    expect(find.byType(LibraryScreen), findsOneWidget);
+    expect(find.textContaining('Page Not Found'), findsNothing);
+  });
+
   testWidgets('back from Settings returns to the Songbook', (tester) async {
     await pumpApp(tester);
 
