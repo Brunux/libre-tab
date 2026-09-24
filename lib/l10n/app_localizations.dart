@@ -1267,6 +1267,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stay'**
   String get stay;
+
+  /// No description provided for @allTuned.
+  ///
+  /// In en, this message translates to:
+  /// **'All tuned — let\'s play!'**
+  String get allTuned;
+
+  /// No description provided for @playSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Play {title}'**
+  String playSong(String title);
+
+  /// No description provided for @openSongbook.
+  ///
+  /// In en, this message translates to:
+  /// **'Open songbook'**
+  String get openSongbook;
+
+  /// No description provided for @stringTuned.
+  ///
+  /// In en, this message translates to:
+  /// **'tuned'**
+  String get stringTuned;
 }
 
 class _AppLocalizationsDelegate

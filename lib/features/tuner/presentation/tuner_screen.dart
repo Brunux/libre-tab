@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/music/tunings.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
+import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/tuner/application/tuner_controller.dart';
 import 'package:libre_tab/features/tuner/presentation/widgets/tuner_gauge.dart';
 import 'package:libre_tab/l10n/l10n.dart';
@@ -191,10 +194,14 @@ class _TunerBody extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  target == null ? '–' : _pretty(target.name),
-                  style: AppFonts.displayStyle(104, statusColor),
-                ),
+                if (target == null)
+                  // Nothing to tune yet: show that the microphone hears.
+                  _ListeningRing(level: state.level)
+                else
+                  Text(
+                    _pretty(target.name),
+                    style: AppFonts.displayStyle(104, statusColor),
+                  ),
                 if (target != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 14),
@@ -280,6 +287,7 @@ class _TunerBody extends ConsumerWidget {
                     (state.lockedString == null && reading?.stringIndex == i),
                 locked: state.lockedString == i,
                 inTune: state.inTune && reading?.stringIndex == i,
+                tuned: state.tuned.contains(i),
                 onPressed: () => tuner.toggleString(i),
               ),
             ),
@@ -302,6 +310,7 @@ class _TunerBody extends ConsumerWidget {
               const _TuningMenu(),
               const SizedBox(height: 16),
               readout,
+              if (state.allTuned) const _AllTunedCard(),
               ...strings,
             ],
           );
@@ -318,6 +327,7 @@ class _TunerBody extends ConsumerWidget {
                   child: FittedBox(fit: BoxFit.scaleDown, child: readout),
                 ),
               ),
+              if (state.allTuned) const _AllTunedCard(),
               ...strings,
             ],
           ),
@@ -354,6 +364,93 @@ class _TuningMenu extends ConsumerWidget {
   }
 }
 
+/// A microphone with a soft ring that grows with the sound heard, so it's
+/// clear the tuner is listening before a note is found.
+class _ListeningRing extends StatelessWidget {
+  const _ListeningRing({required this.level});
+
+  final double level;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return SizedBox(
+      width: 132,
+      height: 132,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          TweenAnimationBuilder<double>(
+            tween: Tween(end: level),
+            duration: const Duration(milliseconds: 150),
+            builder: (context, level, _) => Container(
+              width: 64 + 64 * level,
+              height: 64 + 64 * level,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colors.accent.withValues(alpha: 0.10 + 0.20 * level),
+              ),
+            ),
+          ),
+          // Screen readers hear "Play a string" for the whole readout.
+          Icon(Icons.mic_none_rounded, size: 36, color: colors.accent),
+        ],
+      ),
+    );
+  }
+}
+
+/// Every string has been in tune: on to the music.
+class _AllTunedCard extends ConsumerWidget {
+  const _AllTunedCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final last = ref.watch(recentSongsProvider).value?.firstOrNull;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: colors.good.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle, color: colors.good),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  l10n.allTuned,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => last == null
+                      ? context.go(Routes.songbook)
+                      : context.push(Routes.song(last.id)),
+                  child: Text(
+                    last == null
+                        ? l10n.openSongbook
+                        : l10n.playSong(last.title),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _StringButton extends StatelessWidget {
   const _StringButton({
     required this.string,
@@ -361,10 +458,14 @@ class _StringButton extends StatelessWidget {
     required this.targeted,
     required this.locked,
     required this.inTune,
+    required this.tuned,
     required this.onPressed,
   });
 
   final GuitarString string;
+
+  /// Has been in tune this time: a check stays on it.
+  final bool tuned;
 
   /// 6 = lowest string … 1 = highest.
   final int number;
@@ -387,7 +488,10 @@ class _StringButton extends StatelessWidget {
     return Semantics(
       button: true,
       selected: locked,
-      label: l10n.stringButton(ordinal, string.name),
+      label: [
+        l10n.stringButton(ordinal, string.name),
+        if (tuned) l10n.stringTuned,
+      ].join(', '),
       excludeSemantics: true,
       child: Material(
         color: background,
@@ -417,9 +521,24 @@ class _StringButton extends StatelessWidget {
                         color: foreground,
                       ),
                     ),
-                    Text(
-                      ordinal,
-                      style: TextStyle(fontSize: 11, color: foreground),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (tuned) ...[
+                          Icon(
+                            Icons.check,
+                            size: 12,
+                            color: targeted || inTune
+                                ? foreground
+                                : colors.good,
+                          ),
+                          const SizedBox(width: 2),
+                        ],
+                        Text(
+                          ordinal,
+                          style: TextStyle(fontSize: 11, color: foreground),
+                        ),
+                      ],
                     ),
                   ],
                 ),

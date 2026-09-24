@@ -728,4 +728,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get stay => 'Quedarme';
+
+  @override
+  String get allTuned => '¡Todo afinado, a tocar!';
+
+  @override
+  String playSong(String title) {
+    return 'Tocar $title';
+  }
+
+  @override
+  String get openSongbook => 'Abrir cancionero';
+
+  @override
+  String get stringTuned => 'afinada';
 }

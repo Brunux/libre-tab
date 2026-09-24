@@ -194,5 +194,9 @@
   "jumpToLetter": "Ir a la {letter}",
   "upNext": "A continuación",
   "nextSongIn": "Siguiente canción en {seconds}",
-  "stay": "Quedarme"
+  "stay": "Quedarme",
+  "allTuned": "¡Todo afinado, a tocar!",
+  "playSong": "Tocar {title}",
+  "openSongbook": "Abrir cancionero",
+  "stringTuned": "afinada"
 }

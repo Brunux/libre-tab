@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/music/tunings.dart';
+import 'package:libre_tab/features/library/data/song_repository.dart';
+import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
 import 'package:libre_tab/features/tuner/application/tuner_controller.dart';
 import 'package:libre_tab/features/tuner/data/pitch_source.dart';
 import 'package:libre_tab/features/tuner/presentation/widgets/tuner_gauge.dart';
@@ -279,6 +281,80 @@ void main() {
       await hear(tester, pitch, null);
       expect(find.text('Play a string'), findsOneWidget);
       expect(find.text('108.0 Hz'), findsNothing);
+    });
+  });
+
+  group('listening and tuned strings', () {
+    /// Standard tuning, low E to high E.
+    const standard = [82.41, 110.0, 146.83, 196.0, 246.94, 329.63];
+
+    Future<void> tuneString(
+      WidgetTester tester,
+      FakePitchSource pitch,
+      double hz,
+    ) async {
+      await hear(tester, pitch, hz, times: 8); // held past 300 ms
+      await hear(tester, pitch, null, times: 2);
+    }
+
+    testWidgets('before a note, a ring shows the tuner hears', (
+      tester,
+    ) async {
+      final (container, pitch) = await openTuner(tester);
+      expect(find.byIcon(Icons.mic_none_rounded), findsOneWidget);
+
+      pitch.hear(null, level: 0.4);
+      await tester.pumpAndSettle();
+      expect(container.read(tunerProvider).level, closeTo(0.4, 0.01));
+      // It falls back gently, not at once.
+      pitch.hear(null, level: 0);
+      await tester.pumpAndSettle();
+      expect(container.read(tunerProvider).level, closeTo(0.28, 0.01));
+
+      await hear(tester, pitch, 110, times: 3);
+      expect(find.byIcon(Icons.mic_none_rounded), findsNothing);
+    });
+
+    testWidgets('a string that was in tune keeps a check', (tester) async {
+      final (container, pitch) = await openTuner(tester);
+      await tuneString(tester, pitch, 110);
+      expect(container.read(tunerProvider).tuned, {1});
+      await scrollToStrings(tester, 'Auto-detect');
+      expect(find.bySemanticsLabel('5th string, A, tuned'), findsOneWidget);
+      expect(find.bySemanticsLabel('6th string, E'), findsOneWidget);
+    });
+
+    testWidgets('all six tuned: on to the last song played', (tester) async {
+      final (container, pitch) = await openTuner(
+        tester,
+        songs: [SampleSongs.amazingGrace],
+      );
+      await container.read(songRepositoryProvider).recordOpened(1);
+      for (final hz in standard) {
+        await tuneString(tester, pitch, hz);
+      }
+      expect(container.read(tunerProvider).allTuned, isTrue);
+      expect(find.text("All tuned — let's play!"), findsOneWidget);
+
+      await tester.ensureVisible(find.text('Play Amazing Grace'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Play Amazing Grace'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SongViewScreen), findsOneWidget);
+      expect(find.text('John Newton · Key G'), findsOneWidget);
+    });
+
+    testWidgets('a new tuning starts the checks over', (tester) async {
+      final (container, pitch) = await openTuner(tester);
+      await tuneString(tester, pitch, 110);
+      container.read(tunerProvider.notifier).tuning = Tuning.dropD;
+      expect(container.read(tunerProvider).tuned, isEmpty);
+    });
+
+    test('input level: silence 0, a quiet room low, a string high', () {
+      expect(MicPitchSource.levelOf(List.filled(4096, 0)), 0);
+      expect(MicPitchSource.levelOf(List.filled(4096, 0.0005)), lessThan(0.2));
+      expect(MicPitchSource.levelOf(List.filled(4096, 0.3)), 1);
     });
   });
 

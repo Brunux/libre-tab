@@ -24,6 +24,8 @@ final class TunerState {
     this.lockedString,
     this.reading,
     this.inTune = false,
+    this.level = 0,
+    this.tuned = const {},
   });
 
   final TunerStatus status;
@@ -41,6 +43,15 @@ final class TunerState {
   /// Held within ±5 cents long enough.
   final bool inTune;
 
+  /// How loud the microphone input is, 0–1 (falls back slowly).
+  final double level;
+
+  /// Strings that have been in tune since the tuner started, or since the
+  /// tuning or A4 changed.
+  final Set<int> tuned;
+
+  bool get allTuned => tuned.length == tuning.strings.length;
+
   TunerState copyWith({
     TunerStatus? status,
     Tuning? tuning,
@@ -48,6 +59,8 @@ final class TunerState {
     int? Function()? lockedString,
     TunerReading? Function()? reading,
     bool? inTune,
+    double? level,
+    Set<int>? tuned,
   }) => TunerState(
     status: status ?? this.status,
     tuning: tuning ?? this.tuning,
@@ -55,6 +68,8 @@ final class TunerState {
     lockedString: lockedString == null ? this.lockedString : lockedString(),
     reading: reading == null ? this.reading : reading(),
     inTune: inTune ?? this.inTune,
+    level: level ?? this.level,
+    tuned: tuned ?? this.tuned,
   );
 }
 
@@ -117,13 +132,21 @@ class TunerController extends Notifier<TunerState> {
       status: TunerStatus.idle,
       reading: () => null,
       inTune: false,
+      level: 0,
+      tuned: const {},
     );
   }
 
   Tuning get tuning => state.tuning;
   set tuning(Tuning tuning) {
     _store.setString(SettingsKeys.tuning, tuning.name);
-    _changeTarget(state.copyWith(tuning: tuning, lockedString: () => null));
+    _changeTarget(
+      state.copyWith(
+        tuning: tuning,
+        lockedString: () => null,
+        tuned: const {},
+      ),
+    );
   }
 
   /// Locks the tuner to one string; tapping it again goes back to auto.
@@ -139,7 +162,7 @@ class TunerController extends Notifier<TunerState> {
   set a4(int value) {
     final a4 = value.clamp(minA4, maxA4);
     _store.setInt(SettingsKeys.a4, a4);
-    _changeTarget(state.copyWith(a4: a4));
+    _changeTarget(state.copyWith(a4: a4, tuned: const {}));
   }
 
   /// After the target changes, the current sound is measured again.
@@ -159,12 +182,21 @@ class TunerController extends Notifier<TunerState> {
     a4: s.a4.toDouble(),
   );
 
-  void _onPitch(double? frequency) {
+  void _onPitch(double? frequency, double level) {
     if (state.status != TunerStatus.listening) return;
     final smoothed = _smoother.add(frequency);
     final reading = smoothed == null ? null : _read(smoothed, state);
     final inTune = _smoother.inTune(reading, ref.read(tunerClockProvider)());
     if (inTune && !state.inTune) unawaited(HapticFeedback.mediumImpact());
-    state = state.copyWith(reading: () => reading, inTune: inTune);
+    final string = reading?.stringIndex;
+    state = state.copyWith(
+      reading: () => reading,
+      inTune: inTune,
+      // Up at once, down gently, so the listening ring breathes.
+      level: level >= state.level ? level : state.level * 0.7 + level * 0.3,
+      tuned: inTune && string != null && !state.tuned.contains(string)
+          ? {...state.tuned, string}
+          : null,
+    );
   }
 }

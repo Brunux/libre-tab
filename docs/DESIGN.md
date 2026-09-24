@@ -188,7 +188,13 @@ Header with A4 reference · tuning picker · big note + octave + live Hz · need
 gauge (−50…+50 cents, green zone ±5) · status ("Too low · tighten" / "Too high ·
 loosen" / "In tune") · Auto-detect toggle · six string buttons (6th → 1st);
 tapping one locks to that string (tap again, or Auto-detect, to unlock).
-In-tune string button turns `good`, with one haptic tap. First visit shows
+In-tune string button turns `good`, with one haptic tap, and keeps a small
+✓ afterwards (until the tuning or A4 changes, or the tuner is left); screen
+readers hear "5th string, A, tuned". Once all six are ticked, a card says
+"All tuned — let's play!" with **Play ‹last song›** (or Open songbook).
+Before a note is found, the note's place shows a microphone in a soft ring
+that grows with the input level (RMS, −70 to −20 dBFS; up at once, down
+gently), so it's plain the tuner hears. First visit shows
 "Tune your guitar" and a Start button before the OS microphone prompt; if the
 microphone is refused, the screen says where to allow it. Tapping "A4 = 440 Hz"
 opens a slider (432–446 Hz) with "Back to 440". The tuner only listens while

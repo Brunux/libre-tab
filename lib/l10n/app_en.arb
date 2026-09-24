@@ -388,5 +388,10 @@
   "upNext": "Up next",
   "nextSongIn": "Next song in {seconds}",
   "@nextSongIn": {"placeholders": {"seconds": {"type": "int"}}},
-  "stay": "Stay"
+  "stay": "Stay",
+  "allTuned": "All tuned — let's play!",
+  "playSong": "Play {title}",
+  "@playSong": {"placeholders": {"title": {"type": "String"}}},
+  "openSongbook": "Open songbook",
+  "stringTuned": "tuned"
 }

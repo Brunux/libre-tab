@@ -734,4 +734,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stay => 'Stay';
+
+  @override
+  String get allTuned => 'All tuned — let\'s play!';
+
+  @override
+  String playSong(String title) {
+    return 'Play $title';
+  }
+
+  @override
+  String get openSongbook => 'Open songbook';
+
+  @override
+  String get stringTuned => 'tuned';
 }
