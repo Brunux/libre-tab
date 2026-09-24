@@ -47,8 +47,9 @@ flutter:
   assets:
     # Public-domain starter songs (lib/features/library/data/starter_songs.dart).
     - assets/songs/
-    # The flame mark, for empty states (branding/png/mark.png at 256 px).
+    # The flame mark (branding/png/, 256 px): the tabs' logo, empty states.
     - assets/images/mark.png
+    - assets/images/mark-red-night.png
     - assets/fonts/AtkinsonHyperlegible-OFL.txt
     - assets/fonts/Fraunces-OFL.txt
     - assets/fonts/JetBrainsMono-OFL.txt

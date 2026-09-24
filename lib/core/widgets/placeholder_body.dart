@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/app/widgets/app_logo.dart';
 
 /// Centered muted message for empty and error states, with an optional
 /// [icon] above it and an [action] button under it.
@@ -40,13 +41,7 @@ class PlaceholderBody extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (mark)
-              const ExcludeSemantics(
-                child: Image(
-                  image: AssetImage('assets/images/mark.png'),
-                  width: 96,
-                  height: 96,
-                ),
-              )
+              const BrandMark(size: 96)
             else if (icon case final icon?)
               DecoratedBox(
                 decoration: BoxDecoration(

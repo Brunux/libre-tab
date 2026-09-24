@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
@@ -52,10 +53,8 @@ class _SetlistsScreenState extends ConsumerState<SetlistsScreen> {
       appBar: AppBar(
         toolbarHeight: 72,
         titleSpacing: 20,
-        title: Text(
-          l10n.tabSetlists,
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
+        // The logo, not the tab's name: the tab bar says where you are.
+        title: const AppLogo(),
       ),
       body: ReadableWidth(
         child: Column(

@@ -54,7 +54,7 @@ void main() {
     final router = container.read(routerProvider);
 
     // Songbook
-    expect(find.text('Cancionero'), findsNWidgets(2));
+    expect(find.text('Cancionero'), findsOneWidget); // the tab
     expect(find.textContaining('Tu cancionero está vacío'), findsOneWidget);
     expect(find.byTooltip('Ajustes'), findsOneWidget);
 

@@ -110,11 +110,28 @@ void main() {
     expect(find.byType(LibraryScreen, skipOffstage: false), findsOneWidget);
   });
 
+  testWidgets('the flame mark turns red in Red night', (tester) async {
+    // Empty songbook: the mark in the header and in the empty message.
+    final container = await pumpApp(tester);
+    List<String> marks() => [
+      for (final image in tester.widgetList<Image>(find.byType(Image)))
+        (image.image as AssetImage).assetName,
+    ];
+    expect(marks(), everyElement('assets/images/mark.png'));
+    expect(marks(), hasLength(2));
+
+    container.read(themeVariantProvider.notifier).toggleRedNight();
+    await tester.pumpAndSettle();
+    expect(marks(), everyElement('assets/images/mark-red-night.png'));
+  });
+
   testWidgets('starts on the Songbook tab', (tester) async {
     final container = await pumpApp(tester);
 
     expect(currentPath(container), Routes.songbook);
-    expect(find.text('Songbook'), findsNWidgets(2)); // title + tab label
+    // The logo heads every tab; the tab bar names the one you're on.
+    expect(find.bySemanticsLabel('Libre Tab'), findsOneWidget);
+    expect(find.text('Songbook'), findsOneWidget);
     expect(find.text('Add song'), findsOneWidget);
   });
 
@@ -196,7 +213,7 @@ void main() {
 
     await pumpApp(tester);
 
-    expect(find.text('Cancionero'), findsNWidgets(2));
+    expect(find.text('Cancionero'), findsOneWidget);
     expect(find.text('Afinador'), findsOneWidget);
     expect(find.text('Agregar canción'), findsOneWidget);
   });

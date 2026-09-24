@@ -35,6 +35,10 @@ rewrites an unrelated build setting.
 | `png/social-story-1080x1920.png` | Stories / Reels / TikTok cover (Spanish tagline) |
 | `png/play-feature-1024x500.png` | Google Play feature graphic |
 
+In the app, `assets/images/mark.png` and `mark-red-night.png` are these
+marks at 256 px: the tabs' header logo (mark + "Libre Tab" set in Fraunces
+by the app, so it takes each theme's colour) and the empty songbook.
+
 Every PNG has an SVG next to it in `svg/`. The lockup and social SVGs embed
 their fonts (Fraunces and Atkinson Hyperlegible, both SIL OFL).
 

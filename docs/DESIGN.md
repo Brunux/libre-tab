@@ -15,6 +15,10 @@ Songbook ──tap song──▶ Song view ──back──▶ Songbook
 ```
 
 - Three bottom tabs. Settings open from the gear in the Songbook header.
+- Each tab is headed by the logo (the campfire mark, 44 px, and "Libre Tab"
+  in Fraunces 30 in the theme's text colour; the red mark in Red night), not
+  the tab's name: the tab bar already says where you are
+  (`lib/app/widgets/app_logo.dart`).
 - Song view and Add song are full-screen routes on top of the tabs (no bottom bar).
 
 ## Themes
@@ -92,7 +96,7 @@ Review 5.1.1(iv)). The system asks only once, so a refusal always offers
 ## Screens
 
 ### 1. Songbook
-Header (title + settings gear) · search field · chips: All songs / Favorites
+Header (logo + settings gear) · search field · chips: All songs / Favorites
 · song rows (key badge, title, artist · capo, favorite star) ·
 floating "Add song" button · bottom tabs.
 

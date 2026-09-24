@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/music/tunings.dart';
@@ -87,10 +88,8 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       appBar: AppBar(
         toolbarHeight: 72,
         titleSpacing: 20,
-        title: Text(
-          l10n.tabTuner,
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
+        // The logo, not the tab's name: the tab bar says where you are.
+        title: const AppLogo(),
         actions: [
           // Capped so large text shrinks the label instead of pushing
           // the title off a small screen.
