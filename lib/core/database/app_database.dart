@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/database/search_index.dart';
 
 part 'app_database.g.dart';
@@ -22,6 +23,11 @@ class Songs extends Table {
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  /// When the song was last opened, and how many times: "Recently played",
+  /// "Played 12×" and the sorts. Kept on the device only.
+  DateTimeColumn get lastOpenedAt => dateTime().nullable()();
+  IntColumn get playCount => integer().withDefault(const Constant(0))();
 }
 
 /// A named, ordered list of songs for a night ("Friday campfire").
@@ -53,9 +59,10 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'libre_tab'));
 
   /// 1: first release. 2: search index strips apostrophes (rebuilt).
-  /// 3: setlists.
+  /// 3: setlists. 4: play history; the key is the one the song view shows
+  /// (`{key}`, else the first chord's), filled in for older songs.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -69,13 +76,39 @@ class AppDatabase extends _$AppDatabase {
       );
     },
     onUpgrade: (m, from, to) async {
+      // Columns first: the steps below read songs with today's columns.
+      if (from < 4) {
+        await m.addColumn(songs, songs.lastOpenedAt);
+        await m.addColumn(songs, songs.playCount);
+      }
       if (from < 2) await SearchIndex.rebuild(this);
       if (from < 3) {
         await m.createTable(setlists);
         await m.createTable(setlistSongs);
       }
+      if (from < 4) await _fillInKeys();
     },
     // SQLite leaves foreign keys off unless asked, per connection.
     beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),
   );
+
+  /// Songs saved before version 4 only kept a `{key}` line's key, so songs
+  /// without one showed no key in the list.
+  Future<void> _fillInKeys() async {
+    final rows = await customSelect(
+      'SELECT id, body FROM songs WHERE song_key IS NULL',
+    ).get();
+    for (final row in rows) {
+      final key = ChordProParser.parse(row.read<String>('body')).effectiveKey;
+      if (key == null) continue;
+      await customUpdate(
+        'UPDATE songs SET song_key = ? WHERE id = ?',
+        variables: [
+          Variable.withString(key.name),
+          Variable.withInt(row.read<int>('id')),
+        ],
+        updates: {songs},
+      );
+    }
+  }
 }

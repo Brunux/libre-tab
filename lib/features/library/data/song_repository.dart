@@ -262,7 +262,8 @@ class _SongMeta {
     return _SongMeta(
       title: title,
       artist: song.artist?.trim() ?? '',
-      key: song.key?.name,
+      // The key the song view shows: {key}, else the first chord's.
+      key: song.effectiveKey?.name,
       capo: song.capo,
       lyrics: song.plainLyrics,
     );

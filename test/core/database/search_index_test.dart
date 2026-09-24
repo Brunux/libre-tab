@@ -10,6 +10,20 @@ import 'package:libre_tab/features/library/data/song_repository.dart';
 
 import '../../helpers/test_database.dart';
 
+/// Makes [db] look like a songbook saved at [version]: what later versions
+/// added is taken away, so opening it again runs the upgrades from there.
+Future<void> downgradeTo(AppDatabase db, int version) async {
+  if (version < 4) {
+    await db.customStatement('ALTER TABLE songs DROP COLUMN last_opened_at');
+    await db.customStatement('ALTER TABLE songs DROP COLUMN play_count');
+  }
+  if (version < 3) {
+    await db.customStatement('DROP TABLE setlist_songs');
+    await db.customStatement('DROP TABLE setlists');
+  }
+  await db.customStatement('PRAGMA user_version = $version');
+}
+
 void main() {
   test('normalize removes every kind of apostrophe', () {
     expect(
@@ -46,7 +60,7 @@ void main() {
         'INSERT INTO songs_fts(rowid, title, artist, lyrics) '
         "VALUES (1, 'Oh! Susanna', '', 'Oh! Susanna, oh don''t you cry')",
       );
-      await db.customStatement('PRAGMA user_version = 1');
+      await downgradeTo(db, 1);
       await db.close();
 
       // Opening it again runs the 1 → 2 migration.
@@ -59,7 +73,7 @@ void main() {
       expect(titles, ['Oh! Susanna']);
       expect(await repo.getSong(1), isNotNull);
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.data.values.single, 3);
+      expect(version.data.values.single, 4);
       await db.close();
     });
   });
@@ -75,9 +89,7 @@ void main() {
     // A songbook from before setlists: no setlist tables, schema 2.
     var db = open();
     await SongRepository(db).addSong(SampleSongs.amazingGrace);
-    await db.customStatement('DROP TABLE setlist_songs');
-    await db.customStatement('DROP TABLE setlists');
-    await db.customStatement('PRAGMA user_version = 2');
+    await downgradeTo(db, 2);
     await db.close();
 
     db = open();
@@ -88,10 +100,44 @@ void main() {
     expect(await setlists.songIds(id), [1]);
   });
 
-  test('a new database starts at schema 3 with an empty index', () async {
+  test('upgrading from schema 3 fills in missing keys, adds history', () async {
+    final dir = Directory.systemTemp.createTempSync('libre_tab_db');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}/songs.sqlite');
+    AppDatabase open() => AppDatabase(
+      DatabaseConnection(NativeDatabase(file), closeStreamsSynchronously: true),
+    );
+
+    // Before 4 only a {key} line's key was kept: a pasted song had none.
+    var db = open();
+    final repo = SongRepository(db);
+    await repo.addSong('{title: Pasted}\n[Am]One [F]two [C]three');
+    await repo.addSong('{title: Keyed}\n{key: D}\n[G]Four');
+    await db.customStatement('UPDATE songs SET song_key = NULL WHERE id = 1');
+    await downgradeTo(db, 3);
+    await db.close();
+
+    db = open();
+    addTearDown(db.close);
+    final songs = SongRepository(db);
+    expect((await songs.getSong(1))!.songKey, 'Am'); // from the first chord
+    expect((await songs.getSong(2))!.songKey, 'D'); // its {key}, kept
+    expect((await songs.getSong(1))!.playCount, 0);
+    expect((await songs.getSong(1))!.lastOpenedAt, isNull);
+  });
+
+  test("a song without a {key} line gets its first chord's key", () async {
     final db = testDatabase();
     addTearDown(db.close);
-    expect(db.schemaVersion, 3);
+    final songs = SongRepository(db);
+    final id = await songs.addSong('{title: Pasted}\n[G]Row [C]row');
+    expect((await songs.getSong(id))!.songKey, 'G');
+  });
+
+  test('a new database starts at schema 4 with an empty index', () async {
+    final db = testDatabase();
+    addTearDown(db.close);
+    expect(db.schemaVersion, 4);
     final count = await db
         .customSelect('SELECT count(*) AS n FROM songs_fts')
         .getSingle();

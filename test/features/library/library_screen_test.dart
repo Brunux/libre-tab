@@ -44,7 +44,14 @@ void main() {
     expect(find.text('Stephen Foster · Capo 2'), findsOneWidget);
     expect(find.text('G'), findsOneWidget); // key badges
     expect(find.text('C'), findsOneWidget);
-    expect(find.byIcon(Icons.music_note), findsOneWidget); // no {key}
+    // No {key} line: the first chord's key, as the song view shows it.
+    expect(find.text('Am'), findsOneWidget);
+    expect(find.byIcon(Icons.music_note), findsNothing);
+  });
+
+  testWidgets('a song with no chords at all shows a note', (tester) async {
+    await pumpApp(tester, songs: ['{title: Words only}\nJust lyrics']);
+    expect(find.byIcon(Icons.music_note), findsOneWidget);
   });
 
   testWidgets('search filters as you type and ignores accents', (

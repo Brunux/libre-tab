@@ -119,6 +119,29 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, SongEntry> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _lastOpenedAtMeta = const VerificationMeta(
+    'lastOpenedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastOpenedAt = GeneratedColumn<DateTime>(
+    'last_opened_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _playCountMeta = const VerificationMeta(
+    'playCount',
+  );
+  @override
+  late final GeneratedColumn<int> playCount = GeneratedColumn<int>(
+    'play_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -131,6 +154,8 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, SongEntry> {
     scrollSpeed,
     createdAt,
     updatedAt,
+    lastOpenedAt,
+    playCount,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -208,6 +233,21 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, SongEntry> {
         updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
+    if (data.containsKey('last_opened_at')) {
+      context.handle(
+        _lastOpenedAtMeta,
+        lastOpenedAt.isAcceptableOrUnknown(
+          data['last_opened_at']!,
+          _lastOpenedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('play_count')) {
+      context.handle(
+        _playCountMeta,
+        playCount.isAcceptableOrUnknown(data['play_count']!, _playCountMeta),
+      );
+    }
     return context;
   }
 
@@ -257,6 +297,14 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, SongEntry> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      lastOpenedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_opened_at'],
+      ),
+      playCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}play_count'],
+      )!,
     );
   }
 
@@ -279,6 +327,11 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
   final int? scrollSpeed;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// When the song was last opened, and how many times: "Recently played",
+  /// "Played 12×" and the sorts. Kept on the device only.
+  final DateTime? lastOpenedAt;
+  final int playCount;
   const SongEntry({
     required this.id,
     required this.title,
@@ -290,6 +343,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
     this.scrollSpeed,
     required this.createdAt,
     required this.updatedAt,
+    this.lastOpenedAt,
+    required this.playCount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -310,6 +365,10 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || lastOpenedAt != null) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt);
+    }
+    map['play_count'] = Variable<int>(playCount);
     return map;
   }
 
@@ -329,6 +388,10 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
           : Value(scrollSpeed),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      lastOpenedAt: lastOpenedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastOpenedAt),
+      playCount: Value(playCount),
     );
   }
 
@@ -348,6 +411,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
       scrollSpeed: serializer.fromJson<int?>(json['scrollSpeed']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      lastOpenedAt: serializer.fromJson<DateTime?>(json['lastOpenedAt']),
+      playCount: serializer.fromJson<int>(json['playCount']),
     );
   }
   @override
@@ -364,6 +429,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
       'scrollSpeed': serializer.toJson<int?>(scrollSpeed),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'lastOpenedAt': serializer.toJson<DateTime?>(lastOpenedAt),
+      'playCount': serializer.toJson<int>(playCount),
     };
   }
 
@@ -378,6 +445,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
     Value<int?> scrollSpeed = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<DateTime?> lastOpenedAt = const Value.absent(),
+    int? playCount,
   }) => SongEntry(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -389,6 +458,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
     scrollSpeed: scrollSpeed.present ? scrollSpeed.value : this.scrollSpeed,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    lastOpenedAt: lastOpenedAt.present ? lastOpenedAt.value : this.lastOpenedAt,
+    playCount: playCount ?? this.playCount,
   );
   SongEntry copyWithCompanion(SongsCompanion data) {
     return SongEntry(
@@ -404,6 +475,10 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
           : this.scrollSpeed,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      lastOpenedAt: data.lastOpenedAt.present
+          ? data.lastOpenedAt.value
+          : this.lastOpenedAt,
+      playCount: data.playCount.present ? data.playCount.value : this.playCount,
     );
   }
 
@@ -419,7 +494,9 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
           ..write('favorite: $favorite, ')
           ..write('scrollSpeed: $scrollSpeed, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
+          ..write('playCount: $playCount')
           ..write(')'))
         .toString();
   }
@@ -436,6 +513,8 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
     scrollSpeed,
     createdAt,
     updatedAt,
+    lastOpenedAt,
+    playCount,
   );
   @override
   bool operator ==(Object other) =>
@@ -450,7 +529,9 @@ class SongEntry extends DataClass implements Insertable<SongEntry> {
           other.favorite == this.favorite &&
           other.scrollSpeed == this.scrollSpeed &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.lastOpenedAt == this.lastOpenedAt &&
+          other.playCount == this.playCount);
 }
 
 class SongsCompanion extends UpdateCompanion<SongEntry> {
@@ -464,6 +545,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
   final Value<int?> scrollSpeed;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<DateTime?> lastOpenedAt;
+  final Value<int> playCount;
   const SongsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -475,6 +558,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
     this.scrollSpeed = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
+    this.playCount = const Value.absent(),
   });
   SongsCompanion.insert({
     this.id = const Value.absent(),
@@ -487,6 +572,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
     this.scrollSpeed = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
+    this.playCount = const Value.absent(),
   }) : title = Value(title),
        body = Value(body);
   static Insertable<SongEntry> custom({
@@ -500,6 +587,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
     Expression<int>? scrollSpeed,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<DateTime>? lastOpenedAt,
+    Expression<int>? playCount,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -512,6 +601,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
       if (scrollSpeed != null) 'scroll_speed': scrollSpeed,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (lastOpenedAt != null) 'last_opened_at': lastOpenedAt,
+      if (playCount != null) 'play_count': playCount,
     });
   }
 
@@ -526,6 +617,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
     Value<int?>? scrollSpeed,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<DateTime?>? lastOpenedAt,
+    Value<int>? playCount,
   }) {
     return SongsCompanion(
       id: id ?? this.id,
@@ -538,6 +631,8 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
       scrollSpeed: scrollSpeed ?? this.scrollSpeed,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+      playCount: playCount ?? this.playCount,
     );
   }
 
@@ -574,6 +669,12 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (lastOpenedAt.present) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt.value);
+    }
+    if (playCount.present) {
+      map['play_count'] = Variable<int>(playCount.value);
+    }
     return map;
   }
 
@@ -589,7 +690,9 @@ class SongsCompanion extends UpdateCompanion<SongEntry> {
           ..write('favorite: $favorite, ')
           ..write('scrollSpeed: $scrollSpeed, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
+          ..write('playCount: $playCount')
           ..write(')'))
         .toString();
   }
@@ -1159,6 +1262,8 @@ typedef $$SongsTableCreateCompanionBuilder =
       Value<int?> scrollSpeed,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<DateTime?> lastOpenedAt,
+      Value<int> playCount,
     });
 typedef $$SongsTableUpdateCompanionBuilder =
     SongsCompanion Function({
@@ -1172,6 +1277,8 @@ typedef $$SongsTableUpdateCompanionBuilder =
       Value<int?> scrollSpeed,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<DateTime?> lastOpenedAt,
+      Value<int> playCount,
     });
 
 final class $$SongsTableReferences
@@ -1252,6 +1359,16 @@ class $$SongsTableFilterComposer extends Composer<_$AppDatabase, $SongsTable> {
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get playCount => $composableBuilder(
+    column: $table.playCount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1339,6 +1456,16 @@ class $$SongsTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get playCount => $composableBuilder(
+    column: $table.playCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SongsTableAnnotationComposer
@@ -1381,6 +1508,14 @@ class $$SongsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get playCount =>
+      $composableBuilder(column: $table.playCount, builder: (column) => column);
 
   Expression<T> setlistSongsRefs<T extends Object>(
     Expression<T> Function($$SetlistSongsTableAnnotationComposer a) f,
@@ -1446,6 +1581,8 @@ class $$SongsTableTableManager
                 Value<int?> scrollSpeed = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
+                Value<int> playCount = const Value.absent(),
               }) => SongsCompanion(
                 id: id,
                 title: title,
@@ -1457,6 +1594,8 @@ class $$SongsTableTableManager
                 scrollSpeed: scrollSpeed,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastOpenedAt: lastOpenedAt,
+                playCount: playCount,
               ),
           createCompanionCallback:
               ({
@@ -1470,6 +1609,8 @@ class $$SongsTableTableManager
                 Value<int?> scrollSpeed = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
+                Value<int> playCount = const Value.absent(),
               }) => SongsCompanion.insert(
                 id: id,
                 title: title,
@@ -1481,6 +1622,8 @@ class $$SongsTableTableManager
                 scrollSpeed: scrollSpeed,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastOpenedAt: lastOpenedAt,
+                playCount: playCount,
               ),
           withReferenceMapper: (p0) => p0
               .map(
