@@ -160,6 +160,10 @@ In-tune string button turns `good`, with one haptic tap. First visit shows
 microphone is refused, the screen says where to allow it. Tapping "A4 = 440 Hz"
 opens a slider (432–446 Hz) with "Back to 440". The tuner only listens while
 its tab is on screen and the app is in front, and keeps the screen on.
+The string buttons sit at the bottom and the note, gauge and status fill the
+room above, scaled down on a short screen (a 16:9 phone) so the strings and
+the gauge are in view together; only a very short screen (a phone on its side)
+scrolls.
 
 ### 5. Setlists (milestone 6)
 - **Songbook, "Setlists" chip:** the list shows setlists instead of songs

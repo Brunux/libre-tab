@@ -7,6 +7,7 @@ import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/music/tunings.dart';
 import 'package:libre_tab/features/tuner/application/tuner_controller.dart';
 import 'package:libre_tab/features/tuner/data/pitch_source.dart';
+import 'package:libre_tab/features/tuner/presentation/widgets/tuner_gauge.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_database.dart';
@@ -68,12 +69,22 @@ Future<void> tapString(WidgetTester tester, String label) async {
   await tester.pumpAndSettle();
 }
 
-Future<void> scrollToStrings(WidgetTester tester, String chipLabel) =>
-    tester.dragUntilVisible(
-      find.text(chipLabel),
-      find.byType(ListView),
-      const Offset(0, -200),
-    );
+/// Scrolls down to the string buttons (below [chipLabel], the chip beside
+/// them).
+Future<void> scrollToStrings(WidgetTester tester, String chipLabel) async {
+  // Only a very short screen scrolls; otherwise the strings are in view.
+  if (find.byType(ListView).evaluate().isEmpty) return;
+  await tester.dragUntilVisible(
+    find.text(chipLabel),
+    find.byType(ListView),
+    const Offset(0, -200),
+  );
+  await tester.dragUntilVisible(
+    find.bySemanticsLabel(RegExp('^6(th string|ª cuerda)')),
+    find.byType(ListView),
+    const Offset(0, -100),
+  );
+}
 
 void main() {
   group('microphone permission', () {
@@ -272,6 +283,24 @@ void main() {
   });
 
   group('strings, tunings and reference pitch', () {
+    testWidgets('on a short 16:9 phone the gauge shrinks to fit the strings', (
+      tester,
+    ) async {
+      // 1080 × 1920 at 3×: 360 × 640 points.
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await openTuner(tester);
+
+      // Drawn smaller (the readout is scaled down), not its full 320.
+      expect(tester.getRect(find.byType(TunerGauge)).width, lessThan(300));
+      final screen = tester.getRect(find.byType(Scaffold).first);
+      for (final label in ['6th string, E', '1st string, E']) {
+        final button = tester.getRect(find.bySemanticsLabel(label));
+        expect(screen.contains(button.bottomRight), isTrue, reason: label);
+      }
+    });
+
     testWidgets('locking a string measures everything against it', (
       tester,
     ) async {

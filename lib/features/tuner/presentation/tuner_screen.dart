@@ -176,118 +176,153 @@ class _TunerBody extends ConsumerWidget {
         ? ''
         : l10n.centsOff('$sign${rounded.abs()}');
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-      children: [
-        const _TuningMenu(),
-        const SizedBox(height: 16),
-        Semantics(
-          liveRegion: true,
-          label: [
-            if (target != null) '${target.name}${target.octave}',
-            status,
-            centsText,
-          ].where((s) => s.isNotEmpty).join(', '),
-          child: ExcludeSemantics(
-            child: Column(
+    // The note, the gauge and what to do.
+    final readout = Semantics(
+      liveRegion: true,
+      label: [
+        if (target != null) '${target.name}${target.octave}',
+        status,
+        centsText,
+      ].where((s) => s.isNotEmpty).join(', '),
+      child: ExcludeSemantics(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      target == null ? '–' : _pretty(target.name),
-                      style: AppFonts.displayStyle(104, statusColor),
-                    ),
-                    if (target != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 14),
-                        child: Text(
-                          '${target.octave}',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            color: colors.muted,
-                          ),
-                        ),
+                Text(
+                  target == null ? '–' : _pretty(target.name),
+                  style: AppFonts.displayStyle(104, statusColor),
+                ),
+                if (target != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: Text(
+                      '${target.octave}',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: colors.muted,
                       ),
-                  ],
-                ),
-                Text(
-                  reading == null
-                      ? ' '
-                      : '${reading.frequency.toStringAsFixed(1)} Hz',
-                  style: TextStyle(fontSize: 16, color: colors.muted),
-                ),
-                const SizedBox(height: 8),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 360),
-                  child: TunerGauge(
-                    cents: reading?.cents,
-                    inTune: state.inTune,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: statusColor,
-                  ),
-                ),
-                Text(
-                  centsText,
-                  style: TextStyle(fontSize: 15, color: colors.muted),
-                ),
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 12,
-          runSpacing: 8,
-          children: [
             Text(
-              l10n.stringsLabel.toUpperCase(),
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1,
-                color: colors.muted,
+              reading == null
+                  ? ' '
+                  : '${reading.frequency.toStringAsFixed(1)} Hz',
+              style: TextStyle(fontSize: 16, color: colors.muted),
+            ),
+            const SizedBox(height: 8),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: TunerGauge(
+                cents: reading?.cents,
+                inTune: state.inTune,
               ),
             ),
-            FilterChip(
-              label: Text(l10n.autoDetect),
-              selected: state.lockedString == null,
-              onSelected: (_) => tuner.autoDetect(),
+            const SizedBox(height: 8),
+            Text(
+              status,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: statusColor,
+              ),
+            ),
+            Text(
+              centsText,
+              style: TextStyle(fontSize: 15, color: colors.muted),
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            for (final (i, string) in state.tuning.strings.indexed) ...[
-              if (i > 0) const SizedBox(width: 8),
+      ),
+    );
+
+    // Under it, the strings to tune.
+    final strings = [
+      const SizedBox(height: 20),
+      Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
+        children: [
+          Text(
+            l10n.stringsLabel.toUpperCase(),
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1,
+              color: colors.muted,
+            ),
+          ),
+          FilterChip(
+            label: Text(l10n.autoDetect),
+            selected: state.lockedString == null,
+            onSelected: (_) => tuner.autoDetect(),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          for (final (i, string) in state.tuning.strings.indexed) ...[
+            if (i > 0) const SizedBox(width: 8),
+            Expanded(
+              child: _StringButton(
+                string: string,
+                number: 6 - i,
+                targeted:
+                    state.lockedString == i ||
+                    (state.lockedString == null && reading?.stringIndex == i),
+                locked: state.lockedString == i,
+                inTune: state.inTune && reading?.stringIndex == i,
+                onPressed: () => tuner.toggleString(i),
+              ),
+            ),
+          ],
+        ],
+      ),
+    ];
+
+    // The strings stay at the bottom and the readout fills the room above,
+    // shrinking on a short screen (a 16:9 phone) so the strings stay in
+    // view while tuning. Too short even for that (a phone on its side):
+    // scroll.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const padding = EdgeInsets.fromLTRB(20, 4, 20, 24);
+        if (constraints.maxHeight < 420) {
+          return ListView(
+            padding: padding,
+            children: [
+              const _TuningMenu(),
+              const SizedBox(height: 16),
+              readout,
+              ...strings,
+            ],
+          );
+        }
+        return Padding(
+          padding: padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _TuningMenu(),
+              const SizedBox(height: 16),
               Expanded(
-                child: _StringButton(
-                  string: string,
-                  number: 6 - i,
-                  targeted:
-                      state.lockedString == i ||
-                      (state.lockedString == null && reading?.stringIndex == i),
-                  locked: state.lockedString == i,
-                  inTune: state.inTune && reading?.stringIndex == i,
-                  onPressed: () => tuner.toggleString(i),
+                child: Center(
+                  child: FittedBox(fit: BoxFit.scaleDown, child: readout),
                 ),
               ),
+              ...strings,
             ],
-          ],
-        ),
-      ],
+          ),
+        );
+      },
     );
   }
 }
