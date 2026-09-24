@@ -59,6 +59,14 @@ app (all SIL Open Font License), no network fetch.
 - Corner radius: 12–14 px controls, 24 px bottom sheets.
 - Screen padding 16–20 px.
 
+## Motion
+
+Small and quick (150–350 ms, ease-out), never looping: a song's title flies
+from its row into the song view's header and back, changing size and font
+on the way; All songs ↔ Favorites cross-fade; the song view's dock folds
+away while auto-scroll plays; the tuner's needle eases between readings and
+fades in and out with the sound; setlist songs slide to the next.
+
 ## Big screens (iPad, landscape)
 
 The app is universal (iPhone and iPad, all orientations on iPad, so Split

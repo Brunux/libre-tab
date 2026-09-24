@@ -25,6 +25,7 @@ import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/chord_diagram.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
+import 'package:libre_tab/features/song_view/presentation/widgets/song_title_hero.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 /// "Campfire mode": the song with its chords, a dock to transpose, set the
@@ -355,7 +356,12 @@ class _SongViewState extends ConsumerState<_SongView>
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(entry.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            SongTitleHero(
+              songId: entry.id,
+              title: entry.title,
+              inSongView: true,
+              style: Theme.of(context).appBarTheme.titleTextStyle,
+            ),
             if (subtitle.isNotEmpty)
               Text(
                 subtitle,

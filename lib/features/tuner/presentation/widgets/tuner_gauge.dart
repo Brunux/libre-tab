@@ -19,19 +19,27 @@ class TunerGauge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final target = (cents ?? 0).clamp(-50.0, 50.0);
+    final needle = inTune ? colors.good : colors.accent;
     return AspectRatio(
       aspectRatio: 1.8,
+      // The needle eases between readings, and fades in and out with the
+      // sound instead of popping.
       child: TweenAnimationBuilder<double>(
-        tween: Tween(end: target),
-        duration: const Duration(milliseconds: 120),
-        builder: (context, value, _) => CustomPaint(
-          painter: _GaugePainter(
-            cents: value,
-            showNeedle: cents != null,
-            needle: inTune ? colors.good : colors.accent,
-            tick: colors.line,
-            major: colors.muted,
-            zone: colors.good,
+        tween: Tween(end: cents == null ? 0 : 1),
+        duration: const Duration(milliseconds: 200),
+        builder: (context, shown, _) => TweenAnimationBuilder<double>(
+          tween: Tween(end: target),
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, _) => CustomPaint(
+            painter: _GaugePainter(
+              cents: value,
+              showNeedle: shown > 0,
+              needle: needle.withValues(alpha: needle.a * shown),
+              tick: colors.line,
+              major: colors.muted,
+              zone: colors.good,
+            ),
           ),
         ),
       ),

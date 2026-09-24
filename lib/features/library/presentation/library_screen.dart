@@ -17,6 +17,7 @@ import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/application/song_order.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
+import 'package:libre_tab/features/song_view/presentation/widgets/song_title_hero.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -106,10 +107,15 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
             ),
             Expanded(
-              child: _SongList(
-                filter,
-                onClearSearch: _clearSearch,
-                onBrowse: () => _filter.view = LibraryView.all,
+              // All songs ↔ Favorites cross-fade.
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                child: _SongList(
+                  filter,
+                  key: ValueKey(filter.view),
+                  onClearSearch: _clearSearch,
+                  onBrowse: () => _filter.view = LibraryView.all,
+                ),
               ),
             ),
           ],
@@ -136,6 +142,7 @@ class _SongList extends ConsumerStatefulWidget {
     this.filter, {
     required this.onClearSearch,
     required this.onBrowse,
+    super.key,
   });
 
   final LibraryFilter filter;
@@ -665,13 +672,16 @@ class _SongTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      song.title,
+                    SongTitleHero(
+                      songId: song.id,
+                      title: song.title,
                       maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                      inSongView: false,
+                      style: DefaultTextStyle.of(context).style.merge(
+                        const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     if (subtitle.isNotEmpty)

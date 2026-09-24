@@ -206,6 +206,27 @@ void main() {
     });
   });
 
+  testWidgets('the title flies into the song view and back', (tester) async {
+    await pumpApp(tester, songs: _all);
+    await tester.tap(find.text('Amazing Grace'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150)); // mid-flight
+    expect(tester.takeException(), isNull);
+    await tester.pumpAndSettle();
+    expect(find.byType(SongViewScreen), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
+    expect(tester.takeException(), isNull);
+    await tester.pumpAndSettle();
+    // Back, now with a Recently played card too: still one flying title.
+    await tester.tap(find.text('Amazing Grace').last);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(SongViewScreen), findsOneWidget);
+  });
+
   testWidgets('tapping a song opens it', (tester) async {
     await pumpApp(tester, songs: _all);
 
