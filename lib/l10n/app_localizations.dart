@@ -1177,6 +1177,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have.'**
   String get cameraDeniedBody;
+
+  /// No description provided for @sortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sortLabel;
+
+  /// No description provided for @sortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A–Z'**
+  String get sortTitle;
+
+  /// No description provided for @sortArtist.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get sortArtist;
+
+  /// No description provided for @sortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get sortRecent;
+
+  /// No description provided for @sortMostPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Most played'**
+  String get sortMostPlayed;
+
+  /// No description provided for @recentlyPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently played'**
+  String get recentlyPlayed;
+
+  /// No description provided for @playedTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Played once} other{Played {count}×}}'**
+  String playedTimes(int count);
+
+  /// No description provided for @playedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Played today'**
+  String get playedToday;
+
+  /// No description provided for @playedYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Played yesterday'**
+  String get playedYesterday;
+
+  /// No description provided for @playedDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Played {days} days ago'**
+  String playedDaysAgo(int days);
+
+  /// No description provided for @playedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Played {date}'**
+  String playedOn(String date);
+
+  /// No description provided for @jumpToLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump to {letter}'**
+  String jumpToLetter(String letter);
 }
 
 class _AppLocalizationsDelegate

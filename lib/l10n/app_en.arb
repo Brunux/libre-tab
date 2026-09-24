@@ -368,5 +368,21 @@
   "privacyMore": "Full privacy policy and questions:",
   "openSettings": "Open Settings",
   "cameraDeniedTitle": "The camera is off",
-  "cameraDeniedBody": "To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have."
+  "cameraDeniedBody": "To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have.",
+  "sortLabel": "Sort",
+  "sortTitle": "A–Z",
+  "sortArtist": "Artist",
+  "sortRecent": "Recent",
+  "sortMostPlayed": "Most played",
+  "recentlyPlayed": "Recently played",
+  "playedTimes": "{count, plural, =1{Played once} other{Played {count}×}}",
+  "@playedTimes": {"placeholders": {"count": {"type": "int"}}},
+  "playedToday": "Played today",
+  "playedYesterday": "Played yesterday",
+  "playedDaysAgo": "Played {days} days ago",
+  "@playedDaysAgo": {"placeholders": {"days": {"type": "int"}}},
+  "playedOn": "Played {date}",
+  "@playedOn": {"placeholders": {"date": {"type": "String"}}},
+  "jumpToLetter": "Jump to {letter}",
+  "@jumpToLetter": {"placeholders": {"letter": {"type": "String"}}}
 }

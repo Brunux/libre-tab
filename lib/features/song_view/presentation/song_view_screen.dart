@@ -109,6 +109,8 @@ class _SongViewState extends ConsumerState<_SongView>
     super.initState();
     _ticker = createTicker(_tick);
     unawaited(_keepAwake.enable());
+    // For "Recently played" and "Played 12×" in the songbook.
+    unawaited(ref.read(songRepositoryProvider).recordOpened(widget.entry.id));
   }
 
   @override

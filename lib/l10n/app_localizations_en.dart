@@ -673,4 +673,54 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cameraDeniedBody =>
       'To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have.';
+
+  @override
+  String get sortLabel => 'Sort';
+
+  @override
+  String get sortTitle => 'A–Z';
+
+  @override
+  String get sortArtist => 'Artist';
+
+  @override
+  String get sortRecent => 'Recent';
+
+  @override
+  String get sortMostPlayed => 'Most played';
+
+  @override
+  String get recentlyPlayed => 'Recently played';
+
+  @override
+  String playedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Played $count×',
+      one: 'Played once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get playedToday => 'Played today';
+
+  @override
+  String get playedYesterday => 'Played yesterday';
+
+  @override
+  String playedDaysAgo(int days) {
+    return 'Played $days days ago';
+  }
+
+  @override
+  String playedOn(String date) {
+    return 'Played $date';
+  }
+
+  @override
+  String jumpToLetter(String letter) {
+    return 'Jump to $letter';
+  }
 }

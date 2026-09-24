@@ -54,6 +54,20 @@ void main() {
     });
   });
 
+  test('opening a song counts it and stamps when, not as an edit', () async {
+    final id = await repo.addSong(SampleSongs.amazingGrace);
+    final before = (await repo.getSong(id))!;
+    expect(before.playCount, 0);
+    expect(before.lastOpenedAt, isNull);
+
+    await repo.recordOpened(id);
+    await repo.recordOpened(id);
+    final after = (await repo.getSong(id))!;
+    expect(after.playCount, 2);
+    expect(after.lastOpenedAt, isNotNull);
+    expect(after.updatedAt, before.updatedAt);
+  });
+
   test('lists songs by title, ignoring case', () async {
     await addAll();
     await repo.addSong('{title: banjo blues}');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
 
@@ -119,6 +120,90 @@ void main() {
     expect(shownTitles(tester), hasLength(3));
     final field = tester.widget<TextField>(find.byType(TextField));
     expect(field.controller!.text, isEmpty);
+  });
+
+  group('play history and sorting', () {
+    Future<void> openAndBack(WidgetTester tester, String title) async {
+      await tester.tap(find.text(title).first);
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a song opened shows under Recently played', (tester) async {
+      await pumpApp(tester, songs: _all);
+      expect(find.text('RECENTLY PLAYED'), findsNothing);
+
+      await openAndBack(tester, 'Oh! Susanna');
+      expect(find.text('RECENTLY PLAYED'), findsOneWidget);
+      // The card, and the row in the list.
+      expect(find.text('Oh! Susanna'), findsNWidgets(2));
+    });
+
+    testWidgets('sorting by most played says how often, and is kept', (
+      tester,
+    ) async {
+      final settings = MemorySettingsStore();
+      await pumpApp(tester, songs: _all, settings: settings);
+      await openAndBack(tester, 'Oh! Susanna');
+      await openAndBack(tester, 'Oh! Susanna');
+      await openAndBack(tester, 'Amazing Grace');
+
+      await tester.tap(find.text('A–Z'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Most played'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Stephen Foster · Capo 2 · Played 2×'), findsOneWidget);
+      expect(find.text('John Newton · Played once'), findsOneWidget);
+      expect(settings.getString(SettingsKeys.songSort), 'mostPlayed');
+      // Recently played stays above (only a Recent sort would repeat it).
+      expect(find.text('RECENTLY PLAYED'), findsOneWidget);
+      // The rows come after the cards: Oh! Susanna (2 plays) first.
+      final rows = shownTitles(tester);
+      expect(
+        rows.lastIndexOf('Oh! Susanna'),
+        lessThan(rows.lastIndexOf('Amazing Grace')),
+      );
+    });
+
+    testWidgets('sorted by recent, rows say when', (tester) async {
+      await pumpApp(
+        tester,
+        songs: _all,
+        settings: MemorySettingsStore({SettingsKeys.songSort: 'recent'}),
+      );
+      await openAndBack(tester, 'Amazing Grace');
+      expect(find.text('John Newton · Played today'), findsOneWidget);
+      expect(find.text('RECENTLY PLAYED'), findsNothing);
+      expect(shownTitles(tester).first, 'Amazing Grace');
+    });
+
+    testWidgets('searching lists best matches, without the sort menu', (
+      tester,
+    ) async {
+      await pumpApp(tester, songs: _all);
+      await tester.enterText(find.byType(TextField), 'grace');
+      await tester.pumpAndSettle();
+      expect(find.text('A–Z'), findsNothing);
+    });
+
+    testWidgets('a long songbook gets an A–Z index that jumps', (
+      tester,
+    ) async {
+      final many = [
+        for (final letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''))
+          for (var n = 1; n <= 2; n++) '{title: $letter song $n}\n[G]La',
+      ];
+      await pumpApp(tester, songs: many);
+      expect(find.text('Z song 1'), findsNothing);
+
+      // The index is left out for screen readers, so find its letters by
+      // text: the last "Z" on screen is the index's.
+      await tester.tap(find.text('Z').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Z song 1'), findsOneWidget);
+    });
   });
 
   testWidgets('tapping a song opens it', (tester) async {

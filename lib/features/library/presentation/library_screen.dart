@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
@@ -13,6 +14,7 @@ import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
+import 'package:libre_tab/features/library/application/song_order.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
@@ -152,7 +154,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   }
 }
 
-class _SongList extends ConsumerWidget {
+class _SongList extends ConsumerStatefulWidget {
   const _SongList(
     this.filter, {
     required this.onClearSearch,
@@ -166,8 +168,30 @@ class _SongList extends ConsumerWidget {
   final VoidCallback onBrowse;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SongList> createState() => _SongListState();
+}
+
+class _SongListState extends ConsumerState<_SongList> {
+  /// From this many songs, sorted by title or artist, an A–Z index runs
+  /// down the right edge.
+  static const _indexFrom = 30;
+
+  final _scroll = ScrollController();
+
+  /// The rows' keys, so the A–Z index can bring one to the top.
+  final _rowKeys = <int, GlobalKey>{};
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final filter = widget.filter;
+    final sort = ref.watch(songSortProvider);
     return ref
         .watch(songListProvider)
         .when(
@@ -177,45 +201,343 @@ class _SongList extends ConsumerWidget {
             icon: Icons.error_outline,
             message: l10n.loadError,
           ),
-          data: (list) => list.isEmpty
-              ? filter.query.trim().isNotEmpty
-                    ? PlaceholderBody(
-                        icon: Icons.search_off,
-                        message: l10n.noMatches,
-                        action: TextButton(
-                          onPressed: onClearSearch,
-                          child: Text(l10n.clearSearch),
-                        ),
-                      )
-                    : filter.view == LibraryView.favorites
-                    ? PlaceholderBody(
-                        icon: Icons.star_outline_rounded,
-                        message: l10n.noFavorites,
-                        action: OutlinedButton(
-                          onPressed: onBrowse,
-                          child: Text(l10n.browseSongs),
-                        ),
-                      )
-                    : PlaceholderBody(
-                        mark: true,
-                        message: l10n.emptySongbook,
-                        action: OutlinedButton.icon(
-                          onPressed: () => addStarterSongs(context, ref),
-                          icon: const Icon(Icons.library_music_outlined),
-                          label: Text(l10n.addStarterSongs),
-                        ),
-                      )
+          data: (list) {
+            if (list.isEmpty) {
+              return widget.filter.query.trim().isNotEmpty
+                  ? PlaceholderBody(
+                      icon: Icons.search_off,
+                      message: l10n.noMatches,
+                      action: TextButton(
+                        onPressed: widget.onClearSearch,
+                        child: Text(l10n.clearSearch),
+                      ),
+                    )
+                  : widget.filter.view == LibraryView.favorites
+                  ? PlaceholderBody(
+                      icon: Icons.star_outline_rounded,
+                      message: l10n.noFavorites,
+                      action: OutlinedButton(
+                        onPressed: widget.onBrowse,
+                        child: Text(l10n.browseSongs),
+                      ),
+                    )
+                  : PlaceholderBody(
+                      mark: true,
+                      message: l10n.emptySongbook,
+                      action: OutlinedButton.icon(
+                        onPressed: () => addStarterSongs(context, ref),
+                        icon: const Icon(Icons.library_music_outlined),
+                        label: Text(l10n.addStarterSongs),
+                      ),
+                    );
+            }
+            final browsing = filter.query.trim().isEmpty;
+            // Recently played heads the full list (not when it's already
+            // sorted that way, searching, or showing favorites).
+            final recent =
+                browsing &&
+                    filter.view == LibraryView.all &&
+                    sort != SongSort.recent
+                ? ref.watch(recentSongsProvider).value ?? const <SongEntry>[]
+                : const <SongEntry>[];
+            final withIndex =
+                browsing &&
+                list.length >= _indexFrom &&
+                (sort == SongSort.title || sort == SongSort.artist);
+            final leading = <Widget>[
+              if (recent.isNotEmpty) _RecentStrip(recent),
+              _ListHeader(count: list.length, sort: browsing ? sort : null),
+            ];
+            final songs = SlidableAutoCloseBehavior(
               // Opening one row's swipe actions closes the others.
-              : SlidableAutoCloseBehavior(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 96),
-                    itemCount: list.length + 1,
-                    itemBuilder: (context, i) => i == 0
-                        ? _CountHeader(text: l10n.songCount(list.length))
-                        : _SongTile(song: list[i - 1]),
+              child: ListView.builder(
+                controller: _scroll,
+                padding: EdgeInsets.only(bottom: 96, right: withIndex ? 20 : 0),
+                itemCount: leading.length + list.length,
+                itemBuilder: (context, i) {
+                  if (i < leading.length) return leading[i];
+                  final song = list[i - leading.length];
+                  return _SongTile(
+                    key: _rowKeys.putIfAbsent(song.id, GlobalKey.new),
+                    song: song,
+                    sort: browsing ? sort : null,
+                  );
+                },
+              ),
+            );
+            if (!withIndex) return songs;
+            final firstOf = <String, int>{};
+            for (final (i, song) in list.indexed) {
+              firstOf.putIfAbsent(SongOrder.letter(song, sort), () => i);
+            }
+            return Stack(
+              children: [
+                songs,
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  bottom: 88,
+                  child: _LetterIndex(
+                    letters: firstOf.keys.toList(),
+                    onLetter: (letter) =>
+                        _bringUp(list, firstOf[letter]!, leading.length),
                   ),
                 ),
+              ],
+            );
+          },
         );
+  }
+
+  /// Scrolls so song [index] is at the top: a jump to where it should be
+  /// (rows are about the same height), then to the row itself once built.
+  void _bringUp(List<SongEntry> list, int index, int leading) {
+    if (!_scroll.hasClients) return;
+    final position = _scroll.position;
+    final rows = leading + list.length;
+    final perRow =
+        (position.maxScrollExtent + position.viewportDimension) / rows;
+    _scroll.jumpTo(
+      (perRow * (leading + index)).clamp(0, position.maxScrollExtent),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final row = _rowKeys[list[index].id]?.currentContext;
+      if (row != null && row.mounted) unawaited(Scrollable.ensureVisible(row));
+    });
+  }
+}
+
+/// "7 SONGS", and the sort menu while not searching (a search lists the
+/// best matches first).
+class _ListHeader extends ConsumerWidget {
+  const _ListHeader({required this.count, required this.sort});
+
+  final int count;
+  final SongSort? sort;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final names = {
+      SongSort.title: l10n.sortTitle,
+      SongSort.artist: l10n.sortArtist,
+      SongSort.recent: l10n.sortRecent,
+      SongSort.mostPlayed: l10n.sortMostPlayed,
+    };
+    final current = sort;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 8, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.songCount(count).toUpperCase(),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1,
+                color: colors.muted,
+              ),
+            ),
+          ),
+          if (current == null)
+            const SizedBox(height: 48)
+          else
+            MenuAnchor(
+              menuChildren: [
+                for (final MapEntry(key: option, value: name) in names.entries)
+                  MenuItemButton(
+                    leadingIcon: Icon(
+                      Icons.check,
+                      color: option == current ? null : Colors.transparent,
+                    ),
+                    onPressed: () =>
+                        ref.read(songSortProvider.notifier).sort = option,
+                    child: Text(name),
+                  ),
+              ],
+              builder: (context, menu, _) => TextButton.icon(
+                onPressed: () => menu.isOpen ? menu.close() : menu.open(),
+                icon: const Icon(Icons.sort, size: 20),
+                label: Text(names[current]!),
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The last songs opened, as a row of cards to get back to them.
+class _RecentStrip extends StatelessWidget {
+  const _RecentStrip(this.songs);
+
+  final List<SongEntry> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final scale = MediaQuery.textScalerOf(context);
+    // Tall enough for two lines of title and one of artist at any text size.
+    final height = 24 + scale.scale(16) * 1.3 * 2 + scale.scale(14) * 1.35 + 4;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+          child: Text(
+            l10n.recentlyPlayed.toUpperCase(),
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1,
+              color: colors.muted,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: height,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: songs.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 10),
+            itemBuilder: (context, i) => _RecentCard(songs[i]),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _RecentCard extends StatelessWidget {
+  const _RecentCard(this.song);
+
+  final SongEntry song;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return SizedBox(
+      width: 168,
+      child: Material(
+        color: colors.surface2,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => context.push(Routes.song(song.id)),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  song.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 1.25,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  [
+                    if (song.songKey != null) song.songKey!,
+                    if (song.artist.isNotEmpty) song.artist,
+                  ].join(' · '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14, color: colors.muted),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A–Z down the right edge: touch or slide along it to jump to a letter.
+/// Left out for screen readers, who have search; the letters are too small
+/// to be good accessible buttons.
+class _LetterIndex extends StatefulWidget {
+  const _LetterIndex({required this.letters, required this.onLetter});
+
+  final List<String> letters;
+  final ValueChanged<String> onLetter;
+
+  @override
+  State<_LetterIndex> createState() => _LetterIndexState();
+}
+
+class _LetterIndexState extends State<_LetterIndex> {
+  String? _last;
+
+  void _at(double dy, double height) {
+    final letters = widget.letters;
+    final i = (dy / height * letters.length).floor().clamp(
+      0,
+      letters.length - 1,
+    );
+    final letter = letters[i];
+    if (letter == _last) return;
+    _last = letter;
+    unawaited(HapticFeedback.selectionClick());
+    widget.onLetter(letter);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return ExcludeSemantics(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight;
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (d) {
+              _last = null;
+              _at(d.localPosition.dy, height);
+            },
+            onVerticalDragStart: (d) {
+              _last = null;
+              _at(d.localPosition.dy, height);
+            },
+            onVerticalDragUpdate: (d) => _at(d.localPosition.dy, height),
+            child: SizedBox(
+              width: 24,
+              child: Column(
+                children: [
+                  for (final letter in widget.letters)
+                    Expanded(
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            letter,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: colors.accent,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -329,24 +651,23 @@ class _SetlistTile extends StatelessWidget {
   }
 }
 
-class _CountHeader extends StatelessWidget {
-  const _CountHeader({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
-    child: Text(
-      text.toUpperCase(),
-      style: TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1,
-        color: context.colors.muted,
-      ),
+/// "Played today", "Played 3 days ago", "Played Sep 2".
+String _playedWhen(BuildContext context, DateTime when) {
+  final l10n = context.l10n;
+  final now = DateTime.now();
+  final days = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).difference(DateTime(when.year, when.month, when.day)).inDays;
+  return switch (days) {
+    <= 0 => l10n.playedToday,
+    1 => l10n.playedYesterday,
+    < 7 => l10n.playedDaysAgo(days),
+    _ => l10n.playedOn(
+      DateFormat.MMMd(Localizations.localeOf(context).toString()).format(when),
     ),
-  );
+  };
 }
 
 /// A light tap under the finger, then [action].
@@ -356,18 +677,33 @@ void _click(VoidCallback action) {
 }
 
 class _SongTile extends ConsumerWidget {
-  const _SongTile({required this.song});
+  const _SongTile({required this.song, this.sort, super.key});
 
   final SongEntry song;
+
+  /// The list's order: sorted by recent or most played, the row also says
+  /// when or how often the song was played.
+  final SongSort? sort;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final colors = context.colors;
     final scheme = Theme.of(context).colorScheme;
+    final played = switch (sort) {
+      SongSort.mostPlayed when song.playCount > 0 => l10n.playedTimes(
+        song.playCount,
+      ),
+      SongSort.recent => switch (song.lastOpenedAt) {
+        final opened? => _playedWhen(context, opened),
+        null => null,
+      },
+      _ => null,
+    };
     final subtitle = [
       if (song.artist.isNotEmpty) song.artist,
       if ((song.capo ?? 0) > 0) l10n.capoLabel(song.capo!),
+      ?played,
     ].join(' · ');
 
     void addToSetlist() => showAddToSetlistSheet(context, songId: song.id);

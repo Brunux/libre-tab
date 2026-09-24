@@ -179,5 +179,17 @@
   "privacyMore": "Política de privacidad completa y preguntas:",
   "openSettings": "Abrir Ajustes",
   "cameraDeniedTitle": "La cámara está desactivada",
-  "cameraDeniedBody": "Para tomar fotos de canciones, permite la cámara para Libre Tab en Ajustes. Aun así puedes elegir fotos que ya tienes."
+  "cameraDeniedBody": "Para tomar fotos de canciones, permite la cámara para Libre Tab en Ajustes. Aun así puedes elegir fotos que ya tienes.",
+  "sortLabel": "Ordenar",
+  "sortTitle": "A–Z",
+  "sortArtist": "Artista",
+  "sortRecent": "Recientes",
+  "sortMostPlayed": "Más tocadas",
+  "recentlyPlayed": "Tocadas hace poco",
+  "playedTimes": "{count, plural, =1{Tocada una vez} other{Tocada {count} veces}}",
+  "playedToday": "Tocada hoy",
+  "playedYesterday": "Tocada ayer",
+  "playedDaysAgo": "Tocada hace {days} días",
+  "playedOn": "Tocada el {date}",
+  "jumpToLetter": "Ir a la {letter}"
 }

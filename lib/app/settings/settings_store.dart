@@ -63,6 +63,9 @@ abstract final class SettingsKeys {
   /// Dark or Light: where the red-night switch goes back to.
   static const dayTheme = 'dayTheme';
   static const lyricsSize = 'lyricsSize';
+
+  /// How the songbook is sorted (SongSort's name).
+  static const songSort = 'songSort';
   static const tuning = 'tuning';
   static const a4 = 'a4';
 

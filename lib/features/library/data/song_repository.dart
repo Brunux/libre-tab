@@ -45,6 +45,16 @@ class SongRepository {
         .map((rows) => [for (final row in rows) _db.songs.map(row.data)]);
   }
 
+  /// The song was opened: for "Recently played" and "Played 12×". Not an
+  /// edit, so its updated time stays.
+  Future<void> recordOpened(int id) =>
+      (_db.update(_db.songs)..where((s) => s.id.equals(id))).write(
+        SongsCompanion.custom(
+          lastOpenedAt: Variable(DateTime.now()),
+          playCount: _db.songs.playCount + const Constant(1),
+        ),
+      );
+
   Stream<SongEntry?> watchSong(int id) => (_db.select(
     _db.songs,
   )..where((s) => s.id.equals(id))).watchSingleOrNull();

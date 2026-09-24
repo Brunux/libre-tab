@@ -88,6 +88,22 @@ Header (title + settings gear) · search field · chips: All songs / Favorites /
 Setlists · song rows (key badge, title, artist · capo, favorite star) ·
 floating "Add song" button · bottom tabs.
 
+**Play history** (kept on the device only; schema 4): opening a song stamps
+when and counts it.
+- *Recently played*: up to 10 cards (title, key · artist) above the list in
+  All songs, newest first; hidden while searching, in Favorites, and when
+  the list is already sorted by Recent.
+- *Sort* (menu beside "7 SONGS", remembered): A–Z, Artist, Recent, Most
+  played. Titles and artists compare without case, accents or leading
+  punctuation ("¡Ay!" under A). Sorted by Recent the rows add "Played today /
+  yesterday / 3 days ago / Sep 2"; by Most played, "Played once / Played 12×".
+  A search lists the best matches first, so it has no sort menu.
+- *A–Z index*: from 30 songs sorted by title or artist, letters down the
+  right edge; touch or slide to jump (a haptic tick per letter). Left out
+  for screen readers, who have search.
+- The key badge shows the key the song view shows: `{key}`, else the first
+  chord's.
+
 Swiping a song row left reveals quick actions: **Setlist** (the Add to setlist
 sheet), **Share** (the `.cho` file) and **Delete** (red). Only one row is open
 at a time. Delete happens at once with an **Undo** snackbar (8 s) that puts the
