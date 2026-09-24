@@ -10,6 +10,7 @@ import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/chordpro/chord_sheet_importer.dart';
 import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/chordpro/song_header.dart';
+import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/files/photo_picker.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/ocr/ocr_layout.dart';
@@ -181,13 +182,17 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       ),
     );
     if (source == null || !mounted) return;
+    await _scanFrom(source);
+  }
 
+  Future<void> _scanFrom(PhotoSource source) async {
+    final l10n = context.l10n;
     final List<String> paths;
     try {
       paths = await ref.read(photoPickerProvider).pick(source);
     } on PlatformException {
       // The camera was refused (or isn't there).
-      if (mounted) _snack(l10n.cameraDenied);
+      if (mounted) await _cameraRefused();
       return;
     }
     if (paths.isEmpty || !mounted) return;
@@ -265,6 +270,44 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
         _content.text = content;
       },
     );
+  }
+
+  /// The system asks for the camera only once. After a refusal, say where
+  /// to allow it (with a way straight there), and offer the photo library,
+  /// which needs no permission.
+  Future<void> _cameraRefused() async {
+    final l10n = context.l10n;
+    final choice = await showDialog<_CameraChoice>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        icon: const Icon(Icons.no_photography_outlined),
+        title: Text(l10n.cameraDeniedTitle),
+        content: Text(l10n.cameraDeniedBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialog).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialog).pop(_CameraChoice.library),
+            child: Text(l10n.choosePhoto),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialog).pop(_CameraChoice.settings),
+            child: Text(l10n.openSettings),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    switch (choice) {
+      case _CameraChoice.library:
+        await _scanFrom(PhotoSource.library);
+      case _CameraChoice.settings:
+        await ref.read(appSettingsProvider).open();
+      case null:
+        break;
+    }
   }
 
   /// Replaces any message still showing, so the latest one is seen now.
@@ -489,3 +532,5 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     );
   }
 }
+
+enum _CameraChoice { library, settings }

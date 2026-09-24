@@ -64,6 +64,19 @@ rail. Content keeps a readable width, centered (`ReadableWidth`): lists and
 forms 760 pt, the song 900 pt, the tuner 640 pt; the song view's dock keeps
 phone-sized controls on a full-width bar. Nothing changes on phones.
 
+## Permissions
+
+Asked only when a feature is used, never at launch, and never behind a
+button that says "Allow" or a "Not now" that skips the system prompt (App
+Review 5.1.1(iv)). The system asks only once, so a refusal always offers
+**Open Settings** (straight to Libre Tab's page) and an alternative.
+
+| Permission | Asked when | Before the system prompt | If refused |
+|---|---|---|---|
+| Microphone | "Start tuner" | Tuner intro: what it's for, "Nothing is recorded or saved" | "The microphone is off" with **Open Settings** and Try again; coming back with it allowed starts the tuner |
+| Camera | "Take a photo" | The tap itself is the context; the purpose string explains | Dialog: **Open Settings**, **Choose from photos** (needs no permission), Cancel |
+| Photos | never | System photo picker: no permission, only the photos picked are shared | — |
+
 ## Screens
 
 ### 1. Songbook

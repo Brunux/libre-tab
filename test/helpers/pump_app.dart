@@ -9,6 +9,7 @@ import 'package:libre_tab/app/app.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
+import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/core/files/photo_picker.dart';
@@ -33,6 +34,7 @@ Future<ProviderContainer> pumpApp(
   FakeIncomingFiles? incoming,
   FakePhotoPicker? photos,
   FakeTextRecognizer? recognizer,
+  FakeAppSettings? appSettings,
   List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
@@ -50,6 +52,7 @@ Future<ProviderContainer> pumpApp(
         incoming ?? FakeIncomingFiles(),
       ),
       photoPickerProvider.overrideWithValue(photos ?? FakePhotoPicker()),
+      appSettingsProvider.overrideWithValue(appSettings ?? FakeAppSettings()),
       textRecognizerProvider.overrideWithValue(
         recognizer ?? FakeTextRecognizer(),
       ),
@@ -161,6 +164,17 @@ class FakeIncomingFiles implements IncomingFiles {
 
   void sendBytes(String name, Uint8List bytes) =>
       _onFile?.call((name: name, bytes: bytes));
+}
+
+/// Counts trips to the app's page in Settings.
+class FakeAppSettings implements AppSettings {
+  int opened = 0;
+
+  @override
+  Future<bool> open() async {
+    opened++;
+    return true;
+  }
 }
 
 /// A camera and photo library that return preset photo paths.

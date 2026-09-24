@@ -272,17 +272,47 @@ void main() {
       expect(find.text("Couldn't read that photo."), findsOneWidget);
     });
 
-    testWidgets('a refused camera says where to allow it', (tester) async {
+    testWidgets('a refused camera offers Settings or the photo library', (
+      tester,
+    ) async {
+      final photos = FakePhotoPicker(
+        error: PlatformException(code: 'camera_access_denied'),
+      );
+      final settings = FakeAppSettings();
       await pumpApp(
         tester,
-        photos: FakePhotoPicker(
-          error: PlatformException(code: 'camera_access_denied'),
-        ),
+        photos: photos,
+        appSettings: settings,
+        recognizer: FakeTextRecognizer(words: photoOfGrace()),
       );
       await tester.tap(find.text('Add song'));
       await tester.pumpAndSettle();
+
       await scanFrom(tester, 'Take a photo');
-      expect(find.textContaining("can't use the camera"), findsOneWidget);
+      expect(find.text('The camera is off'), findsOneWidget);
+      await tester.tap(find.text('Open Settings'));
+      await tester.pumpAndSettle();
+      expect(settings.opened, 1);
+
+      // The library needs no permission: offered right there.
+      await scanFrom(tester, 'Take a photo');
+      photos.error = null;
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text('Choose from photos'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(photos.picked, [
+        PhotoSource.camera,
+        PhotoSource.camera,
+        PhotoSource.library,
+      ]);
+      expect(
+        tester.widget<TextField>(titleField).controller!.text,
+        'Amazing Grace',
+      );
     });
   });
 

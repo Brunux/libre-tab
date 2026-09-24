@@ -74,7 +74,7 @@
   "tunerIntroBody": "El afinador escucha tu guitarra con el micrófono. No se graba ni se guarda nada.",
   "startTuner": "Iniciar afinador",
   "micDeniedTitle": "El micrófono está desactivado",
-  "micDeniedBody": "Actívalo en Ajustes → Libre Tab → Micrófono y vuelve a intentarlo.",
+  "micDeniedBody": "Para afinar, Libre Tab necesita el micrófono. Permítelo para Libre Tab en Ajustes y vuelve aquí.",
   "tryAgain": "Reintentar",
   "playAString": "Toca una cuerda",
   "inTune": "Afinada",
@@ -157,7 +157,6 @@
   "noTextFound": "No se encontró texto en esa foto. Prueba una foto más cercana y nítida, con buena luz.",
   "scanDone": "Revisa los acordes contra la foto antes de guardar.",
   "scanError": "No se pudo leer esa foto.",
-  "cameraDenied": "Libre Tab no puede usar la cámara. Puedes permitirlo en Ajustes.",
   "readingPhotoOf": "Leyendo la foto {current} de {total}…",
   "startOver": "Empezar de nuevo",
   "startedOver": "Se vaciaron el título, el artista y el texto.",
@@ -174,5 +173,8 @@
   "privacyMicBody": "El afinador solo escucha mientras la pestaña Afinador está en pantalla. El sonido se analiza en el dispositivo y se descarta al instante: nada se graba, guarda ni envía.",
   "privacyPhotosTitle": "Cámara y fotos",
   "privacyPhotosBody": "Escanear foto lee una canción de una foto que tomas o eliges. El texto se lee en el dispositivo y la foto no se guarda. Al elegir fotos, la app solo ve las que eliges.",
-  "privacyMore": "Política de privacidad completa y preguntas:"
+  "privacyMore": "Política de privacidad completa y preguntas:",
+  "openSettings": "Abrir Ajustes",
+  "cameraDeniedTitle": "La cámara está desactivada",
+  "cameraDeniedBody": "Para tomar fotos de canciones, permite la cámara para Libre Tab en Ajustes. Aun así puedes elegir fotos que ya tienes."
 }

@@ -545,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @micDeniedBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow it in Settings → Libre Tab → Microphone, then try again.'**
+  /// **'To tune, Libre Tab needs the microphone. Allow it for Libre Tab in Settings, then come back here.'**
   String get micDeniedBody;
 
   /// No description provided for @tryAgain.
@@ -1040,12 +1040,6 @@ abstract class AppLocalizations {
   /// **'Couldn\'t read that photo.'**
   String get scanError;
 
-  /// No description provided for @cameraDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'Libre Tab can\'t use the camera. You can allow it in Settings.'**
-  String get cameraDenied;
-
   /// No description provided for @readingPhotoOf.
   ///
   /// In en, this message translates to:
@@ -1147,6 +1141,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Full privacy policy and questions:'**
   String get privacyMore;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @cameraDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera is off'**
+  String get cameraDeniedTitle;
+
+  /// No description provided for @cameraDeniedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have.'**
+  String get cameraDeniedBody;
 }
 
 class _AppLocalizationsDelegate

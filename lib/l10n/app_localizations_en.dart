@@ -256,7 +256,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get micDeniedBody =>
-      'Allow it in Settings → Libre Tab → Microphone, then try again.';
+      'To tune, Libre Tab needs the microphone. Allow it for Libre Tab in Settings, then come back here.';
 
   @override
   String get tryAgain => 'Try again';
@@ -595,10 +595,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanError => 'Couldn\'t read that photo.';
 
   @override
-  String get cameraDenied =>
-      'Libre Tab can\'t use the camera. You can allow it in Settings.';
-
-  @override
   String readingPhotoOf(int current, int total) {
     return 'Reading photo $current of $total…';
   }
@@ -656,4 +652,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyMore => 'Full privacy policy and questions:';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get cameraDeniedTitle => 'The camera is off';
+
+  @override
+  String get cameraDeniedBody =>
+      'To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have.';
 }

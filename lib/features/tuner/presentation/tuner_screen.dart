@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/music/tunings.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
@@ -103,12 +104,16 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
       body: ReadableWidth(
         maxWidth: 640,
         child: switch (state.status) {
+          // The system asks only once: point to Settings, and come back
+          // to a running tuner (it retries when the app returns).
           TunerStatus.denied => _Message(
             icon: Icons.mic_off_outlined,
             title: l10n.micDeniedTitle,
             body: l10n.micDeniedBody,
-            action: l10n.tryAgain,
-            onAction: _tuner.start,
+            action: l10n.openSettings,
+            onAction: () => ref.read(appSettingsProvider).open(),
+            secondary: l10n.tryAgain,
+            onSecondary: _tuner.start,
           ),
           _ when firstTime => _Message(
             icon: Icons.mic_none_outlined,
@@ -396,6 +401,8 @@ class _Message extends StatelessWidget {
     required this.body,
     required this.action,
     required this.onAction,
+    this.secondary,
+    this.onSecondary,
   });
 
   final IconData icon;
@@ -403,6 +410,8 @@ class _Message extends StatelessWidget {
   final String body;
   final String action;
   final VoidCallback onAction;
+  final String? secondary;
+  final VoidCallback? onSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -427,6 +436,10 @@ class _Message extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             FilledButton(onPressed: onAction, child: Text(action)),
+            if (secondary case final label?) ...[
+              const SizedBox(height: 8),
+              TextButton(onPressed: onSecondary, child: Text(label)),
+            ],
           ],
         ),
       ),

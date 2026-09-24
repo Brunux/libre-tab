@@ -19,6 +19,18 @@ import Vision
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "TextRecognition") {
       TextRecognition.register(with: registrar)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AppSettings") {
+      // Libre Tab's page in Settings, to allow a refused permission again.
+      FlutterMethodChannel(name: "libre_tab/app_settings", binaryMessenger: registrar.messenger())
+        .setMethodCallHandler { call, result in
+          guard call.method == "open", let url = URL(string: UIApplication.openSettingsURLString)
+          else {
+            result(FlutterMethodNotImplemented)
+            return
+          }
+          UIApplication.shared.open(url) { opened in result(opened) }
+        }
+    }
   }
 }
 

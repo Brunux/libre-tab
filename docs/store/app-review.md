@@ -100,6 +100,7 @@ Paste into *App Review Information → Notes*, and attach
 | 4.2 Minimum functionality | Native songbook with transposition, capo, auto-scroll, setlists, chord diagrams, on-device OCR, and a tuner. |
 | 5.1.1(i) Privacy policy | In App Store Connect **and** in the app (Settings → Privacy). |
 | 5.1.1(ii)/(iv) Permissions | Purpose strings in English and Spanish; asked only when a feature is used; refusal handled gracefully. |
+| 5.1.1(iv) Permission prompts | Neutral pre-prompt ("Start tuner"), no "Allow" wording or skip button; refusals offer Open Settings and an alternative (docs/DESIGN.md § Permissions). |
 | 5.1.1(iii) Data minimization | Photos through the system picker (no library permission); only the camera and microphone are requested. |
 | 5.1.2 Data use | Nothing collected or shared; no third-party analytics/ads SDKs. |
 | 5.2 Intellectual property | Bundled songs are public domain; the logo is original; fonts are OFL; open-source licenses in the app. Users' own imports are private to them. |

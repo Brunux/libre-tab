@@ -22,6 +22,23 @@ class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         TextRecognition(applicationContext, flutterEngine.dartExecutor.binaryMessenger)
+        // Libre Tab's page in Settings, to allow a refused permission again.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "libre_tab/app_settings")
+            .setMethodCallHandler { call, result ->
+                if (call.method != "open") return@setMethodCallHandler result.notImplemented()
+                val opened = try {
+                    startActivity(
+                        Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", packageName, null),
+                        ),
+                    )
+                    true
+                } catch (e: Exception) {
+                    false
+                }
+                result.success(opened)
+            }
         channel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "libre_tab/incoming_files",

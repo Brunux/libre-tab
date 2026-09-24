@@ -20,6 +20,7 @@ Future<(ProviderContainer, FakePitchSource)> openTuner(
   MicAccess access = MicAccess.granted,
   SettingsStore? settings,
   FakeKeepAwake? keepAwake,
+  FakeAppSettings? appSettings,
   List<String> songs = const [],
 }) async {
   now = Duration.zero;
@@ -32,6 +33,7 @@ Future<(ProviderContainer, FakePitchSource)> openTuner(
     pitch: pitch,
     settings: store,
     keepAwake: keepAwake,
+    appSettings: appSettings,
     songs: songs,
     overrides: [tunerClockProvider.overrideWithValue(() => now)],
   );
@@ -93,12 +95,22 @@ void main() {
       expect(settings.getInt(SettingsKeys.micAsked), 1);
     });
 
-    testWidgets('refused: says how to allow it, and can try again', (
+    testWidgets('refused: opens Settings, and can try again', (
       tester,
     ) async {
-      final (_, pitch) = await openTuner(tester, access: MicAccess.denied);
+      final settings = FakeAppSettings();
+      final (_, pitch) = await openTuner(
+        tester,
+        access: MicAccess.denied,
+        appSettings: settings,
+      );
       expect(find.text('The microphone is off'), findsOneWidget);
-      expect(find.textContaining('Settings → Libre Tab'), findsOneWidget);
+      expect(find.textContaining('Allow it for Libre Tab'), findsOneWidget);
+
+      // The system won't ask twice: go straight to the app's settings.
+      await tester.tap(find.text('Open Settings'));
+      await tester.pump();
+      expect(settings.opened, 1);
 
       pitch.access = MicAccess.granted;
       await tester.tap(find.text('Try again'));

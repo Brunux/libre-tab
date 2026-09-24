@@ -132,7 +132,7 @@
   "tunerIntroBody": "The tuner listens to your guitar through the microphone. Nothing is recorded or saved.",
   "startTuner": "Start tuner",
   "micDeniedTitle": "The microphone is off",
-  "micDeniedBody": "Allow it in Settings → Libre Tab → Microphone, then try again.",
+  "micDeniedBody": "To tune, Libre Tab needs the microphone. Allow it for Libre Tab in Settings, then come back here.",
   "tryAgain": "Try again",
   "playAString": "Play a string",
   "inTune": "In tune",
@@ -323,7 +323,6 @@
   "noTextFound": "No text found in that photo. Try a closer, sharper photo in good light.",
   "scanDone": "Check the chords against the photo before saving.",
   "scanError": "Couldn't read that photo.",
-  "cameraDenied": "Libre Tab can't use the camera. You can allow it in Settings.",
   "readingPhotoOf": "Reading photo {current} of {total}…",
   "@readingPhotoOf": {
     "placeholders": {
@@ -357,5 +356,8 @@
   "privacyMicBody": "The tuner listens only while the Tuner tab is on screen. The sound is analyzed on the device and thrown away at once: nothing is recorded, saved or sent.",
   "privacyPhotosTitle": "Camera and photos",
   "privacyPhotosBody": "Scan photo reads a song from a photo you take or choose. The text is read on the device and the photo isn't kept. When you choose photos, the app only sees the ones you pick.",
-  "privacyMore": "Full privacy policy and questions:"
+  "privacyMore": "Full privacy policy and questions:",
+  "openSettings": "Open Settings",
+  "cameraDeniedTitle": "The camera is off",
+  "cameraDeniedBody": "To take photos of songs, allow the camera for Libre Tab in Settings. You can still choose photos you already have."
 }
