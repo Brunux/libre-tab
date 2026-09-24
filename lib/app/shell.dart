@@ -7,26 +7,63 @@ class AppShell extends StatelessWidget {
 
   final StatefulNavigationShell shell;
 
+  /// Material's "expanded" width: tablets, and phones in landscape.
+  static const railFrom = 840.0;
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    void go(int index) =>
+        shell.goBranch(index, initialLocation: index == shell.currentIndex);
+
+    // Big screens: a side rail, so the tabs don't stretch across the width.
+    if (MediaQuery.sizeOf(context).width >= railFrom) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              right: false,
+              child: NavigationRail(
+                selectedIndex: shell.currentIndex,
+                onDestinationSelected: go,
+                labelType: NavigationRailLabelType.all,
+                groupAlignment: -0.9,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.menu_book_outlined),
+                    selectedIcon: const Icon(Icons.menu_book),
+                    label: Text(l10n.tabSongbook),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.speed_outlined),
+                    selectedIcon: const Icon(Icons.speed),
+                    label: Text(l10n.tabTuner),
+                  ),
+                ],
+              ),
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(child: shell),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: shell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: shell.currentIndex,
-        onDestinationSelected: (index) => shell.goBranch(
-          index,
-          initialLocation: index == shell.currentIndex,
-        ),
+        onDestinationSelected: go,
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.menu_book_outlined),
             selectedIcon: const Icon(Icons.menu_book),
-            label: context.l10n.tabSongbook,
+            label: l10n.tabSongbook,
           ),
           NavigationDestination(
             icon: const Icon(Icons.speed_outlined),
             selectedIcon: const Icon(Icons.speed),
-            label: context.l10n.tabTuner,
+            label: l10n.tabTuner,
           ),
         ],
       ),

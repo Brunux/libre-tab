@@ -178,4 +178,21 @@ void main() {
     expect(find.text('Afinador'), findsOneWidget);
     expect(find.text('Agregar canción'), findsOneWidget);
   });
+
+  testWidgets('big screens get a side rail, phones a bottom bar', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 2;
+
+    tester.view.physicalSize = const Size(2064, 2752); // iPad Pro 13"
+    await pumpApp(tester);
+    expect(find.byType(NavigationRail), findsOneWidget);
+    expect(find.byType(NavigationBar), findsNothing);
+
+    tester.view.physicalSize = const Size(860, 1864); // iPhone
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(NavigationRail), findsNothing);
+  });
 }

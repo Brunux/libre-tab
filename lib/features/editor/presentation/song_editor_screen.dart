@@ -15,6 +15,7 @@ import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/ocr/ocr_layout.dart';
 import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_sheet.dart';
@@ -329,11 +330,13 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
             const SizedBox(width: 16),
           ],
         ),
-        body: _loading
-            ? const SizedBox.shrink()
-            : _missing
-            ? PlaceholderBody(message: l10n.songNotFound)
-            : _form(context, result, song),
+        body: ReadableWidth(
+          child: _loading
+              ? const SizedBox.shrink()
+              : _missing
+              ? PlaceholderBody(message: l10n.songNotFound)
+              : _form(context, result, song),
+        ),
       ),
     );
   }

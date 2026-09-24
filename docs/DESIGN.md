@@ -55,6 +55,15 @@ app (all SIL Open Font License), no network fetch.
 - Corner radius: 12–14 px controls, 24 px bottom sheets.
 - Screen padding 16–20 px.
 
+## Big screens (iPad, landscape)
+
+The app is universal (iPhone and iPad, all orientations on iPad, so Split
+View and Slide Over work). From 840 pt wide (Material's "expanded" size:
+iPads, big phones in landscape) the bottom tabs become a side navigation
+rail. Content keeps a readable width, centered (`ReadableWidth`): lists and
+forms 760 pt, the song 900 pt, the tuner 640 pt; the song view's dock keeps
+phone-sized controls on a full-width bar. Nothing changes on phones.
+
 ## Screens
 
 ### 1. Songbook

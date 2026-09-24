@@ -150,5 +150,8 @@ size; also fine for Play):
 6. `6-tuner.png` — the tuner (the simulator can't hear a guitar; a shot from a
    phone with a string in tune would be better)
 
+iPad (13", 2064 × 2752, required because the app is universal):
+`docs/store/screenshots/ipad/` — songbook, song, chord diagrams, tuner.
+
 Play feature graphic (1024 × 500): `branding/png/play-feature-1024x500.png`.
 App icon: `branding/app_icon/app-icon.png`.

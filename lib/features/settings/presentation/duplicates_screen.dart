@@ -8,6 +8,7 @@ import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/data/duplicates.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
@@ -65,62 +66,65 @@ class _DuplicatesScreenState extends ConsumerState<DuplicatesScreen> {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.findDuplicates)),
-      body: FutureBuilder(
-        future: _groups,
-        builder: (context, snapshot) {
-          final groups = snapshot.data;
-          if (snapshot.hasError) {
-            return PlaceholderBody(message: l10n.loadError);
-          }
-          if (groups == null) return const SizedBox.shrink();
-          if (groups.isEmpty) {
-            return PlaceholderBody(message: l10n.noDuplicates);
-          }
-          final copies = [
-            for (final g in groups)
-              if (g.identical) g,
-          ];
-          final versions = [
-            for (final g in groups)
-              if (!g.identical) g,
-          ];
-          final copyCount = copies.fold(0, (n, g) => n + g.copies.length);
-          return ListView(
-            padding: const EdgeInsets.only(bottom: 32),
-            children: [
-              if (copies.isNotEmpty) ...[
-                _Heading(l10n.exactCopies, hint: l10n.exactCopiesHint),
-                for (final group in copies)
-                  ListTile(
-                    leading: const Icon(Icons.copy_all_outlined),
-                    title: Text(group.keeper.title),
-                    subtitle: Text(
-                      [
-                        if (group.keeper.artist.isNotEmpty) group.keeper.artist,
-                        l10n.copiesCount(group.copies.length),
-                      ].join(' · '),
+      body: ReadableWidth(
+        child: FutureBuilder(
+          future: _groups,
+          builder: (context, snapshot) {
+            final groups = snapshot.data;
+            if (snapshot.hasError) {
+              return PlaceholderBody(message: l10n.loadError);
+            }
+            if (groups == null) return const SizedBox.shrink();
+            if (groups.isEmpty) {
+              return PlaceholderBody(message: l10n.noDuplicates);
+            }
+            final copies = [
+              for (final g in groups)
+                if (g.identical) g,
+            ];
+            final versions = [
+              for (final g in groups)
+                if (!g.identical) g,
+            ];
+            final copyCount = copies.fold(0, (n, g) => n + g.copies.length);
+            return ListView(
+              padding: const EdgeInsets.only(bottom: 32),
+              children: [
+                if (copies.isNotEmpty) ...[
+                  _Heading(l10n.exactCopies, hint: l10n.exactCopiesHint),
+                  for (final group in copies)
+                    ListTile(
+                      leading: const Icon(Icons.copy_all_outlined),
+                      title: Text(group.keeper.title),
+                      subtitle: Text(
+                        [
+                          if (group.keeper.artist.isNotEmpty)
+                            group.keeper.artist,
+                          l10n.copiesCount(group.copies.length),
+                        ].join(' · '),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                    child: FilledButton.icon(
+                      onPressed: () => _removeCopies(copies),
+                      icon: const Icon(Icons.cleaning_services_outlined),
+                      label: Text(l10n.removeCopies(copyCount)),
                     ),
                   ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-                  child: FilledButton.icon(
-                    onPressed: () => _removeCopies(copies),
-                    icon: const Icon(Icons.cleaning_services_outlined),
-                    label: Text(l10n.removeCopies(copyCount)),
+                ],
+                if (versions.isNotEmpty) ...[
+                  _Heading(
+                    l10n.differentVersions,
+                    hint: l10n.differentVersionsHint,
                   ),
-                ),
+                  for (final group in versions)
+                    _VersionGroup(group: group, onOpen: _open),
+                ],
               ],
-              if (versions.isNotEmpty) ...[
-                _Heading(
-                  l10n.differentVersions,
-                  hint: l10n.differentVersionsHint,
-                ),
-                for (final group in versions)
-                  _VersionGroup(group: group, onOpen: _open),
-              ],
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

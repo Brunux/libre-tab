@@ -18,6 +18,7 @@ import 'package:libre_tab/core/music/chord_voicings.dart';
 import 'package:libre_tab/core/music/music_key.dart';
 import 'package:libre_tab/core/music/transposition.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
@@ -331,32 +332,40 @@ class _SongViewState extends ConsumerState<_SongView>
       ),
       // A finger on the lyrics holds auto-scroll still, so the text isn't
       // pulled out from under it.
-      body: Listener(
-        onPointerDown: (_) => _fingerDown(),
-        onPointerUp: (_) => _fingerUp(),
-        onPointerCancel: (_) => _fingerUp(),
-        child: NotificationListener<ScrollNotification>(
-          onNotification: _onScroll,
-          child: GestureDetector(
-            // Tap the lyrics to pause or resume. The dock's play button is
-            // the accessible control for the same thing.
-            behavior: HitTestBehavior.translucent,
-            excludeFromSemantics: true,
-            onTap: _togglePlay,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                _fitRoom(constraints.maxHeight / 2);
-                return SingleChildScrollView(
-                  controller: _scroll,
-                  padding: EdgeInsets.fromLTRB(20, 12 + _room, 20, 48 + _room),
-                  child: SongSheet(
-                    song: song,
-                    fontSize: fontSize,
-                    chordLabel: shown,
-                    onChordTap: (chord) => _showChords([chord]),
-                  ),
-                );
-              },
+      body: ReadableWidth(
+        maxWidth: 900,
+        child: Listener(
+          onPointerDown: (_) => _fingerDown(),
+          onPointerUp: (_) => _fingerUp(),
+          onPointerCancel: (_) => _fingerUp(),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _onScroll,
+            child: GestureDetector(
+              // Tap the lyrics to pause or resume. The dock's play button is
+              // the accessible control for the same thing.
+              behavior: HitTestBehavior.translucent,
+              excludeFromSemantics: true,
+              onTap: _togglePlay,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  _fitRoom(constraints.maxHeight / 2);
+                  return SingleChildScrollView(
+                    controller: _scroll,
+                    padding: EdgeInsets.fromLTRB(
+                      20,
+                      12 + _room,
+                      20,
+                      48 + _room,
+                    ),
+                    child: SongSheet(
+                      song: song,
+                      fontSize: fontSize,
+                      chordLabel: shown,
+                      onChordTap: (chord) => _showChords([chord]),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -475,23 +484,28 @@ class _Dock extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final (i, row) in rows.indexed) ...[
-                if (i > 0) const SizedBox(height: 10),
-                Row(
-                  children: [
-                    for (final (j, model) in row.indexed) ...[
-                      if (j > 0) const SizedBox(width: 10),
-                      Expanded(child: _Stepper(model)),
+        // Full-width background; the controls themselves stay phone-sized
+        // on big screens.
+        child: ReadableWidth(
+          fillHeight: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final (i, row) in rows.indexed) ...[
+                  if (i > 0) const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      for (final (j, model) in row.indexed) ...[
+                        if (j > 0) const SizedBox(width: 10),
+                        Expanded(child: _Stepper(model)),
+                      ],
                     ],
-                  ],
-                ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

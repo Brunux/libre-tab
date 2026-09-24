@@ -8,6 +8,7 @@ import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/data/songbook_archive.dart';
@@ -28,90 +29,92 @@ class SettingsScreen extends ConsumerWidget {
     final danger = Theme.of(context).colorScheme.error;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        children: [
-          _SectionLabel(l10n.themeLabel),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SegmentedButton<AppThemeVariant>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(
-                  value: AppThemeVariant.dark,
-                  label: Text(l10n.themeDark),
-                ),
-                ButtonSegment(
-                  value: AppThemeVariant.redNight,
-                  label: Text(l10n.themeRedNight),
-                ),
-                ButtonSegment(
-                  value: AppThemeVariant.light,
-                  label: Text(l10n.themeLight),
-                ),
-              ],
-              selected: {variant},
-              onSelectionChanged: (selection) =>
-                  ref.read(themeVariantProvider.notifier).variant =
-                      selection.single,
+      body: ReadableWidth(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          children: [
+            _SectionLabel(l10n.themeLabel),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SegmentedButton<AppThemeVariant>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: AppThemeVariant.dark,
+                    label: Text(l10n.themeDark),
+                  ),
+                  ButtonSegment(
+                    value: AppThemeVariant.redNight,
+                    label: Text(l10n.themeRedNight),
+                  ),
+                  ButtonSegment(
+                    value: AppThemeVariant.light,
+                    label: Text(l10n.themeLight),
+                  ),
+                ],
+                selected: {variant},
+                onSelectionChanged: (selection) =>
+                    ref.read(themeVariantProvider.notifier).variant =
+                        selection.single,
+              ),
             ),
-          ),
-          const SizedBox(height: 28),
-          _SectionLabel(l10n.songbookSection),
-          ListTile(
-            leading: const Icon(Icons.ios_share),
-            title: Text(l10n.exportSongs),
-            subtitle: Text(l10n.exportSongsHint),
-            onTap: () => _export(context, ref),
-          ),
-          ListTile(
-            leading: const Icon(Icons.file_open_outlined),
-            title: Text(l10n.importSongs),
-            subtitle: Text(l10n.importSongsHint),
-            onTap: () => _import(context, ref),
-          ),
-          ListTile(
-            enabled: songCount > 1,
-            leading: const Icon(Icons.copy_all_outlined),
-            title: Text(l10n.findDuplicates),
-            subtitle: Text(l10n.findDuplicatesHint),
-            onTap: () => context.push(Routes.duplicates),
-          ),
-          ListTile(
-            leading: const Icon(Icons.library_music_outlined),
-            title: Text(l10n.addStarterSongs),
-            subtitle: Text(l10n.addStarterSongsHint),
-            onTap: () => addStarterSongs(context, ref),
-          ),
-          const SizedBox(height: 28),
-          _SectionLabel(l10n.aboutSection),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-            child: Text(l10n.aboutBody),
-          ),
-          ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: Text(l10n.licenses),
-            onTap: () => showLicensePage(
-              context: context,
-              applicationName: l10n.appTitle,
-              applicationLegalese: 'GNU GPL 3.0 or later',
+            const SizedBox(height: 28),
+            _SectionLabel(l10n.songbookSection),
+            ListTile(
+              leading: const Icon(Icons.ios_share),
+              title: Text(l10n.exportSongs),
+              subtitle: Text(l10n.exportSongsHint),
+              onTap: () => _export(context, ref),
             ),
-          ),
-          // Last, apart from everything else, in the error color, and off
-          // when there's nothing to delete (docs/DESIGN.md § Settings).
-          const SizedBox(height: 28),
-          _SectionLabel(l10n.dangerZone),
-          ListTile(
-            enabled: songCount > 0,
-            iconColor: danger,
-            textColor: danger,
-            leading: const Icon(Icons.delete_forever_outlined),
-            title: Text(l10n.deleteAllSongs),
-            subtitle: Text(l10n.deleteAllSongsHint),
-            onTap: () => _deleteAll(context, ref, songCount),
-          ),
-        ],
+            ListTile(
+              leading: const Icon(Icons.file_open_outlined),
+              title: Text(l10n.importSongs),
+              subtitle: Text(l10n.importSongsHint),
+              onTap: () => _import(context, ref),
+            ),
+            ListTile(
+              enabled: songCount > 1,
+              leading: const Icon(Icons.copy_all_outlined),
+              title: Text(l10n.findDuplicates),
+              subtitle: Text(l10n.findDuplicatesHint),
+              onTap: () => context.push(Routes.duplicates),
+            ),
+            ListTile(
+              leading: const Icon(Icons.library_music_outlined),
+              title: Text(l10n.addStarterSongs),
+              subtitle: Text(l10n.addStarterSongsHint),
+              onTap: () => addStarterSongs(context, ref),
+            ),
+            const SizedBox(height: 28),
+            _SectionLabel(l10n.aboutSection),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              child: Text(l10n.aboutBody),
+            ),
+            ListTile(
+              leading: const Icon(Icons.description_outlined),
+              title: Text(l10n.licenses),
+              onTap: () => showLicensePage(
+                context: context,
+                applicationName: l10n.appTitle,
+                applicationLegalese: 'GNU GPL 3.0 or later',
+              ),
+            ),
+            // Last, apart from everything else, in the error color, and off
+            // when there's nothing to delete (docs/DESIGN.md § Settings).
+            const SizedBox(height: 28),
+            _SectionLabel(l10n.dangerZone),
+            ListTile(
+              enabled: songCount > 0,
+              iconColor: danger,
+              textColor: danger,
+              leading: const Icon(Icons.delete_forever_outlined),
+              title: Text(l10n.deleteAllSongs),
+              subtitle: Text(l10n.deleteAllSongsHint),
+              onTap: () => _deleteAll(context, ref, songCount),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
@@ -59,56 +60,60 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-            child: TextField(
-              controller: _search,
-              onChanged: (value) => _filter.query = value,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: setlists ? l10n.searchSetlistsHint : l10n.searchHint,
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: filter.query.isEmpty
-                    ? null
-                    : IconButton(
-                        tooltip: l10n.clearSearch,
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          _search.clear();
-                          _filter.query = '';
-                        },
+      body: ReadableWidth(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+              child: TextField(
+                controller: _search,
+                onChanged: (value) => _filter.query = value,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: setlists
+                      ? l10n.searchSetlistsHint
+                      : l10n.searchHint,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: filter.query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: l10n.clearSearch,
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            _search.clear();
+                            _filter.query = '';
+                          },
+                        ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final (view, label) in [
+                      (LibraryView.all, l10n.filterAll),
+                      (LibraryView.favorites, l10n.filterFavorites),
+                      (LibraryView.setlists, l10n.filterSetlists),
+                    ])
+                      ChoiceChip(
+                        label: Text(label),
+                        selected: filter.view == view,
+                        onSelected: (_) => _filter.view = view,
                       ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final (view, label) in [
-                    (LibraryView.all, l10n.filterAll),
-                    (LibraryView.favorites, l10n.filterFavorites),
-                    (LibraryView.setlists, l10n.filterSetlists),
-                  ])
-                    ChoiceChip(
-                      label: Text(label),
-                      selected: filter.view == view,
-                      onSelected: (_) => _filter.view = view,
-                    ),
-                ],
-              ),
+            Expanded(
+              child: setlists ? _SetlistList(filter) : _SongList(filter),
             ),
-          ),
-          Expanded(
-            child: setlists ? _SetlistList(filter) : _SongList(filter),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: setlists
           ? FloatingActionButton.extended(

@@ -6,6 +6,7 @@ import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/music/tunings.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/tuner/application/tuner_controller.dart';
 import 'package:libre_tab/features/tuner/presentation/widgets/tuner_gauge.dart';
 import 'package:libre_tab/l10n/l10n.dart';
@@ -99,23 +100,26 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: switch (state.status) {
-        TunerStatus.denied => _Message(
-          icon: Icons.mic_off_outlined,
-          title: l10n.micDeniedTitle,
-          body: l10n.micDeniedBody,
-          action: l10n.tryAgain,
-          onAction: _tuner.start,
-        ),
-        _ when firstTime => _Message(
-          icon: Icons.mic_none_outlined,
-          title: l10n.tunerIntroTitle,
-          body: l10n.tunerIntroBody,
-          action: l10n.startTuner,
-          onAction: _tuner.start,
-        ),
-        _ => _TunerBody(state: state),
-      },
+      body: ReadableWidth(
+        maxWidth: 640,
+        child: switch (state.status) {
+          TunerStatus.denied => _Message(
+            icon: Icons.mic_off_outlined,
+            title: l10n.micDeniedTitle,
+            body: l10n.micDeniedBody,
+            action: l10n.tryAgain,
+            onAction: _tuner.start,
+          ),
+          _ when firstTime => _Message(
+            icon: Icons.mic_none_outlined,
+            title: l10n.tunerIntroTitle,
+            body: l10n.tunerIntroBody,
+            action: l10n.startTuner,
+            onAction: _tuner.start,
+          ),
+          _ => _TunerBody(state: state),
+        },
+      ),
     );
   }
 

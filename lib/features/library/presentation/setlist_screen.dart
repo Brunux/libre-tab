@@ -7,6 +7,7 @@ import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
+import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/data/setlist_repository.dart';
 import 'package:libre_tab/features/library/presentation/widgets/setlist_name_dialog.dart';
@@ -87,42 +88,44 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
           ),
         ],
       ),
-      body: songs.when(
-        skipLoadingOnReload: true,
-        loading: () => const SizedBox.shrink(),
-        error: (_, _) => PlaceholderBody(message: l10n.loadError),
-        data: (fromDb) {
-          final list = _dragged ?? fromDb;
-          final buttons = _Buttons(
-            onPlay: list.isEmpty
-                ? null
-                : () => context.push(Routes.playSetlist(_id, 0)),
-            onAdd: () => _addSongs(list),
-          );
-          if (list.isEmpty) {
-            return Column(
-              children: [
-                buttons,
-                Expanded(child: PlaceholderBody(message: l10n.emptySetlist)),
-              ],
+      body: ReadableWidth(
+        child: songs.when(
+          skipLoadingOnReload: true,
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => PlaceholderBody(message: l10n.loadError),
+          data: (fromDb) {
+            final list = _dragged ?? fromDb;
+            final buttons = _Buttons(
+              onPlay: list.isEmpty
+                  ? null
+                  : () => context.push(Routes.playSetlist(_id, 0)),
+              onAdd: () => _addSongs(list),
             );
-          }
-          return ReorderableListView.builder(
-            header: buttons,
-            padding: const EdgeInsets.only(bottom: 48),
-            buildDefaultDragHandles: false,
-            itemCount: list.length,
-            onReorderItem: (from, to) => _move(list, from, to),
-            itemBuilder: (context, i) => _SongRow(
-              key: ValueKey(list[i].id),
-              index: i,
-              song: list[i],
-              onTap: () => context.push(Routes.playSetlist(_id, i)),
-              onRemove: () =>
-                  unawaited(_repository.removeSong(_id, list[i].id)),
-            ),
-          );
-        },
+            if (list.isEmpty) {
+              return Column(
+                children: [
+                  buttons,
+                  Expanded(child: PlaceholderBody(message: l10n.emptySetlist)),
+                ],
+              );
+            }
+            return ReorderableListView.builder(
+              header: buttons,
+              padding: const EdgeInsets.only(bottom: 48),
+              buildDefaultDragHandles: false,
+              itemCount: list.length,
+              onReorderItem: (from, to) => _move(list, from, to),
+              itemBuilder: (context, i) => _SongRow(
+                key: ValueKey(list[i].id),
+                index: i,
+                song: list[i],
+                onTap: () => context.push(Routes.playSetlist(_id, i)),
+                onRemove: () =>
+                    unawaited(_repository.removeSong(_id, list[i].id)),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
