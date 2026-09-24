@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#100D0A</color>
+    <!-- The app opens in its dark campfire theme: no white flash before it. -->
+    <color name="launch_background">#100D0A</color>
 </resources>

@@ -94,18 +94,26 @@ abstract final class OcrLayout {
       }
     }
 
+    // Spacing is measured center to center: engines differ in how much
+    // room they leave around the ink (Tesseract's boxes are tight, Vision's
+    // padded), so the gaps between boxes can't be compared with a height.
+    final pitch = _median([
+      for (var i = start + 1; i < lines.length; i++)
+        lines[i].centerY - lines[i - 1].centerY,
+    ], fallback: lineHeight * 1.5);
+    bool farApart(_Line above, _Line below) =>
+        below.centerY - above.centerY > pitch * 1.4;
+
     for (var i = start; i < lines.length; i++) {
       final line = lines[i];
       if (i > start &&
-          line.top - lines[i - 1].bottom > lineHeight * 0.9 &&
+          farApart(lines[i - 1], line) &&
           !ChordSheetImporter.isSectionLabel(lines[i - 1].text)) {
         out.add(''); // a gap in the photo: a new section
       }
       final next = i + 1 < lines.length ? lines[i + 1] : null;
       final lyricBelow =
-          next != null &&
-          !next.isChords &&
-          next.top - line.bottom <= lineHeight * 0.9;
+          next != null && !next.isChords && !farApart(line, next);
       if (line.isChords) {
         out.add(
           lyricBelow ? _chordsOver(line, next) : _chordsAlone(line, charWidth),
@@ -125,8 +133,11 @@ abstract final class OcrLayout {
     final lastCharWidth = last.width / last.text.length;
     final out = StringBuffer();
     for (final chord in chords.words) {
-      // The character the chord's left edge sits over.
-      var column = ends.indexWhere((end) => end > chord.left);
+      // The character the chord starts over, measured a little into its
+      // first letter: letters share a word's box evenly, so a chord right
+      // over the letter after a narrow "-" or "i" can touch that one.
+      final probe = chord.left + chord.width / chord.text.length * 0.3;
+      var column = ends.indexWhere((end) => end > probe);
       if (column < 0) {
         final past = ((chord.left - last.right) / lastCharWidth).round();
         column = ends.length + past.clamp(1, 200);
@@ -178,7 +189,11 @@ abstract final class OcrLayout {
       var bestOverlap = 0.5;
       for (final line in lines) {
         final overlap = line.verticalOverlap(word);
-        if (overlap > bestOverlap && !line.overlapsHorizontally(word)) {
+        // A word sharing nearly all its height with a line is in it, even
+        // if its box runs into a neighbour's (Tesseract boxes a "1" after
+        // "VERSE" too wide).
+        if (overlap > bestOverlap &&
+            (overlap >= 0.9 || !line.overlapsHorizontally(word))) {
           best = line;
           bestOverlap = overlap;
         }

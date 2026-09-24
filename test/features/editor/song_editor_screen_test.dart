@@ -136,8 +136,8 @@ void main() {
       return [
         w('Amazing', 40, 0, 200, 40),
         w('Grace', 215, 0, 330, 40),
-        // "A-mazing": G over the "m" (x 58), G7 over "grace" (x 111).
-        w('G', 58, 70, 67, 18),
+        // "A-mazing": G over the "m" (x 50), G7 over "grace" (x 111).
+        w('G', 50, 70, 59, 18),
         w('G7', 111, 70, 129, 18),
         w('Amazing', 40, 92, 106, 20),
         w('grace', 111, 92, 152, 20),

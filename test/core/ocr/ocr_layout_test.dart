@@ -210,4 +210,107 @@ void main() {
     ];
     expect(sheet(unit), sheet(pixels));
   });
+
+  test('a real Tesseract read of docs/store/review-sample.png', () {
+    // Tesseract's boxes hug the ink: chord rows are shorter than lyric
+    // rows, the gaps between boxes are wide, and the "1" of "VERSE 1" is
+    // boxed too wide. Captured from the Android app.
+    final words = [
+      for (final (text, left, top, right, bottom) in _tesseractSample)
+        RecognizedWord(
+          text,
+          left: left.toDouble(),
+          top: top.toDouble(),
+          right: right.toDouble(),
+          bottom: bottom.toDouble(),
+        ),
+    ];
+    final scanned = OcrLayout.read(words);
+    expect(scanned.title, 'Red River Valley');
+    expect(scanned.artist, 'Traditional');
+    expect(scanned.text, startsWith('VERSE 1\n'));
+    expect(scanned.text, contains('a-while\n\nCHORUS\n'));
+    // One blank line only: before the chorus.
+    expect('\n\n'.allMatches(scanned.text), hasLength(1));
+    final song = ChordSheetImporter.convert(scanned.text).chordPro;
+    expect(song, contains('From this [G]valley they say you are [D]going'));
+    expect(
+      song,
+      contains('We will [G]miss your bright eyes and sweet [D]smile'),
+    );
+    expect(song, contains('That has [D7]brightened our pathway a-[G]while'));
+    expect(song, contains('{start_of_chorus}'));
+    expect(song, contains('Come and [G]sit by my side if you [D]love me'));
+    expect(song, contains('Do not [G]hasten to bid me a-[D]dieu'));
+  });
 }
+
+const _tesseractSample = [
+  ('Red', 71, 69, 180, 111),
+  ('River', 195, 69, 345, 111),
+  ('Valley', 357, 69, 532, 122),
+  ('Traditional', 70, 132, 198, 152),
+  ('VERSE', 71, 218, 179, 236),
+  ('1', 163, 214, 182, 246),
+  ('G', 217, 271, 236, 292),
+  ('D', 541, 272, 558, 292),
+  ('From', 71, 310, 147, 333),
+  ('this', 155, 308, 207, 333),
+  ('valley', 216, 308, 298, 340),
+  ('they', 305, 308, 367, 340),
+  ('say', 375, 317, 420, 340),
+  ('you', 427, 317, 478, 340),
+  ('are', 488, 317, 531, 333),
+  ('going', 539, 309, 617, 340),
+  ('G', 185, 367, 204, 388),
+  ('D', 641, 368, 659, 388),
+  ('We', 70, 406, 116, 429),
+  ('will', 124, 404, 175, 429),
+  ('miss', 184, 405, 248, 429),
+  ('your', 256, 413, 321, 436),
+  ('bright', 328, 404, 415, 436),
+  ('eyes', 424, 413, 482, 436),
+  ('and', 492, 404, 544, 429),
+  ('sweet', 553, 408, 631, 429),
+  ('smile', 640, 404, 715, 429),
+  ('G', 197, 463, 216, 484),
+  ('Cc', 511, 463, 529, 484),
+  ('For', 71, 502, 120, 525),
+  ('they', 127, 500, 189, 532),
+  ('say', 197, 509, 242, 532),
+  ('you', 249, 509, 300, 532),
+  ('are', 310, 509, 353, 525),
+  ('taking', 361, 500, 449, 532),
+  ('the', 457, 500, 502, 525),
+  ('sunshine', 511, 500, 637, 525),
+  ('D7', 202, 560, 235, 580),
+  ('G', 575, 559, 594, 580),
+  ('That', 70, 596, 135, 621),
+  ('has', 143, 596, 191, 621),
+  ('brightened', 199, 596, 354, 628),
+  ('our', 363, 605, 411, 621),
+  ('pathway', 419, 596, 539, 628),
+  ('a-while', 547, 596, 649, 621),
+  ('CHORUS', 71, 686, 183, 704),
+  ('G', 221, 739, 240, 760),
+  ('D', 509, 740, 526, 760),
+  ('Come', 71, 778, 151, 801),
+  ('and', 160, 776, 212, 801),
+  ('sit', 221, 777, 254, 801),
+  ('by', 262, 776, 297, 808),
+  ('my', 305, 785, 348, 808),
+  ('side', 356, 776, 412, 801),
+  ('if', 421, 776, 442, 801),
+  ('you', 447, 785, 498, 808),
+  ('love', 507, 776, 564, 801),
+  ('me', 573, 785, 615, 801),
+  ('G', 175, 835, 194, 856),
+  ('D', 446, 836, 464, 856),
+  ('Do', 71, 874, 110, 897),
+  ('not', 120, 876, 166, 897),
+  ('hasten', 174, 872, 267, 897),
+  ('to', 275, 876, 303, 897),
+  ('bid', 311, 872, 357, 898),
+  ('me', 366, 881, 408, 897),
+  ('a-dieu', 417, 872, 505, 897),
+];
