@@ -406,7 +406,7 @@ void main() {
     testWidgets('switching saves it', (tester) async {
       final settings = MemorySettingsStore();
       await openSong(tester, SampleSongs.amazingGrace, settings: settings);
-      await tester.tap(find.byTooltip('Switch theme'));
+      await tester.tap(find.byTooltip('Red night'));
       await tester.pumpAndSettle();
       expect(settings.getString(SettingsKeys.theme), 'redNight');
     });

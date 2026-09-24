@@ -15,15 +15,26 @@ void main() {
     expect(container.read(themeVariantProvider), AppThemeVariant.dark);
   });
 
-  test('cycle goes Dark → Red night → Light → Dark', () {
-    final seen = [
-      for (var i = 0; i < 3; i++) (controller()..cycle()).variant,
-    ];
-    expect(seen, [
-      AppThemeVariant.redNight,
-      AppThemeVariant.light,
-      AppThemeVariant.dark,
-    ]);
+  test('the red-night switch goes back to Dark from Dark', () {
+    controller().toggleRedNight();
+    expect(controller().variant, AppThemeVariant.redNight);
+    controller().toggleRedNight();
+    expect(controller().variant, AppThemeVariant.dark);
+  });
+
+  test('the red-night switch goes back to Light from Light', () {
+    controller().variant = AppThemeVariant.light;
+    controller().toggleRedNight();
+    expect(controller().variant, AppThemeVariant.redNight);
+    controller().toggleRedNight();
+    expect(controller().variant, AppThemeVariant.light);
+  });
+
+  test('red night chosen outright goes back to the last day theme', () {
+    controller().variant = AppThemeVariant.light;
+    controller().variant = AppThemeVariant.redNight;
+    controller().toggleRedNight();
+    expect(controller().variant, AppThemeVariant.light);
   });
 
   test('variant setter selects a theme', () {

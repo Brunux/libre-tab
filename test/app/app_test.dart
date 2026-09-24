@@ -83,7 +83,7 @@ void main() {
 
   testWidgets('Settings shows the theme chosen elsewhere', (tester) async {
     final container = await pumpApp(tester);
-    container.read(themeVariantProvider.notifier).cycle(); // → Red night
+    container.read(themeVariantProvider.notifier).toggleRedNight();
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
@@ -173,12 +173,20 @@ void main() {
     expect(find.byType(SongViewScreen), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
 
-    await tester.tap(find.byTooltip('Switch theme'));
+    // A tap: red night on, and off again (back to Dark).
+    await tester.tap(find.byTooltip('Red night'));
     await tester.pump();
     expect(container.read(themeVariantProvider), AppThemeVariant.redNight);
 
-    await tester.tap(find.byTooltip('Switch theme'));
+    await tester.tap(find.byTooltip('Leave red night'));
     await tester.pump();
+    expect(container.read(themeVariantProvider), AppThemeVariant.dark);
+
+    // A long press: every theme to pick from.
+    await tester.longPress(find.byTooltip('Red night'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(MenuItemButton, 'Light'));
+    await tester.pumpAndSettle();
     expect(container.read(themeVariantProvider), AppThemeVariant.light);
   });
 

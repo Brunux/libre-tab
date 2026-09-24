@@ -320,11 +320,7 @@ class _SongViewState extends ConsumerState<_SongView>
               );
             },
           ),
-          IconButton(
-            tooltip: l10n.switchTheme,
-            icon: const Icon(Icons.dark_mode_outlined),
-            onPressed: () => ref.read(themeVariantProvider.notifier).cycle(),
-          ),
+          const _ThemeSwitch(),
           PopupMenuButton<_Action>(
             tooltip: l10n.moreActions,
             onSelected: (action) => switch (action) {
@@ -504,6 +500,70 @@ class _SongViewState extends ConsumerState<_SongView>
     final repository = ref.read(songRepositoryProvider);
     context.pop();
     await repository.deleteSong(entry.id);
+  }
+}
+
+/// Tap: red night on or off. Long-press: all three themes to choose from.
+class _ThemeSwitch extends ConsumerWidget {
+  const _ThemeSwitch();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = ref.watch(themeVariantProvider);
+    final themes = ref.read(themeVariantProvider.notifier);
+    final night = theme == AppThemeVariant.redNight;
+    final label = night ? l10n.leaveRedNight : l10n.themeRedNight;
+    return MenuAnchor(
+      menuChildren: [
+        for (final (variant, name) in [
+          (AppThemeVariant.dark, l10n.themeDark),
+          (AppThemeVariant.redNight, l10n.themeRedNight),
+          (AppThemeVariant.light, l10n.themeLight),
+        ])
+          MenuItemButton(
+            leadingIcon: Icon(
+              Icons.check,
+              color: variant == theme ? null : Colors.transparent,
+            ),
+            onPressed: () => themes.variant = variant,
+            child: Text(name),
+          ),
+      ],
+      builder: (context, menu, _) {
+        void open() {
+          unawaited(HapticFeedback.mediumImpact());
+          menu.open();
+        }
+
+        // One control for screen readers: the switch, with "Choose theme"
+        // as its long-press action.
+        return MergeSemantics(
+          child: Semantics(
+            onLongPressHint: l10n.chooseTheme,
+            child: GestureDetector(
+              onLongPress: open,
+              // The tooltip would pop up on the same long press.
+              child: Tooltip(
+                message: label,
+                triggerMode: TooltipTriggerMode.manual,
+                excludeFromSemantics: true,
+                child: IconButton(
+                  icon: Icon(
+                    night ? Icons.nightlight : Icons.nightlight_outlined,
+                    semanticLabel: label,
+                  ),
+                  onPressed: () {
+                    unawaited(HapticFeedback.selectionClick());
+                    themes.toggleRedNight();
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

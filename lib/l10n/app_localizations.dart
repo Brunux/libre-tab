@@ -170,11 +170,17 @@ abstract class AppLocalizations {
   /// **'Light'**
   String get themeLight;
 
-  /// No description provided for @switchTheme.
+  /// No description provided for @leaveRedNight.
   ///
   /// In en, this message translates to:
-  /// **'Switch theme'**
-  String get switchTheme;
+  /// **'Leave red night'**
+  String get leaveRedNight;
+
+  /// No description provided for @chooseTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose theme'**
+  String get chooseTheme;
 
   /// No description provided for @searchHint.
   ///

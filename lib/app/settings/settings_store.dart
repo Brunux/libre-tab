@@ -59,6 +59,9 @@ class PrefsSettingsStore implements SettingsStore {
 /// Keys, in one place.
 abstract final class SettingsKeys {
   static const theme = 'theme';
+
+  /// Dark or Light: where the red-night switch goes back to.
+  static const dayTheme = 'dayTheme';
   static const lyricsSize = 'lyricsSize';
   static const tuning = 'tuning';
   static const a4 = 'a4';

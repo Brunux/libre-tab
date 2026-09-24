@@ -45,7 +45,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeLight => 'Light';
 
   @override
-  String get switchTheme => 'Switch theme';
+  String get leaveRedNight => 'Leave red night';
+
+  @override
+  String get chooseTheme => 'Choose theme';
 
   @override
   String get searchHint => 'Search songs, artists or lyrics';

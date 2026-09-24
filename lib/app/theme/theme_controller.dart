@@ -18,11 +18,21 @@ class ThemeVariantController extends Notifier<AppThemeVariant> {
   set variant(AppThemeVariant variant) {
     state = variant;
     _store.setString(SettingsKeys.theme, variant.name);
+    if (variant != AppThemeVariant.redNight) {
+      _store.setString(SettingsKeys.dayTheme, variant.name);
+    }
   }
 
-  /// Dark → Red night → Light → Dark, for the song view's quick switch.
-  void cycle() {
-    const values = AppThemeVariant.values;
-    variant = values[(state.index + 1) % values.length];
+  /// The song view's quick switch: red night on, or back off to the theme
+  /// it came from (Dark or Light), so a tap always does the same thing.
+  void toggleRedNight() {
+    if (state != AppThemeVariant.redNight) {
+      variant = AppThemeVariant.redNight;
+      return;
+    }
+    final day = _store.getString(SettingsKeys.dayTheme);
+    variant = day == AppThemeVariant.light.name
+        ? AppThemeVariant.light
+        : AppThemeVariant.dark;
   }
 }

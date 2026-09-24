@@ -83,7 +83,7 @@ void main() {
       find.text('Suena en D · Cejilla 2 · posiciones de C'),
       findsOneWidget,
     );
-    expect(find.byTooltip('Cambiar tema'), findsOneWidget);
+    expect(find.byTooltip('Noche roja'), findsOneWidget);
     expect(find.byTooltip('Agregar a favoritas'), findsOneWidget);
   });
 }

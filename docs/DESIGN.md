@@ -19,8 +19,12 @@ Songbook ──tap song──▶ Song view ──back──▶ Songbook
 
 ## Themes
 
-Three themes, same token names. Song view has a one-tap theme switch (moon
-icon) that cycles Dark → Red night → Light; the default comes from Settings.
+Three themes, same token names. Song view has a moon switch: a tap turns
+red night on, and off again back to the theme it came from (Dark or Light,
+whichever was last chosen), so a tap always does the same thing; the moon is
+filled while red night is on. A long press opens all three to choose from
+(screen readers: the switch's long-press action, "Choose theme"). The default
+comes from Settings.
 
 | Token | Dark (default) | Red night | Light |
 |---|---|---|---|
