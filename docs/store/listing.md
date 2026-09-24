@@ -140,7 +140,8 @@ nunca quedan atrapadas.
 ## Screenshots and graphics
 
 `docs/store/screenshots/` — iPhone 17 Pro Max, 1320 × 2868 (App Store 6.9"
-size; also fine for Play):
+size). Not for Google Play: Play rejects a long side more than twice the short
+one (2868 / 1320 = 2.17).
 
 1. `1-songbook.png` — songbook with the starter songs
 2. `2-song.png` — a song in campfire mode, with the dock
@@ -153,5 +154,11 @@ size; also fine for Play):
 iPad (13", 2064 × 2752, required because the app is universal):
 `docs/store/screenshots/ipad/` — songbook, song, chord diagrams, tuner.
 
+Google Play phone screenshots: `docs/store/screenshots/android/` — the same
+six scenes on Android 13, 1080 × 1920 (9:16, meets Play's size rules and its
+recommendation for promotion), clean status bar (demo mode, 9:41). Chord
+diagrams show the fret numbers.
+
 Play feature graphic (1024 × 500): `branding/png/play-feature-1024x500.png`.
-App icon: `branding/app_icon/app-icon.png`.
+App icon: `branding/app_icon/app-icon.png` (1024, App Store);
+`branding/png/play-icon-512.png` (512 × 512, Google Play).
