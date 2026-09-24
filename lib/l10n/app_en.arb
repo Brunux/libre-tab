@@ -67,10 +67,8 @@
   "titleLabel": "Title",
   "titleRequired": "Add a title",
   "artistLabel": "Artist",
-  "contentLabel": "Paste chords over lyrics, or ChordPro",
   "openFile": "Open file",
   "notASongFile": "That file isn't a song (.cho, .chopro, .chordpro, .crd, .txt).",
-  "resultLabel": "Result",
   "previewTab": "Preview",
   "chordProTab": "ChordPro",
   "importSummary": "Chord lines placed: {chordLines} · Sections found: {sections}",
@@ -393,5 +391,12 @@
   "playSong": "Play {title}",
   "@playSong": {"placeholders": {"title": {"type": "String"}}},
   "openSongbook": "Open songbook",
-  "stringTuned": "tuned"
+  "stringTuned": "tuned",
+  "editTab": "Edit",
+  "paste": "Paste",
+  "pasteHint": "Copied from a website or a note",
+  "scanPhotoHint": "A printed chord sheet, from the camera or photos",
+  "openFileHint": "A .cho, .chordpro or .txt file",
+  "clipboardEmpty": "Nothing to paste. Copy a song first.",
+  "contentHintOr": "Or type or paste chords over lyrics, or ChordPro"
 }

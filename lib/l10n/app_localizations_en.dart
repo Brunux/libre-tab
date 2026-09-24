@@ -141,17 +141,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get artistLabel => 'Artist';
 
   @override
-  String get contentLabel => 'Paste chords over lyrics, or ChordPro';
-
-  @override
   String get openFile => 'Open file';
 
   @override
   String get notASongFile =>
       'That file isn\'t a song (.cho, .chopro, .chordpro, .crd, .txt).';
-
-  @override
-  String get resultLabel => 'Result';
 
   @override
   String get previewTab => 'Preview';
@@ -748,4 +742,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stringTuned => 'tuned';
+
+  @override
+  String get editTab => 'Edit';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get pasteHint => 'Copied from a website or a note';
+
+  @override
+  String get scanPhotoHint =>
+      'A printed chord sheet, from the camera or photos';
+
+  @override
+  String get openFileHint => 'A .cho, .chordpro or .txt file';
+
+  @override
+  String get clipboardEmpty => 'Nothing to paste. Copy a song first.';
+
+  @override
+  String get contentHintOr =>
+      'Or type or paste chords over lyrics, or ChordPro';
 }

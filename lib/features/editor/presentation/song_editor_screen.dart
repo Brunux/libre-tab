@@ -48,7 +48,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
   late bool _loading = widget.songId != null;
   bool _missing = false;
   bool _saving = false;
-  bool _showSource = false;
+
+  /// Edit the text, see it as a song, or see the ChordPro to be saved.
+  _Mode _mode = _Mode.edit;
 
   /// While photos are being read: (photo, of how many).
   (int, int)? _scanning;
@@ -140,6 +142,19 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       setState(() => _saving = false);
       _snack(context.l10n.saveError);
     }
+  }
+
+  /// Most songs come from a website or a note: one tap puts the copied
+  /// text in, handled like a file.
+  Future<void> _paste() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text?.trim() ?? '';
+    if (!mounted) return;
+    if (text.isEmpty) {
+      _snack(context.l10n.clipboardEmpty);
+      return;
+    }
+    _fill(SongHeader.split(text));
   }
 
   Future<void> _openFile() async {
@@ -389,12 +404,6 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     final colors = context.colors;
     final hasContent = _content.text.trim().isNotEmpty;
     final body = song.compose();
-    final sectionLabel = TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.w700,
-      letterSpacing: 1,
-      color: colors.muted,
-    );
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -417,120 +426,212 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(labelText: l10n.artistLabel),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
+        SegmentedButton<_Mode>(
+          showSelectedIcon: false,
+          segments: [
+            ButtonSegment(value: _Mode.edit, label: Text(l10n.editTab)),
+            ButtonSegment(value: _Mode.preview, label: Text(l10n.previewTab)),
+            ButtonSegment(value: _Mode.source, label: Text(l10n.chordProTab)),
+          ],
+          selected: {_mode},
+          onSelectionChanged: (s) {
+            // Seeing the result: the keyboard steps aside.
+            if (s.single != _Mode.edit) FocusScope.of(context).unfocus();
+            setState(() => _mode = s.single);
+          },
+        ),
+        const SizedBox(height: 16),
+        ...switch (_mode) {
+          _Mode.edit => _editor(context, result, hasContent),
+          _Mode.preview || _Mode.source => [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: colors.surface,
+                border: Border.all(color: colors.line),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: !hasContent
+                  ? Text(
+                      l10n.previewEmpty,
+                      style: TextStyle(color: colors.muted),
+                    )
+                  : _mode == _Mode.source
+                  ? SelectableText(
+                      body,
+                      style: TextStyle(
+                        fontFamily: AppFonts.mono,
+                        fontSize: 12,
+                        height: 1.6,
+                        color: colors.text,
+                      ),
+                    )
+                  : SongSheet(song: ChordProParser.parse(body), fontSize: 17),
+            ),
+          ],
+        },
+      ],
+    );
+  }
+
+  /// The Edit tab: ways to bring a song in (big while there's nothing yet),
+  /// the text box, and what the import made of it.
+  List<Widget> _editor(
+    BuildContext context,
+    ImportResult result,
+    bool hasContent,
+  ) {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final busy = _scanning != null;
+    final sources = [
+      (Icons.content_paste, l10n.paste, l10n.pasteHint, _paste),
+      (
+        Icons.document_scanner_outlined,
+        l10n.scanPhoto,
+        l10n.scanPhotoHint,
+        _scan,
+      ),
+      (Icons.file_open_outlined, l10n.openFile, l10n.openFileHint, _openFile),
+    ];
+    return [
+      if (hasContent || busy)
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            OutlinedButton.icon(
-              onPressed: _scanning != null ? null : _openFile,
-              icon: const Icon(Icons.file_open_outlined),
-              label: Text(l10n.openFile),
-            ),
-            OutlinedButton.icon(
-              onPressed: _scanning != null ? null : _scan,
-              icon: const Icon(Icons.document_scanner_outlined),
-              label: Text(l10n.scanPhoto),
-            ),
+            for (final (icon, label, _, action) in sources.skip(1))
+              OutlinedButton.icon(
+                onPressed: busy ? null : action,
+                icon: Icon(icon),
+                label: Text(label),
+              ),
           ],
-        ),
-        if (_scanning case (final current, final total)) ...[
-          const SizedBox(height: 12),
-          Semantics(
-            liveRegion: true,
-            child: Row(
-              children: [
-                const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  total == 1
-                      ? l10n.readingPhoto
-                      : l10n.readingPhotoOf(current, total),
-                ),
-              ],
+        )
+      else
+        for (final (icon, label, hint, action) in sources)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: _SourceCard(
+              icon: icon,
+              label: label,
+              hint: hint,
+              onTap: action,
             ),
           ),
-        ],
+      if (_scanning case (final current, final total)) ...[
         const SizedBox(height: 12),
-        TextField(
-          controller: _content,
-          minLines: 8,
-          maxLines: 16,
-          keyboardType: TextInputType.multiline,
-          // Chord sheets depend on exact spacing and spelling: the iOS
-          // keyboard would turn "G  " into "G. " and "mazing" into "maxing".
-          autocorrect: false,
-          enableSuggestions: false,
-          smartDashesType: SmartDashesType.disabled,
-          smartQuotesType: SmartQuotesType.disabled,
-          spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
-          style: TextStyle(
-            fontFamily: AppFonts.mono,
-            fontSize: 13,
-            height: 1.5,
-            color: colors.text,
+        Semantics(
+          liveRegion: true,
+          child: Row(
+            children: [
+              const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                total == 1
+                    ? l10n.readingPhoto
+                    : l10n.readingPhotoOf(current, total),
+              ),
+            ],
           ),
-          decoration: InputDecoration(
-            hintText: l10n.contentLabel,
-            alignLabelWithHint: true,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 12,
-          runSpacing: 8,
-          children: [
-            Text(l10n.resultLabel.toUpperCase(), style: sectionLabel),
-            SegmentedButton<bool>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(value: false, label: Text(l10n.previewTab)),
-                ButtonSegment(value: true, label: Text(l10n.chordProTab)),
-              ],
-              selected: {_showSource},
-              onSelectionChanged: (s) => setState(() => _showSource = s.single),
-            ),
-          ],
-        ),
-        if (hasContent) ...[
-          const SizedBox(height: 8),
-          Text(
-            result.alreadyChordPro
-                ? l10n.alreadyChordPro
-                : l10n.importSummary(result.chordLines, result.sections),
-            style: TextStyle(fontSize: 14, color: colors.muted),
-          ),
-        ],
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: colors.surface,
-            border: Border.all(color: colors.line),
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: !hasContent
-              ? Text(l10n.previewEmpty, style: TextStyle(color: colors.muted))
-              : _showSource
-              ? SelectableText(
-                  body,
-                  style: TextStyle(
-                    fontFamily: AppFonts.mono,
-                    fontSize: 12,
-                    height: 1.6,
-                    color: colors.text,
-                  ),
-                )
-              : SongSheet(song: ChordProParser.parse(body), fontSize: 17),
         ),
       ],
+      const SizedBox(height: 12),
+      TextField(
+        controller: _content,
+        minLines: 8,
+        maxLines: 16,
+        keyboardType: TextInputType.multiline,
+        // Chord sheets depend on exact spacing and spelling: the iOS
+        // keyboard would turn "G  " into "G. " and "mazing" into "maxing".
+        autocorrect: false,
+        enableSuggestions: false,
+        smartDashesType: SmartDashesType.disabled,
+        smartQuotesType: SmartQuotesType.disabled,
+        spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+        style: TextStyle(
+          fontFamily: AppFonts.mono,
+          fontSize: 13,
+          height: 1.5,
+          color: colors.text,
+        ),
+        decoration: InputDecoration(
+          hintText: hasContent ? null : l10n.contentHintOr,
+          alignLabelWithHint: true,
+        ),
+      ),
+      if (hasContent) ...[
+        const SizedBox(height: 8),
+        Text(
+          result.alreadyChordPro
+              ? l10n.alreadyChordPro
+              : l10n.importSummary(result.chordLines, result.sections),
+          style: TextStyle(fontSize: 14, color: colors.muted),
+        ),
+      ],
+    ];
+  }
+}
+
+/// One way to bring a song in, big enough to be the obvious first step.
+class _SourceCard extends StatelessWidget {
+  const _SourceCard({
+    required this.icon,
+    required this.label,
+    required this.hint,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final String hint;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Material(
+      color: colors.surface2,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Icon(icon, color: colors.accent, size: 28),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      hint,
+                      style: TextStyle(fontSize: 14, color: colors.muted),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
 enum _CameraChoice { library, settings }
+
+enum _Mode { edit, preview, source }

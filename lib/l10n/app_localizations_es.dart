@@ -142,17 +142,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get artistLabel => 'Artista';
 
   @override
-  String get contentLabel => 'Pega acordes sobre la letra, o ChordPro';
-
-  @override
   String get openFile => 'Abrir archivo';
 
   @override
   String get notASongFile =>
       'Ese archivo no es una canción (.cho, .chopro, .chordpro, .crd, .txt).';
-
-  @override
-  String get resultLabel => 'Resultado';
 
   @override
   String get previewTab => 'Vista previa';
@@ -742,4 +736,27 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get stringTuned => 'afinada';
+
+  @override
+  String get editTab => 'Editar';
+
+  @override
+  String get paste => 'Pegar';
+
+  @override
+  String get pasteHint => 'Copiado de una web o una nota';
+
+  @override
+  String get scanPhotoHint => 'Una hoja impresa, con la cámara o de tus fotos';
+
+  @override
+  String get openFileHint => 'Un archivo .cho, .chordpro o .txt';
+
+  @override
+  String get clipboardEmpty =>
+      'No hay nada que pegar. Copia una canción primero.';
+
+  @override
+  String get contentHintOr =>
+      'O escribe o pega acordes sobre la letra, o ChordPro';
 }

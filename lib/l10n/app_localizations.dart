@@ -332,12 +332,6 @@ abstract class AppLocalizations {
   /// **'Artist'**
   String get artistLabel;
 
-  /// No description provided for @contentLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste chords over lyrics, or ChordPro'**
-  String get contentLabel;
-
   /// No description provided for @openFile.
   ///
   /// In en, this message translates to:
@@ -349,12 +343,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That file isn\'t a song (.cho, .chopro, .chordpro, .crd, .txt).'**
   String get notASongFile;
-
-  /// No description provided for @resultLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Result'**
-  String get resultLabel;
 
   /// No description provided for @previewTab.
   ///
@@ -1291,6 +1279,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'tuned'**
   String get stringTuned;
+
+  /// No description provided for @editTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editTab;
+
+  /// No description provided for @paste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// No description provided for @pasteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied from a website or a note'**
+  String get pasteHint;
+
+  /// No description provided for @scanPhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A printed chord sheet, from the camera or photos'**
+  String get scanPhotoHint;
+
+  /// No description provided for @openFileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A .cho, .chordpro or .txt file'**
+  String get openFileHint;
+
+  /// No description provided for @clipboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to paste. Copy a song first.'**
+  String get clipboardEmpty;
+
+  /// No description provided for @contentHintOr.
+  ///
+  /// In en, this message translates to:
+  /// **'Or type or paste chords over lyrics, or ChordPro'**
+  String get contentHintOr;
 }
 
 class _AppLocalizationsDelegate

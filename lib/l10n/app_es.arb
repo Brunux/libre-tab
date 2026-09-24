@@ -39,10 +39,8 @@
   "titleLabel": "Título",
   "titleRequired": "Escribe un título",
   "artistLabel": "Artista",
-  "contentLabel": "Pega acordes sobre la letra, o ChordPro",
   "openFile": "Abrir archivo",
   "notASongFile": "Ese archivo no es una canción (.cho, .chopro, .chordpro, .crd, .txt).",
-  "resultLabel": "Resultado",
   "previewTab": "Vista previa",
   "chordProTab": "ChordPro",
   "importSummary": "Líneas de acordes: {chordLines} · Secciones: {sections}",
@@ -198,5 +196,12 @@
   "allTuned": "¡Todo afinado, a tocar!",
   "playSong": "Tocar {title}",
   "openSongbook": "Abrir cancionero",
-  "stringTuned": "afinada"
+  "stringTuned": "afinada",
+  "editTab": "Editar",
+  "paste": "Pegar",
+  "pasteHint": "Copiado de una web o una nota",
+  "scanPhotoHint": "Una hoja impresa, con la cámara o de tus fotos",
+  "openFileHint": "Un archivo .cho, .chordpro o .txt",
+  "clipboardEmpty": "No hay nada que pegar. Copia una canción primero.",
+  "contentHintOr": "O escribe o pega acordes sobre la letra, o ChordPro"
 }

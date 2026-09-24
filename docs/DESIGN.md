@@ -153,12 +153,16 @@ Details (milestone 4):
 ### 3. Add / edit song
 One screen for both. Header: cancel (asks "Discard changes?" if anything
 changed), "Add song" / "Edit song", Save (enabled once there is a title and
-text). Fields: Title, Artist. Buttons: **Open file** and **Scan photo** —
-simpler than the Paste / File / Camera tabs in the mockup, since the text box
-is always there to paste into. Text box (monospace) takes chords-over-lyrics
-or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Result with
-Preview / ChordPro toggle and a summary ("Chord lines placed: 4 · Sections
-found: 2", or "Already in ChordPro format."). Nothing is saved until Save.
+text). Fields: Title, Artist, then **Edit | Preview | ChordPro** tabs (the
+preview no longer sits under the keyboard; switching to it closes the
+keyboard). Edit: while the song is empty, three big cards — **Paste** (the
+clipboard, as most songs are copied from a website or a note; iOS asks
+"Allow Paste" once per tap), **Scan photo** and **Open file**, each with a
+one-line hint — which step down to small Scan photo / Open file buttons once
+there's text. Then the text box (monospace), which takes chords-over-lyrics
+or ChordPro; `{title}`/`{artist}` lines pasted in fill the fields. Under it
+the summary ("Chord lines placed: 4 · Sections found: 2", or "Already in
+ChordPro format."). Nothing is saved until Save.
 **Scan photo** (milestone 7) asks "Take a photo" or "Choose from photos"
 (the system picker: no permission, only the photos chosen are shared; up to
 10, read in the order picked, "Reading photo 2 of 3…"). It then fills

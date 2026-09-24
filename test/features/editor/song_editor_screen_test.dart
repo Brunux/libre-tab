@@ -38,7 +38,8 @@ void main() {
     tester,
   ) async {
     final container = await openEditor(tester);
-    expect(find.text('The song will appear here as you type.'), findsOneWidget);
+    // Nothing yet: the ways to bring a song in, big.
+    expect(find.text('Copied from a website or a note'), findsOneWidget);
 
     await tester.enterText(contentField, '     G\nThat saved a wretch');
     await tester.pumpAndSettle();
@@ -46,8 +47,15 @@ void main() {
       find.text('Chord lines placed: 1 · Sections found: 0'),
       findsOneWidget,
     );
-    expect(find.text('G'), findsOneWidget); // preview chord
+    // With text, the cards step down to buttons.
+    expect(find.text('Copied from a website or a note'), findsNothing);
     expect(find.text('Add a title'), findsOneWidget);
+
+    await tester.tap(find.text('Preview'));
+    await tester.pumpAndSettle();
+    expect(find.text('G'), findsOneWidget); // preview chord
+    await tester.tap(find.text('Edit'));
+    await tester.pumpAndSettle();
     expect(saveButton(tester).onPressed, isNull);
 
     await tester.enterText(titleField, 'Grace');
@@ -67,6 +75,44 @@ void main() {
       saved!.body,
       '{title: Grace}\n{artist: John Newton}\n\nThat [G]saved a wretch',
     );
+  });
+
+  group('Paste', () {
+    void clipboard(WidgetTester tester, String? text) {
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async => call.method == 'Clipboard.getData'
+            ? (text == null ? null : {'text': text})
+            : null,
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+    }
+
+    testWidgets('puts a copied song in, like a file', (tester) async {
+      await openEditor(tester);
+      clipboard(tester, '{title: Grace}\n{artist: Newton}\n[G]Amazing');
+      await tester.tap(find.text('Paste'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(titleField).controller!.text, 'Grace');
+      expect(tester.widget<TextField>(artistField).controller!.text, 'Newton');
+      expect(
+        tester.widget<TextField>(contentField).controller!.text,
+        '[G]Amazing',
+      );
+    });
+
+    testWidgets('an empty clipboard says so', (tester) async {
+      await openEditor(tester);
+      clipboard(tester, null);
+      await tester.tap(find.text('Paste'));
+      await tester.pumpAndSettle();
+      expect(find.text('Nothing to paste. Copy a song first.'), findsOneWidget);
+    });
   });
 
   testWidgets('the ChordPro tab shows exactly what will be saved', (
