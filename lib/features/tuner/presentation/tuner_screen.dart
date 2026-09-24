@@ -63,7 +63,10 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
     _active = active;
     if (active) {
       unawaited(_keepAwake.enable());
-      if (_tuner.micAskedBefore) unawaited(_tuner.start());
+      // Check, don't ask: a prompt here would pause and resume the app
+      // (on Android), which would land here again. Coming back from
+      // Settings with the microphone allowed still starts the tuner.
+      if (_tuner.micAskedBefore) unawaited(_tuner.start(ask: false));
     } else {
       unawaited(_keepAwake.disable());
       unawaited(_tuner.stop());

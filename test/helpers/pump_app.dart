@@ -231,8 +231,15 @@ class FakePitchSource implements PitchSource {
   void Function(double?)? _onPitch;
   bool get listening => _onPitch != null;
 
+  /// How many times the microphone was asked for (a prompt on a phone).
+  int asks = 0;
+
   @override
-  Future<MicAccess> start(void Function(double? frequency) onPitch) async {
+  Future<MicAccess> start(
+    void Function(double? frequency) onPitch, {
+    bool ask = true,
+  }) async {
+    if (ask) asks++;
     if (access == MicAccess.granted) _onPitch = onPitch;
     return access;
   }

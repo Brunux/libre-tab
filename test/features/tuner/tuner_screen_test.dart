@@ -120,6 +120,46 @@ void main() {
     });
   });
 
+  group('after a refusal', () {
+    Future<void> leaveAndComeBack(WidgetTester tester) async {
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      tester.binding
+        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('coming back never asks again (no prompt loop)', (
+      tester,
+    ) async {
+      final (_, pitch) = await openTuner(tester, access: MicAccess.denied);
+      final asked = pitch.asks;
+      // On Android the permission screen itself pauses and resumes the app.
+      for (var i = 0; i < 3; i++) {
+        await leaveAndComeBack(tester);
+      }
+      expect(pitch.asks, asked);
+      expect(find.text('The microphone is off'), findsOneWidget);
+    });
+
+    testWidgets('allowed in Settings: coming back starts the tuner', (
+      tester,
+    ) async {
+      final (_, pitch) = await openTuner(tester, access: MicAccess.denied);
+      final asked = pitch.asks;
+      pitch.access = MicAccess.granted; // the user allowed it in Settings
+      await leaveAndComeBack(tester);
+      expect(pitch.listening, isTrue);
+      expect(pitch.asks, asked, reason: 'checked, not asked');
+      expect(find.text('Play a string'), findsOneWidget);
+    });
+  });
+
   group('listening only while the tuner is on screen', () {
     testWidgets('starts on the tab, stops when leaving it', (tester) async {
       final (_, pitch) = await openTuner(tester);

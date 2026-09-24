@@ -15,8 +15,13 @@ enum MicAccess { granted, denied }
 /// feed frequencies directly.
 abstract interface class PitchSource {
   /// Starts listening and calls [onPitch] ~20 times a second with the
-  /// frequency heard (null = silence). Asks for the microphone first.
-  Future<MicAccess> start(void Function(double? frequency) onPitch);
+  /// frequency heard (null = silence). With [ask], asks for the microphone
+  /// if needed; without it only checks, so nothing pops up (used for the
+  /// automatic restarts, e.g. coming back to the app).
+  Future<MicAccess> start(
+    void Function(double? frequency) onPitch, {
+    bool ask = true,
+  });
 
   Future<void> stop();
 }
@@ -41,9 +46,12 @@ class MicPitchSource implements PitchSource {
   var _busy = false;
 
   @override
-  Future<MicAccess> start(void Function(double? frequency) onPitch) async {
+  Future<MicAccess> start(
+    void Function(double? frequency) onPitch, {
+    bool ask = true,
+  }) async {
     if (_audio != null) return MicAccess.granted;
-    if (!await _recorder.hasPermission()) return MicAccess.denied;
+    if (!await _recorder.hasPermission(request: ask)) return MicAccess.denied;
     _worker ??= await PitchWorker.start(sampleRate: sampleRate.toDouble());
     final stream = await _recorder.startStream(
       const RecordConfig(

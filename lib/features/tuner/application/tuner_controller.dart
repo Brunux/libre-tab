@@ -95,10 +95,13 @@ class TunerController extends Notifier<TunerState> {
   /// starts by itself, otherwise it first explains why it needs it.
   bool get micAskedBefore => _store.getInt(SettingsKeys.micAsked) == 1;
 
-  Future<void> start() async {
+  /// Starts listening. Only a tap should [ask] for the microphone:
+  /// automatic starts just check, because on Android asking pauses and
+  /// resumes the app, which would start again and ask again, forever.
+  Future<void> start({bool ask = true}) async {
     if (state.status == TunerStatus.listening) return;
-    _store.setInt(SettingsKeys.micAsked, 1);
-    final access = await _source.start(_onPitch);
+    if (ask) _store.setInt(SettingsKeys.micAsked, 1);
+    final access = await _source.start(_onPitch, ask: ask);
     state = state.copyWith(
       status: access == MicAccess.granted
           ? TunerStatus.listening
