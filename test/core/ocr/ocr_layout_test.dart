@@ -238,6 +238,7 @@ void main() {
       song,
       contains('We will [G]miss your bright eyes and sweet [D]smile'),
     );
+    expect(song, contains('For they [G]say you are taking the [C]sunshine'));
     expect(song, contains('That has [D7]brightened our pathway a-[G]while'));
     expect(song, contains('{start_of_chorus}'));
     expect(song, contains('Come and [G]sit by my side if you [D]love me'));

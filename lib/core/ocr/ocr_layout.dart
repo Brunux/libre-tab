@@ -1,4 +1,5 @@
 import 'package:libre_tab/core/chordpro/chord_sheet_importer.dart';
+import 'package:libre_tab/core/ocr/chord_repair.dart';
 import 'package:meta/meta.dart';
 
 /// One word found in a photo, with its box. Any unit works (pixels or 0–1)
@@ -206,6 +207,7 @@ abstract final class OcrLayout {
     }
     for (final line in lines) {
       line.words.sort((a, b) => a.left.compareTo(b.left));
+      line.repairChords();
     }
     return lines..sort((a, b) => a.centerY.compareTo(b.centerY));
   }
@@ -233,6 +235,28 @@ class _Line {
   double get top => centerY - height / 2;
   double get bottom => centerY + height / 2;
   String get text => [for (final w in words) w.text].join(' ');
+
+  /// Fixes misread chords ("Cc" for "C") in what is clearly a chord line.
+  void repairChords() {
+    final fixed = ChordRepair.line([for (final w in words) w.text]);
+    if (fixed == null) return;
+    final repaired = [
+      for (final (i, w) in words.indexed)
+        if (fixed[i] case final text?)
+          RecognizedWord(
+            text,
+            left: w.left,
+            top: w.top,
+            right: w.right,
+            bottom: w.bottom,
+          ),
+    ];
+    words.clear();
+    _centerSum = 0;
+    _heightSum = 0;
+    repaired.forEach(add);
+  }
+
   bool get isChords => ChordSheetImporter.isChordLine(text);
 
   /// How much of the smaller height the word and the line share (0–1).

@@ -93,6 +93,14 @@ source ─▶ lines with horizontal positions ─▶ classify line: chord / lyri
   "Data Not Collected". Both engines sit behind one channel
   (`libre_tab/text_recognition`) that returns every word with its pixel box;
   the layout (`lib/core/ocr/ocr_layout.dart`) is shared, pure Dart.
+  Lines are told apart by center-to-center spacing, not box gaps: Tesseract's
+  boxes hug the ink while Vision's are padded.
+- **Misread chords** (`lib/core/ocr/chord_repair.dart`): in a line that is
+  already at least half chords, words that aren't chords are fixed when a
+  common misread explains them ("Cc" → C, "Arn" → Am, "6" → G, "8" → B,
+  "0" → D, lower-case roots, stuck punctuation; lone specks dropped). If any
+  word still isn't a chord the line is left as read, so lyrics are never
+  changed.
 - **Lone chords:** Vision skips some isolated single letters (a "C" alone
   reads like a bracket). A second pass finds marks in chord rows that no word
   covers, crops each one, draws it three times ("C C C") and keeps what at
@@ -216,4 +224,4 @@ so it's fast to unit test.
 4. **Campfire mode** ✅ — dock (transpose, capo, text size, auto-scroll speed), tap-to-pause auto-scroll, chord diagrams, screen kept awake, theme and text size remembered. (Pinch-to-zoom replaced by A−/A+; setlist swipe moves to milestone 6.)
 5. **Tuner** ✅ — explanation screen then mic permission, `record` PCM stream, MPM on a background isolate, needle UI, six tunings, string lock, A4 432–446, haptic when in tune, listens only while the tab is visible and the app is in front.
 6. **Polish** ✅ — setlists (swipe between songs), seven public-domain starter songs, whole-songbook `.zip` export/import, song files opened from other apps go to Add song, Settings (songbook, about, licenses), app icon and brand (`branding/`), store listing and privacy statement (`docs/store/`, `PRIVACY.md`).
-7. **Camera import** ✅ — camera or photo library (`image_picker`) → on-device OCR with word boxes (Apple Vision on iOS, Tesseract on Android) → layout by pixel position (`lib/core/ocr/`) → same chords-over-lyrics importer → ChordPro, reviewed in the editor. Verified with Vision on a proportional-font sheet (12/12 chords); the Android/Tesseract side builds but hasn't been run on a device yet.
+7. **Camera import** ✅ — camera or photo library (`image_picker`) → on-device OCR with word boxes (Apple Vision on iOS, Tesseract on Android) → layout by pixel position (`lib/core/ocr/`) → same chords-over-lyrics importer → ChordPro, reviewed in the editor. Verified with Vision on a proportional-font sheet (12/12 chords) and with Tesseract on the Android 13 emulator (the review sample reads back exactly; its boxes are a test).
