@@ -86,7 +86,7 @@ Paste into *App Review Information → Notes*, and attach
 | Guideline | How Libre Tab meets it |
 |---|---|
 | 1.2 User-generated content | No in-app sharing, posting or social features; songs stay on the device. Not a UGC platform. |
-| 2.1 Completeness | No placeholders; starter songs make the first launch useful; tested on iPhone (device) and iPad (simulator). Test on a real iPad too if possible — reviewers often use one. |
+| 2.1 Completeness | No placeholders; starter songs make the first launch useful. Tested on a real iPhone (24 Sep 2026: tuning a guitar, setlist auto-advance, Open in Libre Tab from Files, Paste) and the iPad simulator. Test on a real iPad too if possible — reviewers often use one. |
 | 2.3.1 Hidden features | None. |
 | 2.3.3 Screenshots | All show the app in use (no splash or intro screens). |
 | 2.3.7 Name/keywords | Unique name ≤ 30; keywords describe the app, no brand names. |
@@ -97,6 +97,7 @@ Paste into *App Review Information → Notes*, and attach
 | 2.5.1 Public APIs | Only public frameworks (AVFoundation via `record`, Vision, PhotosUI via `image_picker`). |
 | 2.5.2 Self-contained | No downloaded code; all resources bundled. |
 | 2.5.14 Recording consent | Explanation screen before the microphone prompt; the tuner visibly listens (needle, note); iOS shows its microphone indicator. |
+| Accessibility | VoiceOver labels on every control (custom actions for swipe actions and the theme menu); Dynamic Type; follows Reduce Motion (no title flight, no folding or springing); contrast and tap sizes checked by tests on every screen and theme. |
 | 4.2 Minimum functionality | Native songbook with transposition, capo, auto-scroll, setlists, chord diagrams, on-device OCR, and a tuner. |
 | 5.1.1(i) Privacy policy | In App Store Connect **and** in the app (Settings → Privacy). |
 | 5.1.1(ii)/(iv) Permissions | Purpose strings in English and Spanish; asked only when a feature is used; refusal handled gracefully. |
@@ -107,9 +108,9 @@ Paste into *App Review Information → Notes*, and attach
 
 ## Before pressing Submit
 
-1. Push the repository (privacy and support URLs must load).
+1. ✅ Push the repository (privacy and support URLs must load) — pushed.
 2. Upload the build, answer the questionnaires above, add screenshots and
    Spanish localization.
-3. Final check on a real iPhone (and iPad if available): first launch
-   with starter songs, tuner permission prompt and refusal, Scan photo from
-   Photos and camera, Open in Libre Tab from Files.
+3. ✅ Final check on a real iPhone — done 24 Sep 2026. Still worth doing on
+   a real iPad if one is available: first launch with starter songs, tuner
+   permission prompt, Scan photo, Open in Libre Tab from Files.

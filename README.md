@@ -74,18 +74,37 @@ offline: no account, no ads, no tracking.
 - Reference pitch from 432 to 446 Hz.
 - Only listens while the tuner is on screen; nothing is recorded.
 
+**Feel**
+- Small, quick animations where they mean something: a string that locks in
+  tune springs, a starred song throws sparks, chords roll to their new names
+  when you transpose, the Up next countdown fills a ring, deleted songs fold
+  away and Undo brings them back.
+- They follow the phone's Reduce Motion setting, and the decorative ones stay
+  still in red night. Nothing moves near the lyrics while they scroll.
+- Screen reader labels throughout, adjustable text size, and haptic taps on
+  the controls you use by feel.
+
 Songs are stored in the open [ChordPro](https://www.chordpro.org/) format, so
 your songbook is never locked into this app. The app is in English and
 Spanish.
 
 ## Status
 
-All seven milestones are done: screen design, scaffold, music core, songbook,
-campfire mode, tuner, polish (setlists, starter songs, export/import, app icon
-and brand, store listing), and camera import; since then, a UI round (play
-history and sorting, a Setlists tab, auto-advance, tuner feedback, a
-paste-first editor, motion and the in-app logo). It runs on iPhone and iPad
-and has been tested on Android 13 (emulator). 520+ tests pass.
+Feature complete and ready for store submission. Milestones 0–9 are done:
+screen design, scaffold, music core, songbook, campfire mode, tuner, polish
+(setlists, starter songs, export/import, app icon and brand, store listing),
+camera import, a UI round (play history and sorting, a Setlists tab,
+auto-advance, tuner feedback, a paste-first editor, the in-app logo), and
+motion and maintenance (animations with Reduce Motion, Flutter 3.47 and
+up-to-date libraries, a second security audit).
+
+Tested on a real iPhone (tuning a guitar, a setlist with auto-advance,
+opening `.cho` files from Files, pasting from a website), on the iPad
+simulator, and on Android 13 (emulator). 540+ tests pass.
+
+Left before release: the App Store Connect submission, Android release
+signing and the Play Console listing
+([docs/store/app-review.md](docs/store/app-review.md)).
 
 See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
