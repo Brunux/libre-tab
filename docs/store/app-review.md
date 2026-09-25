@@ -122,7 +122,7 @@ Paste into *App Review Information → Notes*, and attach
 | 5.2 Intellectual property | Bundled songs are public domain worldwide (see Content rights); the logo is original; fonts are OFL; open-source licenses in the app. There's no catalog, search or download of lyrics: songs users add come from their own files, clipboard or photos and stay private to them, like notes. |
 | 5.2.3 Third-party media | No saving, converting or downloading from other services. |
 | 3.1 Payments | Free, no In-App Purchase, no ads. A "Buy me a coffee" tip link (Settings → Support Libre Tab) is shown only when StoreKit's `Storefront.current` is the United States, the one storefront where 3.1.1(a) allows buttons and links to outside payment; everywhere else it's hidden, and the store listing doesn't mention it. |
-| 5.6.1 Reviews | "Rate Libre Tab" uses Apple's API (`AppStore.requestReview`), only when tapped; no incentive, no custom prompt. |
+| 5.6.1 Reviews | "Rate Libre Tab" opens the app's App Store review page (Apple ID 6815950837), only when tapped; no incentive, no custom prompt. |
 | GPL and the App Store | All the app's GPL code is the developer's own, so publishing it on the App Store is the copyright holder's call; every third-party package is MIT, BSD or Apache (the one LGPL package, `dbus`, is Linux-only and not in the iOS app). Before accepting outside contributions, add an App Store permission (GPL section 7) or a contributor agreement. |
 
 ## Before pressing Submit

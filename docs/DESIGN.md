@@ -281,8 +281,9 @@ tracking, made by one person), then the ways to help: **Buy me a coffee**
 (buymeacoffee.com/brunux; shown only on iPhone/iPad from the **US App
 Store**, the only storefront whose rules allow a link to outside payment —
 guideline 3.1.1(a) — and never on Android, where Google Play requires its
-own programs), **Rate Libre Tab** (the system's review prompt on iOS; the
-Play listing on Android), **Share with a friend** (the share sheet, with the
+own programs), **Rate Libre Tab** (on iOS the app's App Store review page,
+apps.apple.com/app/id6815950837?action=write-review; the Play listing on
+Android), **Share with a friend** (the share sheet, with the
 project's link) and **Star it on GitHub**. Links open in the browser through
 a fixed allow-list in native code (`libre_tab/support`); the app itself still
 makes no network calls.

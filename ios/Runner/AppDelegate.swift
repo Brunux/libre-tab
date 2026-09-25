@@ -52,7 +52,7 @@ enum Support {
   /// Once the app exists in App Store Connect, its numeric Apple ID: "Rate"
   /// then opens the review page directly (the system prompt may not show
   /// when asked from a button, as it's limited to a few times a year).
-  static let appStoreId = ""
+  static let appStoreId = "6815950837"
 
   static func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
