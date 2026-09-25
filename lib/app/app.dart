@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/theme_controller.dart';
+import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
@@ -26,6 +27,16 @@ class _LibreTabAppState extends ConsumerState<LibreTabApp> {
   void initState() {
     super.initState();
     ref.read(incomingFilesProvider).listen(_received);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // The flame in every tab's header: loaded up front so it's there with
+    // the first frame instead of popping in after it.
+    for (final mark in BrandMark.assets) {
+      unawaited(precacheImage(AssetImage(mark), context));
+    }
   }
 
   /// A file from another app opens in Add song, as if picked with "Open

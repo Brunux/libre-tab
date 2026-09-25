@@ -8,10 +8,16 @@ A songbook and guitar tuner for playing around the campfire. It works fully
 offline: no account, no ads, no tracking.
 
 <p align="center">
-  <img src="docs/store/screenshots/1-songbook.png" alt="Songbook" width="200">
+  <img src="docs/store/screenshots/1-songbook.png" alt="Songbook with Recently played" width="200">
   <img src="docs/store/screenshots/2-song.png" alt="A song in campfire mode" width="200">
   <img src="docs/store/screenshots/3-red-night-capo.png" alt="Red night theme with a capo" width="200">
-  <img src="docs/store/screenshots/5-setlist.png" alt="A setlist" width="200">
+  <img src="docs/store/screenshots/6-tuner.png" alt="The tuner, listening" width="200">
+</p>
+
+<p align="center">
+  <img src="docs/store/screenshots/android/5-setlist.png" alt="A setlist, on Android" width="180">
+  <img src="docs/store/screenshots/android/7-add-song.png" alt="Add song: paste, scan or open, on Android" width="180">
+  <img src="docs/store/screenshots/ipad/2-song.png" alt="A song on iPad" width="270">
 </p>
 
 ## Features

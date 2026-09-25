@@ -139,25 +139,26 @@ nunca quedan atrapadas.
 
 ## Screenshots and graphics
 
-`docs/store/screenshots/` — iPhone 17 Pro Max, 1320 × 2868 (App Store 6.9"
-size). Not for Google Play: Play rejects a long side more than twice the short
-one (2868 / 1320 = 2.17).
+Seven scenes, the same on every device (retaken 2026-09-24 after the UI
+round; status bar at 9:41):
 
-1. `1-songbook.png` — songbook with the starter songs
+1. `1-songbook.png` — the Libre Tab header, Recently played, the sort menu
 2. `2-song.png` — a song in campfire mode, with the dock
 3. `3-red-night-capo.png` — red-night theme, sounds in A with capo 2 (G shapes)
-4. `4-chord-diagrams.png` — chord diagrams, light theme
+4. `4-chord-diagrams.png` — chord diagrams with fret numbers, light theme
 5. `5-setlist.png` — a setlist
-6. `6-tuner.png` — the tuner (the simulator can't hear a guitar; a shot from a
-   phone with a string in tune would be better)
+6. `6-tuner.png` — the tuner listening (the ring follows the microphone)
+7. `7-add-song.png` — Add song: Paste, Scan photo, Open file
 
-iPad (13", 2064 × 2752, required because the app is universal):
-`docs/store/screenshots/ipad/` — songbook, song, chord diagrams, tuner.
-
-Google Play phone screenshots: `docs/store/screenshots/android/` — the same
-six scenes on Android 13, 1080 × 1920 (9:16, meets Play's size rules and its
-recommendation for promotion), clean status bar (demo mode, 9:41). Chord
-diagrams show the fret numbers.
+- **iPhone** 6.9" (App Store), 1320 × 2868: `docs/store/screenshots/`.
+  Not for Google Play: Play rejects a long side more than twice the short
+  one (2868 / 1320 = 2.17).
+- **iPad** 13" (required because the app is universal), 2064 × 2752:
+  `docs/store/screenshots/ipad/` — songbook, song (Cielito Lindo), chord
+  diagrams, tuner; the side rail layout.
+- **Google Play** phone, 1080 × 1920 (9:16, meets Play's size rules and its
+  recommendation for promotion), Android 13 in demo mode:
+  `docs/store/screenshots/android/`.
 
 Play feature graphic (1024 × 500): `branding/png/play-feature-1024x500.png`.
 App icon: `branding/app_icon/app-icon.png` (1024, App Store);

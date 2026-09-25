@@ -46,11 +46,17 @@ class BrandMark extends ConsumerWidget {
 
   final double size;
 
+  static const _day = 'assets/images/mark.png';
+  static const _night = 'assets/images/mark-red-night.png';
+
+  /// Both marks, to load ahead of the first frame.
+  static const List<String> assets = [_day, _night];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final night = ref.watch(themeVariantProvider) == AppThemeVariant.redNight;
     return Image.asset(
-      night ? 'assets/images/mark-red-night.png' : 'assets/images/mark.png',
+      night ? _night : _day,
       width: size,
       height: size,
       excludeFromSemantics: true,
