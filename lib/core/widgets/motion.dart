@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 
 /// Motion that follows the system's Reduce Motion (iOS) / Remove
 /// animations (Android) setting: with it on, animations are instant
@@ -28,10 +29,14 @@ class Appearing extends StatefulWidget {
     required this.child,
     this.enabled = true,
     this.duration = const Duration(milliseconds: 260),
+    this.delay = Duration.zero,
     super.key,
   });
 
   final Widget child;
+
+  /// Waits this long first (a cascade of rows).
+  final Duration delay;
 
   /// False shows [child] at once (a row that was there all along).
   final bool enabled;
@@ -59,14 +64,21 @@ class _AppearingState extends State<Appearing>
       _controller.duration = context.motion(widget.duration);
       if (_controller.duration == Duration.zero) {
         _controller.value = 1;
-      } else {
+      } else if (widget.delay == Duration.zero) {
         unawaited(_controller.forward());
+      } else {
+        _wait = Timer(widget.delay, () {
+          if (mounted) unawaited(_controller.forward());
+        });
       }
     }
   }
 
+  Timer? _wait;
+
   @override
   void dispose() {
+    _wait?.cancel();
     _curve.dispose();
     _controller.dispose();
     super.dispose();

@@ -77,11 +77,21 @@ carries meaning (`lib/core/widgets/motion.dart`):
 - A deleted song's row folds away before it goes, and Undo grows it back;
   a song taken out of a setlist folds away; a dropped setlist song glows
   briefly (with a haptic tick).
+- Songs added together (the starter songs on first launch, Add starter
+  songs, an import) cascade in, 45 ms apart; a new search or sort just
+  shows its list.
+- The newest Recently played card slides in from the left.
+- After a transpose or capo change, each chord name rolls up to its new
+  name.
+- The empty songbook's flame catches: two soft flickers, then still.
+- Add song: the three big cards fold down into two buttons once there's
+  text.
 
 **Reduce Motion** (iOS) / **Remove animations** (Android) makes all of it
 instant: no title flight, no folding or growing, pages jump.
-**Flourishes** (the star's sparks, the tuner's pop and ✓ spring) also stay
-still in **Red night**, which is used in the dark where movement pulls the
+**Flourishes** (the star's sparks, the tuner's pop and ✓ spring, rolling
+chords, the flame's flicker, the sliding card) also stay still in
+**Red night**, which is used in the dark where movement pulls the
 eye. Nothing moves near the lyrics while auto-scroll plays.
 
 ## Big screens (iPad, landscape)

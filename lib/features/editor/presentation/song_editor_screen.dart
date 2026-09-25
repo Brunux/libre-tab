@@ -15,6 +15,7 @@ import 'package:libre_tab/core/files/photo_picker.dart';
 import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/ocr/ocr_layout.dart';
 import 'package:libre_tab/core/ocr/text_recognizer.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
@@ -506,30 +507,47 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       (Icons.file_open_outlined, l10n.openFile, l10n.openFileHint, _openFile),
     ];
     return [
-      if (hasContent || busy)
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final (icon, label, _, action) in sources.skip(1))
-              OutlinedButton.icon(
-                onPressed: busy ? null : action,
-                icon: Icon(icon),
-                label: Text(label),
-              ),
-          ],
-        )
-      else
-        for (final (icon, label, hint, action) in sources)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _SourceCard(
-              icon: icon,
-              label: label,
-              hint: hint,
-              onTap: action,
-            ),
-          ),
+      // With text, the big cards fold down into two small buttons.
+      AnimatedSize(
+        duration: context.motion(const Duration(milliseconds: 240)),
+        curve: Curves.easeOutCubic,
+        alignment: Alignment.topCenter,
+        child: AnimatedSwitcher(
+          duration: context.motion(const Duration(milliseconds: 200)),
+          child: hasContent || busy
+              ? Align(
+                  key: const ValueKey('buttons'),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final (icon, label, _, action) in sources.skip(1))
+                        OutlinedButton.icon(
+                          onPressed: busy ? null : action,
+                          icon: Icon(icon),
+                          label: Text(label),
+                        ),
+                    ],
+                  ),
+                )
+              : Column(
+                  key: const ValueKey('cards'),
+                  children: [
+                    for (final (icon, label, hint, action) in sources)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _SourceCard(
+                          icon: icon,
+                          label: label,
+                          hint: hint,
+                          onTap: action,
+                        ),
+                      ),
+                  ],
+                ),
+        ),
+      ),
       if (_scanning case (final current, final total)) ...[
         const SizedBox(height: 12),
         Semantics(

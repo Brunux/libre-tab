@@ -192,6 +192,13 @@ class _SongListState extends ConsumerState<_SongList> {
             message: l10n.loadError,
           ),
           data: (list) {
+            final ids = {for (final song in list) song.id};
+            final showing = '${filter.query}|${filter.view.name}|${sort.name}';
+            final arrived = _shown != null && _shownFor == showing
+                ? ids.difference(_shown!)
+                : const <int>{};
+            _shown = ids;
+            _shownFor = showing;
             if (list.isEmpty) {
               return widget.filter.query.trim().isNotEmpty
                   ? PlaceholderBody(
@@ -221,13 +228,6 @@ class _SongListState extends ConsumerState<_SongList> {
                       ),
                     );
             }
-            final ids = {for (final song in list) song.id};
-            final showing = '${filter.query}|${filter.view.name}|${sort.name}';
-            final arrived = _shown != null && _shownFor == showing
-                ? ids.difference(_shown!)
-                : const <int>{};
-            _shown = ids;
-            _shownFor = showing;
             final browsing = filter.query.trim().isEmpty;
             // Recently played heads the full list (not when it's already
             // sorted that way, searching, or showing favorites).
@@ -254,9 +254,15 @@ class _SongListState extends ConsumerState<_SongList> {
                 itemBuilder: (context, i) {
                   if (i < leading.length) return leading[i];
                   final song = list[i - leading.length];
+                  final index = i - leading.length;
                   return Appearing(
                     key: ValueKey(song.id),
                     enabled: arrived.contains(song.id),
+                    // Many at once (the starter songs on first launch):
+                    // they cascade in, one after another.
+                    delay: arrived.length > 1
+                        ? Duration(milliseconds: 45 * index.clamp(0, 12))
+                        : Duration.zero,
                     child: _SongTile(
                       key: _rowKeys.putIfAbsent(song.id, GlobalKey.new),
                       song: song,
@@ -371,6 +377,28 @@ class _ListHeader extends ConsumerWidget {
   }
 }
 
+/// Slides [child] in from the left and fades it in, the first time.
+class _SlideIn extends StatelessWidget {
+  const _SlideIn({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+    tween: Tween(begin: 0, end: 1),
+    duration: context.flourish(const Duration(milliseconds: 320)),
+    curve: Curves.easeOutCubic,
+    builder: (context, t, child) => Opacity(
+      opacity: t,
+      child: Transform.translate(
+        offset: Offset(-40 * (1 - t), 0),
+        child: child,
+      ),
+    ),
+    child: child,
+  );
+}
+
 /// The last songs opened, as a row of cards to get back to them.
 class _RecentStrip extends StatelessWidget {
   const _RecentStrip(this.songs);
@@ -406,7 +434,14 @@ class _RecentStrip extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             itemCount: songs.length,
             separatorBuilder: (_, _) => const SizedBox(width: 10),
-            itemBuilder: (context, i) => _RecentCard(songs[i]),
+            // The newest card slides in from the left (keyed by song, so
+            // only a card that just arrived at the front moves).
+            itemBuilder: (context, i) => i == 0
+                ? _SlideIn(
+                    key: ValueKey(songs[0].id),
+                    child: _RecentCard(songs[0]),
+                  )
+                : _RecentCard(songs[i]),
           ),
         ),
         const SizedBox(height: 8),

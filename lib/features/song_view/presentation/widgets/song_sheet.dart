@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/chordpro/song.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 /// Draws a song with each chord above the syllable it belongs to
@@ -192,6 +193,44 @@ class _Tab extends StatelessWidget {
 /// One word (plus its trailing space), with the chord that starts on it.
 typedef _Unit = ({String? chord, String text});
 
+/// A chord name that rolls up to its new name when it changes (transpose,
+/// capo), so it's clear what moved.
+class _RollingChord extends StatelessWidget {
+  const _RollingChord(this.label, {required this.style});
+
+  final String label;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) => AnimatedSwitcher(
+    duration: context.flourish(const Duration(milliseconds: 220)),
+    switchInCurve: Curves.easeOutCubic,
+    switchOutCurve: Curves.easeInCubic,
+    layoutBuilder: (current, previous) => Stack(
+      alignment: Alignment.centerLeft,
+      children: [...previous, ?current],
+    ),
+    transitionBuilder: (child, animation) {
+      final incoming = child.key == ValueKey(label);
+      return ClipRect(
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0, incoming ? 0.8 : -0.8),
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        ),
+      );
+    },
+    child: Text(
+      label,
+      key: ValueKey(label),
+      style: style,
+      softWrap: false,
+    ),
+  );
+}
+
 class _LyricLine extends StatelessWidget {
   const _LyricLine({required this.line, required this.sheet});
 
@@ -251,7 +290,7 @@ class _LyricLine extends StatelessWidget {
       final shown = sheet.chordLabel?.call(written) ?? written;
       final label = Padding(
         padding: EdgeInsets.only(right: fontSize * 0.3),
-        child: Text(shown, style: chordStyle, softWrap: false),
+        child: _RollingChord(shown, style: chordStyle),
       );
       final onTap = sheet.onChordTap;
       if (onTap == null) return label;

@@ -402,6 +402,40 @@ void main() {
     });
   });
 
+  group('chords roll to their new names', () {
+    const song = '{title: Roll}\n[G]One [C]two';
+
+    testWidgets('transposing rolls G up to A', (tester) async {
+      await openSong(tester, song);
+      await tester.tap(find.byTooltip('Transpose up'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Transpose up'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      // Mid-roll: the old name leaving, the new one arriving.
+      expect(find.text('A'), findsOneWidget);
+      expect(find.text('G'), findsWidgets);
+      await tester.pumpAndSettle();
+      expect(find.text('G'), findsNothing);
+      expect(find.text('D'), findsOneWidget); // C + 2
+    });
+
+    testWidgets('in Red night the names just change', (tester) async {
+      await openSong(
+        tester,
+        song,
+        settings: MemorySettingsStore({SettingsKeys.theme: 'redNight'}),
+      );
+      await tester.tap(find.byTooltip('Transpose up'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Transpose up'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('G'), findsNothing);
+      expect(find.text('A'), findsOneWidget);
+    });
+  });
+
   group('the favorite star', () {
     final sparks = find.byWidgetPredicate(
       (w) =>

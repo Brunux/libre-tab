@@ -262,6 +262,28 @@ void main() {
       expect(heights.first, lessThan(tester.getSize(row).height));
     });
 
+    testWidgets('songs added together cascade in', (tester) async {
+      final container = await pumpApp(tester);
+      await container.read(songRepositoryProvider).importSongs(_all);
+      Finder row(String title) => find.ancestor(
+        of: find.text(title),
+        matching: find.byType(Appearing),
+      );
+      var cascaded = false;
+      for (var i = 0; i < 40 && !cascaded; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        final rows = ['Amazing Grace', 'Oh! Susanna'];
+        if (rows.every((t) => row(t).evaluate().isNotEmpty)) {
+          // The first row is further along than the last.
+          cascaded =
+              tester.getSize(row(rows.first)).height >
+              tester.getSize(row(rows.last)).height;
+        }
+      }
+      expect(cascaded, isTrue);
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('Reduce Motion: the title stays put, rows go at once', (
       tester,
     ) async {

@@ -1,6 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/widgets/app_logo.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
+
+/// The campfire catching: two soft flickers, then still.
+class _Flicker extends StatelessWidget {
+  const _Flicker({required this.child});
+
+  final Widget child;
+
+  static final _flicker = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 1, end: 1.06), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 1.06, end: 0.97), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.04), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 1.04, end: 1), weight: 1.5),
+  ]);
+
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+    tween: Tween(begin: 0, end: 1),
+    duration: context.flourish(const Duration(milliseconds: 1100)),
+    builder: (context, t, child) => Transform.scale(
+      scale: t >= 1 ? 1 : _flicker.transform(t),
+      alignment: Alignment.bottomCenter,
+      child: child,
+    ),
+    child: child,
+  );
+}
 
 /// Centered muted message for empty and error states, with an optional
 /// [icon] above it and an [action] button under it.
@@ -41,7 +68,7 @@ class PlaceholderBody extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (mark)
-              const BrandMark(size: 96)
+              const _Flicker(child: BrandMark(size: 96))
             else if (icon case final icon?)
               DecoratedBox(
                 decoration: BoxDecoration(
