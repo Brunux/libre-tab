@@ -10,6 +10,7 @@ import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
 import 'package:libre_tab/core/music/tunings.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/tuner/application/tuner_controller.dart';
@@ -309,7 +310,7 @@ class _TunerBody extends ConsumerWidget {
               const _TuningMenu(),
               const SizedBox(height: 16),
               readout,
-              if (state.allTuned) const _AllTunedCard(),
+              if (state.allTuned) const Appearing(child: _AllTunedCard()),
               ...strings,
             ],
           );
@@ -326,7 +327,7 @@ class _TunerBody extends ConsumerWidget {
                   child: FittedBox(fit: BoxFit.scaleDown, child: readout),
                 ),
               ),
-              if (state.allTuned) const _AllTunedCard(),
+              if (state.allTuned) const Appearing(child: _AllTunedCard()),
               ...strings,
             ],
           ),
@@ -381,7 +382,7 @@ class _ListeningRing extends StatelessWidget {
         children: [
           TweenAnimationBuilder<double>(
             tween: Tween(end: level),
-            duration: const Duration(milliseconds: 150),
+            duration: context.motion(const Duration(milliseconds: 150)),
             builder: (context, level, _) => Container(
               width: 64 + 64 * level,
               height: 64 + 64 * level,
@@ -492,54 +493,71 @@ class _StringButton extends StatelessWidget {
         if (tuned) l10n.stringTuned,
       ].join(', '),
       excludeSemantics: true,
-      child: Material(
-        color: background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(
-            color: targeted || inTune ? background : colors.line,
+      // In tune: the button stands out a little, with a spring.
+      child: AnimatedScale(
+        scale: inTune ? 1.08 : 1,
+        duration: context.flourish(const Duration(milliseconds: 220)),
+        curve: Curves.easeOutBack,
+        child: Material(
+          color: background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: BorderSide(
+              color: targeted || inTune ? background : colors.line,
+            ),
           ),
-        ),
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(14),
-          child: SizedBox(
-            height: 64,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _pretty(string.name),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: foreground,
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (tuned) ...[
-                          Icon(
-                            Icons.check,
-                            size: 12,
-                            color: targeted || inTune
-                                ? foreground
-                                : colors.good,
-                          ),
-                          const SizedBox(width: 2),
-                        ],
-                        Text(
-                          ordinal,
-                          style: TextStyle(fontSize: 11, color: foreground),
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(14),
+            child: SizedBox(
+              height: 64,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _pretty(string.name),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: foreground,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (tuned) ...[
+                            // Springs in the moment the string is first in
+                            // tune, then stays.
+                            TweenAnimationBuilder<double>(
+                              tween: Tween(begin: 0, end: 1),
+                              duration: context.flourish(
+                                const Duration(milliseconds: 320),
+                              ),
+                              curve: Curves.easeOutBack,
+                              builder: (context, t, child) =>
+                                  Transform.scale(scale: t, child: child),
+                              child: Icon(
+                                Icons.check,
+                                size: 12,
+                                color: targeted || inTune
+                                    ? foreground
+                                    : colors.good,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                          ],
+                          Text(
+                            ordinal,
+                            style: TextStyle(fontSize: 11, color: foreground),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

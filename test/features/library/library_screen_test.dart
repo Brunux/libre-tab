@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/settings/settings_store.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
 
@@ -225,6 +226,65 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
     expect(find.byType(SongViewScreen), findsOneWidget);
+  });
+
+  group('motion', () {
+    testWidgets('a deleted row folds away; Undo grows it back', (
+      tester,
+    ) async {
+      final container = await pumpApp(tester, songs: _all);
+      await tester.drag(find.text('Amazing Grace'), const Offset(-500, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      // Still folding: the song is only deleted once the row is gone.
+      expect(find.text('Amazing Grace'), findsOneWidget);
+      expect(
+        await container.read(songRepositoryProvider).getSong(2),
+        isNotNull,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Amazing Grace'), findsNothing);
+
+      await tester.tap(find.text('Undo'));
+      // Frame by frame: the row comes back small and grows to full height.
+      final row = find.ancestor(
+        of: find.text('Amazing Grace'),
+        matching: find.byType(Appearing),
+      );
+      final heights = <double>[];
+      for (var i = 0; i < 30; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        if (row.evaluate().isNotEmpty) heights.add(tester.getSize(row).height);
+      }
+      await tester.pumpAndSettle();
+      expect(heights.first, lessThan(tester.getSize(row).height));
+    });
+
+    testWidgets('Reduce Motion: the title stays put, rows go at once', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      final container = await pumpApp(tester, songs: _all);
+      expect(
+        tester
+            .widgetList<HeroMode>(find.byType(HeroMode))
+            .map((h) => h.enabled),
+        everyElement(isFalse),
+      );
+
+      await tester.drag(find.text('Amazing Grace'), const Offset(-500, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump();
+      expect(await container.read(songRepositoryProvider).getSong(2), isNull);
+    });
   });
 
   testWidgets('tapping a song opens it', (tester) async {

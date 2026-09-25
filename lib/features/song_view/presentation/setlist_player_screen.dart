@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/song_view/presentation/song_view_screen.dart';
@@ -36,6 +37,10 @@ class _SetlistPlayerScreenState extends ConsumerState<SetlistPlayerScreen> {
 
   void _goTo(int page, {required bool autoPlay}) {
     setState(() => _autoPlayPage = autoPlay ? page : null);
+    if (context.reduceMotion) {
+      _pages.jumpToPage(page);
+      return;
+    }
     unawaited(
       _pages.animateToPage(
         page,

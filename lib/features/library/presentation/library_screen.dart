@@ -12,6 +12,7 @@ import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/database/app_database.dart';
 import 'package:libre_tab/core/files/song_files.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
@@ -108,7 +109,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             Expanded(
               // All songs ↔ Favorites cross-fade.
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 180),
+                duration: context.motion(const Duration(milliseconds: 180)),
                 child: _SongList(
                   filter,
                   key: ValueKey(filter.view),
@@ -164,6 +165,12 @@ class _SongListState extends ConsumerState<_SongList> {
   /// The rows' keys, so the A–Z index can bring one to the top.
   final _rowKeys = <int, GlobalKey>{};
 
+  /// The songs shown last time, and for which search, chip and sort: a
+  /// song that wasn't there (Undo, a song just added) grows in; a new
+  /// search or sort just shows its list.
+  Set<int>? _shown;
+  String? _shownFor;
+
   @override
   void dispose() {
     _scroll.dispose();
@@ -214,6 +221,13 @@ class _SongListState extends ConsumerState<_SongList> {
                       ),
                     );
             }
+            final ids = {for (final song in list) song.id};
+            final showing = '${filter.query}|${filter.view.name}|${sort.name}';
+            final arrived = _shown != null && _shownFor == showing
+                ? ids.difference(_shown!)
+                : const <int>{};
+            _shown = ids;
+            _shownFor = showing;
             final browsing = filter.query.trim().isEmpty;
             // Recently played heads the full list (not when it's already
             // sorted that way, searching, or showing favorites).
@@ -240,10 +254,14 @@ class _SongListState extends ConsumerState<_SongList> {
                 itemBuilder: (context, i) {
                   if (i < leading.length) return leading[i];
                   final song = list[i - leading.length];
-                  return _SongTile(
-                    key: _rowKeys.putIfAbsent(song.id, GlobalKey.new),
-                    song: song,
-                    sort: browsing ? sort : null,
+                  return Appearing(
+                    key: ValueKey(song.id),
+                    enabled: arrived.contains(song.id),
+                    child: _SongTile(
+                      key: _rowKeys.putIfAbsent(song.id, GlobalKey.new),
+                      song: song,
+                      sort: browsing ? sort : null,
+                    ),
                   );
                 },
               ),
@@ -586,47 +604,56 @@ class _SongTile extends ConsumerWidget {
 
     // Swipe left for quick actions. Screen readers get the same three as
     // custom actions, since the swiped-away buttons can't be reached.
-    return Slidable(
-      key: ValueKey(song.id),
-      groupTag: 'songs',
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.72,
-        children: [
-          SlidableAction(
-            onPressed: (_) => _click(addToSetlist),
-            backgroundColor: colors.surface2,
-            foregroundColor: colors.text,
-            icon: Icons.playlist_add,
-            label: l10n.swipeSetlist,
-          ),
-          SlidableAction(
-            onPressed: (_) => _click(share),
-            backgroundColor: colors.surface,
-            foregroundColor: colors.text,
-            icon: Icons.ios_share,
-            label: l10n.share,
-          ),
-          SlidableAction(
-            onPressed: (_) {
-              unawaited(HapticFeedback.mediumImpact());
-              delete();
-            },
-            backgroundColor: scheme.error,
-            foregroundColor: scheme.onError,
-            icon: Icons.delete_outline,
-            label: l10n.delete,
-          ),
-        ],
-      ),
-      child: _tile(
-        context,
-        subtitle,
-        actions: {
-          CustomSemanticsAction(label: l10n.addToSetlist): addToSetlist,
-          CustomSemanticsAction(label: l10n.share): share,
-          CustomSemanticsAction(label: l10n.delete): delete,
-        },
+    return Vanishing(
+      child: Slidable(
+        key: ValueKey(song.id),
+        groupTag: 'songs',
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.72,
+          children: [
+            SlidableAction(
+              onPressed: (_) => _click(addToSetlist),
+              backgroundColor: colors.surface2,
+              foregroundColor: colors.text,
+              icon: Icons.playlist_add,
+              label: l10n.swipeSetlist,
+            ),
+            SlidableAction(
+              onPressed: (_) => _click(share),
+              backgroundColor: colors.surface,
+              foregroundColor: colors.text,
+              icon: Icons.ios_share,
+              label: l10n.share,
+            ),
+            SlidableAction(
+              onPressed: (row) {
+                unawaited(HapticFeedback.mediumImpact());
+                // The row folds away, then the song goes (Undo brings it
+                // back, growing in).
+                final vanishing = Vanishing.of(row);
+                if (vanishing == null) {
+                  delete();
+                } else {
+                  unawaited(vanishing.vanish(delete));
+                }
+              },
+              backgroundColor: scheme.error,
+              foregroundColor: scheme.onError,
+              icon: Icons.delete_outline,
+              label: l10n.delete,
+            ),
+          ],
+        ),
+        child: _tile(
+          context,
+          subtitle,
+          actions: {
+            CustomSemanticsAction(label: l10n.addToSetlist): addToSetlist,
+            CustomSemanticsAction(label: l10n.share): share,
+            CustomSemanticsAction(label: l10n.delete): delete,
+          },
+        ),
       ),
     );
   }

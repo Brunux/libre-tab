@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 
 /// A song's title that flies from its row in the songbook into the song
 /// view's header (and back), changing size and font on the way instead of
@@ -22,10 +23,14 @@ class SongTitleHero extends StatelessWidget {
   final int maxLines;
 
   @override
-  Widget build(BuildContext context) => Hero(
-    tag: 'song-title-$songId',
-    flightShuttleBuilder: _shuttle,
-    child: _text(style, maxLines),
+  Widget build(BuildContext context) => HeroMode(
+    // Under Reduce Motion the title stays put; the page changes as usual.
+    enabled: !context.reduceMotion,
+    child: Hero(
+      tag: 'song-title-$songId',
+      flightShuttleBuilder: _shuttle,
+      child: _text(style, maxLines),
+    ),
   );
 
   Widget _text(TextStyle? style, int maxLines) => Material(

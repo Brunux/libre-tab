@@ -65,11 +65,24 @@ app (all SIL Open Font License), no network fetch.
 
 ## Motion
 
-Small and quick (150–350 ms, ease-out), never looping: a song's title flies
-from its row into the song view's header and back, changing size and font
-on the way; All songs ↔ Favorites cross-fade; the song view's dock folds
-away while auto-scroll plays; the tuner's needle eases between readings and
-fades in and out with the sound; setlist songs slide to the next.
+Small and quick (150–350 ms, ease-out), never looping, and only where it
+carries meaning (`lib/core/widgets/motion.dart`):
+- A song's title flies from its row into the song view's header and back.
+- All songs ↔ Favorites cross-fade; the song view's dock folds away while
+  auto-scroll plays; setlist songs slide to the next.
+- Tuner: the needle eases and fades with the sound; a string in tune grows
+  a little with a spring and its ✓ springs in; "All tuned" grows in.
+- Starring a song bounces the star with six sparks in the flame's colour.
+- Up next: the countdown fills a ring around the arrow.
+- A deleted song's row folds away before it goes, and Undo grows it back;
+  a song taken out of a setlist folds away; a dropped setlist song glows
+  briefly (with a haptic tick).
+
+**Reduce Motion** (iOS) / **Remove animations** (Android) makes all of it
+instant: no title flight, no folding or growing, pages jump.
+**Flourishes** (the star's sparks, the tuner's pop and ✓ spring) also stay
+still in **Red night**, which is used in the dark where movement pulls the
+eye. Nothing moves near the lyrics while auto-scroll plays.
 
 ## Big screens (iPad, landscape)
 

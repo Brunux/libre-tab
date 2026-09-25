@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -18,6 +19,7 @@ import 'package:libre_tab/core/music/chord.dart';
 import 'package:libre_tab/core/music/chord_voicings.dart';
 import 'package:libre_tab/core/music/music_key.dart';
 import 'package:libre_tab/core/music/transposition.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
@@ -380,12 +382,8 @@ class _SongViewState extends ConsumerState<_SongView>
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: entry.favorite ? l10n.removeFavorite : l10n.addFavorite,
-            icon: Icon(
-              entry.favorite ? Icons.star_rounded : Icons.star_outline_rounded,
-              color: entry.favorite ? context.colors.accent : null,
-            ),
+          _FavoriteStar(
+            favorite: entry.favorite,
             onPressed: () {
               unawaited(HapticFeedback.selectionClick());
               unawaited(
@@ -495,7 +493,7 @@ class _SongViewState extends ConsumerState<_SongView>
       // While auto-scroll plays, the dock folds down to the speed control,
       // leaving the song the room; pausing (tap the lyrics) brings it back.
       bottomNavigationBar: AnimatedSize(
-        duration: const Duration(milliseconds: 220),
+        duration: context.motion(const Duration(milliseconds: 220)),
         curve: Curves.easeOutCubic,
         alignment: Alignment.topCenter,
         child: _Dock(
@@ -605,6 +603,9 @@ class _UpNextCard extends StatelessWidget {
   final int? countdown;
   final VoidCallback onStay;
 
+  /// The countdown's length, in seconds.
+  static const int from = _SongViewState._countdownFrom;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -645,16 +646,152 @@ class _UpNextCard extends StatelessWidget {
                   ],
                 ),
               ),
+              // Counting down: a ring fills around the arrow, so the time
+              // left reads at a glance from across the fire.
+              SizedBox.square(
+                dimension: 36,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (seconds != null)
+                      TweenAnimationBuilder<double>(
+                        tween: Tween<double>(
+                          begin: 0,
+                          end:
+                              (_UpNextCard.from - seconds + 1) /
+                              _UpNextCard.from,
+                        ),
+                        duration: context.motion(const Duration(seconds: 1)),
+                        builder: (context, value, _) =>
+                            CircularProgressIndicator(
+                              value: value,
+                              strokeWidth: 3,
+                              color: colors.accent,
+                              backgroundColor: colors.line,
+                            ),
+                      ),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 20,
+                      color: colors.accent,
+                    ),
+                  ],
+                ),
+              ),
               if (seconds != null)
-                TextButton(onPressed: onStay, child: Text(l10n.stay))
-              else
-                Icon(Icons.arrow_forward, color: colors.accent),
+                TextButton(onPressed: onStay, child: Text(l10n.stay)),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+/// The favorite star: starring a song bounces it, with a few sparks in the
+/// flame's colour (like the chords rising off the logo).
+class _FavoriteStar extends StatefulWidget {
+  const _FavoriteStar({required this.favorite, required this.onPressed});
+
+  final bool favorite;
+  final VoidCallback onPressed;
+
+  @override
+  State<_FavoriteStar> createState() => _FavoriteStarState();
+}
+
+class _FavoriteStarState extends State<_FavoriteStar>
+    with SingleTickerProviderStateMixin {
+  late final _burst = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 520),
+  );
+
+  static final _bounce = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween<double>(
+        begin: 1,
+        end: 1.35,
+      ).chain(CurveTween(curve: Curves.easeOut)),
+      weight: 35,
+    ),
+    TweenSequenceItem(
+      tween: Tween<double>(
+        begin: 1.35,
+        end: 1,
+      ).chain(CurveTween(curve: Curves.elasticOut)),
+      weight: 65,
+    ),
+  ]);
+
+  @override
+  void didUpdateWidget(_FavoriteStar old) {
+    super.didUpdateWidget(old);
+    if (widget.favorite && !old.favorite && !context.calm) {
+      unawaited(_burst.forward(from: 0));
+    }
+  }
+
+  @override
+  void dispose() {
+    _burst.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final accent = context.colors.accent;
+    return IconButton(
+      tooltip: widget.favorite ? l10n.removeFavorite : l10n.addFavorite,
+      onPressed: widget.onPressed,
+      icon: AnimatedBuilder(
+        animation: _burst,
+        builder: (context, star) => CustomPaint(
+          painter: _burst.isAnimating
+              ? _SparksPainter(progress: _burst.value, color: accent)
+              : null,
+          child: Transform.scale(
+            scale: _burst.isAnimating ? _bounce.evaluate(_burst) : 1,
+            child: star,
+          ),
+        ),
+        child: Icon(
+          widget.favorite ? Icons.star_rounded : Icons.star_outline_rounded,
+          color: widget.favorite ? accent : null,
+        ),
+      ),
+    );
+  }
+}
+
+/// Six sparks flying out of the star and fading.
+class _SparksPainter extends CustomPainter {
+  const _SparksPainter({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final t = Curves.easeOutCubic.transform(progress);
+    final paint = Paint()
+      ..color = color.withValues(alpha: color.a * (1 - progress));
+    for (var i = 0; i < 6; i++) {
+      final angle = -math.pi / 2 + i * math.pi / 3;
+      final distance = 10 + 14 * t;
+      canvas.drawCircle(
+        center + Offset(math.cos(angle), math.sin(angle)) * distance,
+        2.2 * (1 - progress) + 0.6,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SparksPainter old) =>
+      old.progress != progress || old.color != color;
 }
 
 /// Tap: red night on or off. Long-press: all three themes to choose from.

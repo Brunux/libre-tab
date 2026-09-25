@@ -174,6 +174,18 @@ void main() {
       await play(tester);
       await scrollToTheEnd(tester);
       expect(find.text('NEXT SONG IN 5'), findsOneWidget);
+      // A ring fills around the arrow as it counts.
+      final ring = find.descendant(
+        of: find.byType(Stack),
+        matching: find.byType(CircularProgressIndicator),
+      );
+      expect(ring, findsOneWidget);
+      double filled() => tester.widget<CircularProgressIndicator>(ring).value!;
+      await tester.pump(const Duration(milliseconds: 500));
+      final early = filled();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(early, greaterThan(0));
+      expect(filled(), greaterThan(early));
 
       await tester.pump(const Duration(seconds: 5));
       // The page slide (not pumpAndSettle: that would also run the next
@@ -232,6 +244,10 @@ void main() {
   ) async {
     final (container, id) = await openSetlist(tester, [1, 2]);
     await tester.tap(find.byTooltip('Remove Oh! Susanna from the setlist'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    // The row folds away first; then the song leaves the setlist.
+    expect(await songIds(container, id), [1, 2]);
     await tester.pumpAndSettle();
 
     expect(await songIds(container, id), [2]);

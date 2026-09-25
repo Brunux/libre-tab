@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/core/database/app_database.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 import 'package:libre_tab/core/widgets/placeholder_body.dart';
 import 'package:libre_tab/core/widgets/readable_width.dart';
 import 'package:libre_tab/features/library/application/library_providers.dart';
@@ -52,6 +54,10 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
   /// The order just dragged into place, shown until the database catches up
   /// so the row doesn't jump back for a frame.
   List<SongEntry>? _dragged;
+
+  /// The song just dropped in a new place, and a count so each drop glows
+  /// anew.
+  (int, int)? _landed;
 
   int get _id => widget.setlist.id;
   SetlistRepository get _repository => ref.read(setlistRepositoryProvider);
@@ -127,6 +133,7 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
                 key: ValueKey(list[i].id),
                 index: i,
                 song: list[i],
+                glow: _landed?.$1 == list[i].id ? _landed!.$2 : null,
                 onTap: () => context.push(Routes.playSetlist(_id, i)),
                 onRemove: () =>
                     unawaited(_repository.removeSong(_id, list[i].id)),
@@ -142,7 +149,11 @@ class _SetlistViewState extends ConsumerState<_SetlistView> {
     if (to == from) return;
     final reordered = [...list];
     reordered.insert(to, reordered.removeAt(from));
-    setState(() => _dragged = reordered);
+    unawaited(HapticFeedback.selectionClick());
+    setState(() {
+      _dragged = reordered;
+      _landed = (reordered[to].id, (_landed?.$2 ?? 0) + 1);
+    });
     unawaited(_repository.moveSong(_id, from, to));
   }
 
@@ -230,6 +241,7 @@ class _SongRow extends StatelessWidget {
     required this.song,
     required this.onTap,
     required this.onRemove,
+    this.glow,
     super.key,
   });
 
@@ -237,6 +249,9 @@ class _SongRow extends StatelessWidget {
   final SongEntry song;
   final VoidCallback onTap;
   final VoidCallback onRemove;
+
+  /// Just dropped here: the row glows briefly (a new number each drop).
+  final int? glow;
 
   @override
   Widget build(BuildContext context) {
@@ -246,69 +261,96 @@ class _SongRow extends StatelessWidget {
       if (song.artist.isNotEmpty) song.artist,
       if (song.songKey != null) l10n.keyLabel(song.songKey!),
     ].join(' · ');
-    return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 64),
-          padding: const EdgeInsets.only(left: 20, right: 4),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: colors.line)),
+    final background = Theme.of(context).scaffoldBackgroundColor;
+    // Removing folds the row away before it goes.
+    return Vanishing(
+      child: Builder(
+        builder: (row) => TweenAnimationBuilder<double>(
+          key: ValueKey(glow),
+          tween: Tween(begin: glow == null ? 0 : 1, end: 0),
+          duration: context.motion(const Duration(milliseconds: 900)),
+          curve: Curves.easeOut,
+          builder: (context, t, child) => Material(
+            color: Color.lerp(
+              background,
+              colors.accent.withValues(alpha: 0.22),
+              t,
+            ),
+            child: child,
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 30,
-                child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: colors.muted,
-                  ),
-                ),
+          child: InkWell(
+            onTap: onTap,
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 64),
+              padding: const EdgeInsets.only(left: 20, right: 4),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: colors.line)),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        song.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 30,
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: colors.muted,
                       ),
-                      if (subtitle.isNotEmpty)
-                        Text(
-                          subtitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 15, color: colors.muted),
-                        ),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            song.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          if (subtitle.isNotEmpty)
+                            Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: colors.muted,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: l10n.removeFromSetlist(song.title),
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: () {
+                      final vanishing = Vanishing.of(row);
+                      if (vanishing == null) {
+                        onRemove();
+                      } else {
+                        unawaited(vanishing.vanish(onRemove));
+                      }
+                    },
+                  ),
+                  ReorderableDragStartListener(
+                    index: index,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Icon(Icons.drag_handle, color: colors.muted),
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                tooltip: l10n.removeFromSetlist(song.title),
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: onRemove,
-              ),
-              ReorderableDragStartListener(
-                index: index,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Icon(Icons.drag_handle, color: colors.muted),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

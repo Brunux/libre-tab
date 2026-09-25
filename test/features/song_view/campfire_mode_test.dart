@@ -402,6 +402,36 @@ void main() {
     });
   });
 
+  group('the favorite star', () {
+    final sparks = find.byWidgetPredicate(
+      (w) =>
+          w is CustomPaint &&
+          w.painter.runtimeType.toString() == '_SparksPainter',
+    );
+
+    testWidgets('bounces with sparks when a song is starred', (tester) async {
+      await openSong(tester, SampleSongs.amazingGrace);
+      await tester.tap(find.byTooltip('Add to favorites'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(sparks, findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Remove from favorites'), findsOneWidget);
+    });
+
+    testWidgets('stays still in Red night', (tester) async {
+      await openSong(
+        tester,
+        SampleSongs.amazingGrace,
+        settings: MemorySettingsStore({SettingsKeys.theme: 'redNight'}),
+      );
+      await tester.tap(find.byTooltip('Add to favorites'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(sparks, findsNothing);
+    });
+  });
+
   group('the theme is remembered', () {
     testWidgets('switching saves it', (tester) async {
       final settings = MemorySettingsStore();

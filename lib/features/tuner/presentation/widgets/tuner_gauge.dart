@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
+import 'package:libre_tab/core/widgets/motion.dart';
 
 /// The needle: −50 cents on the left, +50 on the right, a green zone of
 /// ±5 in the middle (docs/DESIGN.md § Tuner). Glides between readings.
@@ -26,10 +27,10 @@ class TunerGauge extends StatelessWidget {
       // sound instead of popping.
       child: TweenAnimationBuilder<double>(
         tween: Tween(end: cents == null ? 0 : 1),
-        duration: const Duration(milliseconds: 200),
+        duration: context.motion(const Duration(milliseconds: 200)),
         builder: (context, shown, _) => TweenAnimationBuilder<double>(
           tween: Tween(end: target),
-          duration: const Duration(milliseconds: 160),
+          duration: context.motion(const Duration(milliseconds: 160)),
           curve: Curves.easeOutCubic,
           builder: (context, value, _) => CustomPaint(
             painter: _GaugePainter(

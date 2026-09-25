@@ -344,6 +344,16 @@ void main() {
       expect(find.text('John Newton · Key G'), findsOneWidget);
     });
 
+    testWidgets('in tune, the string stands out a little', (tester) async {
+      final (_, pitch) = await openTuner(tester);
+      await hear(tester, pitch, 110, times: 8);
+      final scales = tester
+          .widgetList<AnimatedScale>(find.byType(AnimatedScale))
+          .map((s) => s.scale)
+          .toList();
+      expect(scales.where((s) => s > 1), hasLength(1)); // the A string
+    });
+
     testWidgets('a new tuning starts the checks over', (tester) async {
       final (container, pitch) = await openTuner(tester);
       await tuneString(tester, pitch, 110);
