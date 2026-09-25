@@ -150,9 +150,9 @@ round; status bar at 9:41):
 6. `6-tuner.png` — the tuner listening (the ring follows the microphone)
 7. `7-add-song.png` — Add song: Paste, Scan photo, Open file
 
-- **iPhone** 6.9" (App Store), 1320 × 2868: `docs/store/screenshots/`.
+- **iPhone** 6.5" (App Store), 1284 × 2778: `docs/store/screenshots/` (captured on an iPhone 17 Pro Max, scaled to the size App Store Connect asks for).
   Not for Google Play: Play rejects a long side more than twice the short
-  one (2868 / 1320 = 2.17).
+  one (2778 / 1284 = 2.16).
 - **iPad** 13" (required because the app is universal), 2064 × 2752:
   `docs/store/screenshots/ipad/` — songbook, song (La Cucaracha), chord
   diagrams, tuner; the side rail layout.

@@ -64,7 +64,7 @@ action, not an in-app social feature.)
 - Copyright: `2026 Bruno Fosados`
 
 **Screenshots**
-- iPhone 6.9" (1320 × 2868): `docs/store/screenshots/*.png` (7)
+- iPhone 6.5" (1284 × 2778, the size App Store Connect asks for): `docs/store/screenshots/*.png` (7)
 - iPad 13" (2064 × 2752): `docs/store/screenshots/ipad/*.png` (4)
 
 ## Notes for the reviewer
