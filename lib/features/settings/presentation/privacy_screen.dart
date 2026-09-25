@@ -46,6 +46,7 @@ class PrivacyScreen extends StatelessWidget {
             section(l10n.privacySongsTitle, l10n.privacySongsBody),
             section(l10n.privacyMicTitle, l10n.privacyMicBody),
             section(l10n.privacyPhotosTitle, l10n.privacyPhotosBody),
+            section(l10n.privacyDeleteTitle, l10n.privacyDeleteBody),
             const SizedBox(height: 28),
             Text(l10n.privacyMore, style: TextStyle(color: colors.muted)),
             const SizedBox(height: 4),

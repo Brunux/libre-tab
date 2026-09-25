@@ -13,7 +13,7 @@ to enter in App Store Connect, and the notes for the reviewer.
 | Universal: iPhone and iPad, all iPad orientations (2.4.1) | ✅ |
 | Version 1.0.0, build 1 (`pubspec.yaml`) | ✅ |
 | `ITSAppUsesNonExemptEncryption = NO` (no export-compliance prompt) | ✅ |
-| App privacy manifest (`ios/Runner/PrivacyInfo.xcprivacy`): no tracking, no data collected; required-reason APIs: file timestamps `C617.1` (SQLite, own container), UserDefaults `CA92.1`. Every plugin ships its own manifest. | ✅ |
+| App privacy manifest (`ios/Runner/PrivacyInfo.xcprivacy`): no tracking, no data collected; required-reason APIs: file timestamps `C617.1` (SQLite, own container), UserDefaults `CA92.1`, disk space `E174.1` (SQLite checks free space before writing its files; found by scanning the built binaries for `statfs`). Every plugin ships its own manifest; the SQLite and Objective-C frameworks built from source have none, so the app's declares what they use. | ✅ |
 | Launch screen: dark, with the logo (no white flash) | ✅ |
 | Icon: 1024 × 1024, opaque, no alpha | ✅ |
 
@@ -31,7 +31,12 @@ Connect.
 - Primary language: English (U.S.); add Spanish (Mexico) and/or Spanish
   (Spain) localizations with the Spanish text from listing.md.
 - Content rights: *Does your app contain, show, or access third-party
-  content?* → **No**. The bundled songs are public domain (list in
+  content?* → **No**. The bundled songs are public domain in every
+  storefront: traditional (Red River Valley, Clementine, She'll Be Coming
+  'Round the Mountain, De Colores, La Cucaracha) or by authors who died
+  before 1900 (John Newton 1807, Stephen Foster 1864). Cielito Lindo was
+  dropped: its author died in 1957, so it's still protected under life+70
+  (EU) and life+100 (Mexico). (List in
   `lib/features/library/data/starter_songs.dart`); everything else is what
   users add themselves, stored only on their device.
 - Price: Free · no in-app purchases.
@@ -39,6 +44,12 @@ Connect.
 **App Privacy** → *Data Not Collected*. No tracking. Privacy policy URL:
 `https://github.com/Brunux/libre-tab/blob/main/PRIVACY.md` (push the repo
 first so the link works).
+
+**Accessibility** (the App Store's accessibility labels, per device):
+VoiceOver ✅, Voice Control ✅, Larger Text ✅, Dark Interface ✅ (dark by
+default), Differentiate Without Color Alone ✅ (states also shown by text
+or icons: ✓, "In tune"), Sufficient Contrast ✅ (tested), Reduced Motion ✅.
+Captions and Audio Descriptions: not applicable (no video).
 
 **Age rating** (the questionnaire updated in 2026): answer **None / No**
 to everything — no violence, sexual content, profanity, drugs, gambling,
@@ -86,6 +97,7 @@ Paste into *App Review Information → Notes*, and attach
 | Guideline | How Libre Tab meets it |
 |---|---|
 | 1.2 User-generated content | No in-app sharing, posting or social features; songs stay on the device. Not a UGC platform. |
+| 2.5.15 Files | Open file and Import use the system document picker: Files and iCloud Drive included. |
 | 2.1 Completeness | No placeholders; starter songs make the first launch useful. Tested on a real iPhone (24 Sep 2026: tuning a guitar, setlist auto-advance, Open in Libre Tab from Files, Paste) and the iPad simulator. Test on a real iPad too if possible — reviewers often use one. |
 | 2.3.1 Hidden features | None. |
 | 2.3.3 Screenshots | All show the app in use (no splash or intro screens). |
@@ -99,12 +111,15 @@ Paste into *App Review Information → Notes*, and attach
 | 2.5.14 Recording consent | Explanation screen before the microphone prompt; the tuner visibly listens (needle, note); iOS shows its microphone indicator. |
 | Accessibility | VoiceOver labels on every control (custom actions for swipe actions and the theme menu); Dynamic Type; follows Reduce Motion (no title flight, no folding or springing); contrast and tap sizes checked by tests on every screen and theme. |
 | 4.2 Minimum functionality | Native songbook with transposition, capo, auto-scroll, setlists, chord diagrams, on-device OCR, and a tuner. |
-| 5.1.1(i) Privacy policy | In App Store Connect **and** in the app (Settings → Privacy). |
+| 5.1.1(i) Privacy policy | In App Store Connect **and** in the app (Settings → Privacy), both saying what stays on the device, how long it's kept, how to delete it (a song, all songs, or the app) and how to withdraw the microphone and camera permissions. |
 | 5.1.1(ii)/(iv) Permissions | Purpose strings in English and Spanish; asked only when a feature is used; refusal handled gracefully. |
 | 5.1.1(iv) Permission prompts | Neutral pre-prompt ("Start tuner"), no "Allow" wording or skip button; refusals offer Open Settings and an alternative (docs/DESIGN.md § Permissions). |
 | 5.1.1(iii) Data minimization | Photos through the system picker (no library permission); only the camera and microphone are requested. |
 | 5.1.2 Data use | Nothing collected or shared; no third-party analytics/ads SDKs. |
-| 5.2 Intellectual property | Bundled songs are public domain; the logo is original; fonts are OFL; open-source licenses in the app. Users' own imports are private to them. |
+| 5.2 Intellectual property | Bundled songs are public domain worldwide (see Content rights); the logo is original; fonts are OFL; open-source licenses in the app. There's no catalog, search or download of lyrics: songs users add come from their own files, clipboard or photos and stay private to them, like notes. |
+| 5.2.3 Third-party media | No saving, converting or downloading from other services. |
+| 3.1 Payments | Free, no In-App Purchase, no ads. No links to outside payment: outside the US storefront they aren't allowed (3.1.1(a)). |
+| GPL and the App Store | All the app's GPL code is the developer's own, so publishing it on the App Store is the copyright holder's call; every third-party package is MIT, BSD or Apache (the one LGPL package, `dbus`, is Linux-only and not in the iOS app). Before accepting outside contributions, add an App Store permission (GPL section 7) or a contributor agreement. |
 
 ## Before pressing Submit
 

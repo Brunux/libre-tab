@@ -32,6 +32,39 @@ Libre Tab is an offline app with no account and no server.
   picker, which needs no permission and only shares the photos picked; the
   app deletes its copy after reading it.
 
+## Audit — 24 September 2026, third pass (after motion and the library updates)
+
+An in-depth pass over the shipped binaries as well as the source: the
+built iOS app's frameworks and privacy manifests, the native photo and
+file code on both platforms, the whole git history, package licenses, the
+bundled SQLite, and the bundled content's copyright.
+
+### Fixed
+
+| Issue | Risk | Fix |
+|---|---|---|
+| iOS decoded a scanned photo at full resolution before reading it | A small file claiming enormous dimensions (a "decompression bomb", e.g. 30,000 × 30,000) needs gigabytes of memory: the app is killed | Dimensions read first and anything over 200 million pixels refused; the photo is then decoded straight to at most 4,096 px by ImageIO (which also turns it upright), never at full size. Android already decoded at a reduced size. Verified on the iPad simulator: the review sample reads back exactly |
+| The bundled SQLite calls `statfs`/`fstatfs` (disk space), undeclared in the privacy manifest | App Store Connect flags undeclared required-reason APIs (ITMS-91053) and can reject the upload | `NSPrivacyAccessedAPICategoryDiskSpace` / `E174.1` declared; every framework in the built app was scanned for required-reason symbols |
+| The privacy policy didn't say how long data is kept or how to delete it | Guideline 5.1.1(i) requires both | A "Keeping and deleting your data" section in PRIVACY.md (EN/ES) and in the app's Privacy screen |
+| A bundled starter song, Cielito Lindo, isn't public domain everywhere (author died 1957: protected until 2027 in the EU and 2057 in Mexico) | Distributing a protected work in those storefronts (guideline 5.2.1) | Replaced by La Cucaracha (traditional), with family-friendly verses; the test fixture and screenshots changed with it |
+
+### Checked, no issue
+
+- **Git history:** no keys, tokens, passwords or keystores in any commit.
+- **Bundled SQLite** is the July 2026 release (current).
+- **Licenses:** 148 packages — MIT, BSD, Apache; the one LGPL package
+  (`dbus`) is only used on Linux and isn't in the phone apps. No
+  third-party GPL code, so App Store distribution is the author's call.
+- **Photos:** the system picker hands over only the chosen photos (it notes
+  that their location is included); the app reads them on the device,
+  deletes its copy, and never sends them anywhere.
+- **Android release:** Flutter's release build shrinks and obfuscates with
+  R8 by default and isn't debuggable; permissions and exported components
+  as in the previous pass.
+- An Android "not responding" seen during emulator testing was traced to
+  the host running out of memory (all app threads idle in the trace), not
+  to the app.
+
 ## Audit — 24 September 2026 (after the UI round)
 
 A second full pass, focused on what changed since the first: the paste

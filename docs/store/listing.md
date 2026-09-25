@@ -154,7 +154,7 @@ round; status bar at 9:41):
   Not for Google Play: Play rejects a long side more than twice the short
   one (2868 / 1320 = 2.17).
 - **iPad** 13" (required because the app is universal), 2064 × 2752:
-  `docs/store/screenshots/ipad/` — songbook, song (Cielito Lindo), chord
+  `docs/store/screenshots/ipad/` — songbook, song (La Cucaracha), chord
   diagrams, tuner; the side rail layout.
 - **Google Play** phone, 1080 × 1920 (9:16, meets Play's size rules and its
   recommendation for promotion), Android 13 in demo mode:

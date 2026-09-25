@@ -765,4 +765,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pasteTooBig => 'That\'s too much text for one song.';
+
+  @override
+  String get privacyDeleteTitle => 'Keeping and deleting';
+
+  @override
+  String get privacyDeleteBody =>
+      'Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone\'s settings whenever you like.';
 }

@@ -33,15 +33,15 @@ void main() {
     ]);
   });
 
-  test('cielito-lindo.txt: Spanish labels and chords', () {
-    final result = ChordSheetImporter.convert(sample('cielito-lindo.txt'));
+  test('la-cucaracha.txt: Spanish labels and chords', () {
+    final result = ChordSheetImporter.convert(sample('la-cucaracha.txt'));
     expect(result.sections, 2);
     final song = ChordProParser.parse(result.chordPro);
     final blocks = song.blocks.whereType<SectionBlock>().toList();
     expect(blocks.first.label, 'Estrofa 1');
     expect(blocks.last.kind, SectionKind.chorus);
-    expect(segs(blocks.last.lines.first).first, ('A', 'Ay, ay, ay, '));
-    expect(song.chords.toSet(), {'A', 'E7', 'A7', 'D'});
+    expect(segs(blocks.last.lines.first).first.$1, 'G');
+    expect(song.chords.toSet(), {'G', 'D7'});
   });
 
   test('oh-susanna.cho: ChordPro with capo, chorus repeat and a comment', () {

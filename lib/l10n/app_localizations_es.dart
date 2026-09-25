@@ -762,4 +762,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pasteTooBig => 'Es demasiado texto para una canción.';
+
+  @override
+  String get privacyDeleteTitle => 'Guardar y borrar';
+
+  @override
+  String get privacyDeleteBody =>
+      'Todo se queda en este dispositivo hasta que lo borres: una canción (deslízala a la izquierda), todas (Ajustes → Borrar todas las canciones), o todo desinstalando la app. No hay una copia en ningún otro lugar. Desactiva el micrófono o la cámara en los ajustes de tu teléfono cuando quieras.';
 }

@@ -1327,6 +1327,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That\'s too much text for one song.'**
   String get pasteTooBig;
+
+  /// No description provided for @privacyDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeping and deleting'**
+  String get privacyDeleteTitle;
+
+  /// No description provided for @privacyDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone\'s settings whenever you like.'**
+  String get privacyDeleteBody;
 }
 
 class _AppLocalizationsDelegate

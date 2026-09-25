@@ -81,25 +81,35 @@ final class TextRecognition: NSObject, FlutterPlugin {
     }
   }
 
-  /// The photo turned upright: photos can be stored sideways with an
-  /// orientation tag, and lines must run left to right.
+  /// Longest side the photo is read at: plenty for printed text (a 48 MP
+  /// photo is 8064 pixels wide), and a bounded amount of memory.
+  private static let maxSide = 4096
+
+  /// More pixels than any camera takes (a 48 MP photo is 49 million): a
+  /// small file claiming more is a "decompression bomb" and is refused
+  /// before anything is decoded.
+  private static let maxPixels = 200_000_000
+
+  /// The photo turned upright (photos can be stored sideways with an
+  /// orientation tag, and lines must run left to right) and no bigger than
+  /// [maxSide], decoded straight to that size by ImageIO so a huge image
+  /// never sits in memory at full size.
   private static func uprightImage(path: String) -> CGImage? {
     let url = URL(fileURLWithPath: path)
     guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-      let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
+      let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)
+        as? [CFString: Any],
+      let width = properties[kCGImagePropertyPixelWidth] as? Int,
+      let height = properties[kCGImagePropertyPixelHeight] as? Int,
+      width > 0, height > 0, width * height <= maxPixels
     else { return nil }
-    let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
-    let tag = (properties?[kCGImagePropertyOrientation] as? UInt32) ?? 1
-    let orientations: [UInt32: UIImage.Orientation] = [
-      2: .upMirrored, 3: .down, 4: .downMirrored, 5: .leftMirrored, 6: .right,
-      7: .rightMirrored, 8: .left,
+    let options: [CFString: Any] = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,  // applies the orientation
+      kCGImageSourceThumbnailMaxPixelSize: min(max(width, height), maxSide),
+      kCGImageSourceShouldCacheImmediately: true,
     ]
-    guard let orientation = orientations[tag] else { return image }
-    let turned = UIImage(cgImage: image, scale: 1, orientation: orientation)
-    let format = UIGraphicsImageRendererFormat()
-    format.scale = 1
-    return UIGraphicsImageRenderer(size: turned.size, format: format)
-      .image { _ in turned.draw(at: .zero) }.cgImage
+    return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
   }
 }
 

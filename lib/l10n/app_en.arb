@@ -399,5 +399,7 @@
   "openFileHint": "A .cho, .chordpro or .txt file",
   "clipboardEmpty": "Nothing to paste. Copy a song first.",
   "contentHintOr": "Or type or paste chords over lyrics, or ChordPro",
-  "pasteTooBig": "That's too much text for one song."
+  "pasteTooBig": "That's too much text for one song.",
+  "privacyDeleteTitle": "Keeping and deleting",
+  "privacyDeleteBody": "Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone's settings whenever you like."
 }

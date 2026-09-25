@@ -1,6 +1,6 @@
 # Privacy — Libre Tab
 
-*Last updated: September 23, 2026*
+*Last updated: September 24, 2026*
 
 **Libre Tab collects no data.** It has no account, no ads, no analytics and
 no crash reporting, and it never connects to the internet.
@@ -39,6 +39,17 @@ system photo picker, so Libre Tab only ever sees the photos you pick, never
 your library. The camera is only used when you tap "Take a photo", after the
 system asks for your permission.
 
+## Keeping and deleting your data
+
+Your songs, setlists, settings and play history stay on your phone for as
+long as you keep them; Libre Tab has no copy anywhere else, so there is
+nothing to ask us to delete. You can delete a song (swipe it left, or Delete
+in the song's menu), every song at once (Settings → Delete all songs), or
+everything by uninstalling the app. A backup of your phone made by the
+system (iCloud, Google) keeps its copy until you delete that backup. To
+withdraw the microphone or camera permission, turn it off in your phone's
+settings; Libre Tab stops using it at once.
+
 ## Children
 
 Libre Tab collects no data from anyone, children included.
@@ -55,7 +66,7 @@ its source code is public, so all of the above can be checked.
 
 # Privacidad — Libre Tab
 
-*Última actualización: 23 de septiembre de 2026*
+*Última actualización: 24 de septiembre de 2026*
 
 **Libre Tab no recopila datos.** No tiene cuenta, anuncios, analíticas ni
 reportes de errores, y nunca se conecta a internet.
@@ -91,6 +102,18 @@ en otros teléfonos); las fotos nunca se envían a ningún lado y no se guardan.
 Elegir fotos usa el selector de fotos del sistema, así que Libre Tab solo ve
 las fotos que eliges, nunca tu fototeca. La cámara solo se usa cuando tocas
 "Tomar una foto", después de que el sistema te pide permiso.
+
+## Cómo se guardan y se borran tus datos
+
+Tus canciones, repertorios, ajustes e historial se quedan en tu teléfono
+mientras los conserves; Libre Tab no tiene una copia en ningún otro lugar,
+así que no hay nada que pedirnos borrar. Puedes borrar una canción
+(deslízala a la izquierda, o Borrar en el menú de la canción), todas a la vez
+(Ajustes → Borrar todas las canciones), o todo desinstalando la app. Un
+respaldo de tu teléfono hecho por el sistema (iCloud, Google) conserva su
+copia hasta que borres ese respaldo. Para retirar el permiso del micrófono o
+de la cámara, desactívalo en los ajustes de tu teléfono; Libre Tab deja de
+usarlo de inmediato.
 
 ## Niños
 

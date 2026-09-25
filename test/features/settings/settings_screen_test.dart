@@ -138,7 +138,7 @@ void main() {
 
     expect(await songCount(container), StarterSongs.files.length);
     expect(find.text('Amazing Grace'), findsOneWidget);
-    expect(find.text('Cielito Lindo'), findsOneWidget);
+    expect(find.text('La Cucaracha'), findsOneWidget);
   });
 
   testWidgets('About shows the license and opens the licenses page', (

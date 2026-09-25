@@ -204,5 +204,7 @@
   "openFileHint": "Un archivo .cho, .chordpro o .txt",
   "clipboardEmpty": "No hay nada que pegar. Copia una canción primero.",
   "contentHintOr": "O escribe o pega acordes sobre la letra, o ChordPro",
-  "pasteTooBig": "Es demasiado texto para una canción."
+  "pasteTooBig": "Es demasiado texto para una canción.",
+  "privacyDeleteTitle": "Guardar y borrar",
+  "privacyDeleteBody": "Todo se queda en este dispositivo hasta que lo borres: una canción (deslízala a la izquierda), todas (Ajustes → Borrar todas las canciones), o todo desinstalando la app. No hay una copia en ningún otro lugar. Desactiva el micrófono o la cámara en los ajustes de tu teléfono cuando quieras."
 }

@@ -20,10 +20,10 @@ class StarterSongs {
 
   static const files = [
     'amazing-grace.cho',
-    'cielito-lindo.cho',
     'clementine.cho',
     'coming-round-the-mountain.cho',
     'de-colores.cho',
+    'la-cucaracha.cho',
     'oh-susanna.cho',
     'red-river-valley.cho',
   ];
