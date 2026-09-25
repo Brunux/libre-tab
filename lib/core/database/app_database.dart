@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:libre_tab/core/chordpro/chordpro_parser.dart';
 import 'package:libre_tab/core/database/search_index.dart';
+import 'package:libre_tab/core/music/music_key.dart';
 
 part 'app_database.g.dart';
 
@@ -99,7 +100,14 @@ class AppDatabase extends _$AppDatabase {
       'SELECT id, body FROM songs WHERE song_key IS NULL',
     ).get();
     for (final row in rows) {
-      final key = ChordProParser.parse(row.read<String>('body')).effectiveKey;
+      final MusicKey? key;
+      try {
+        key = ChordProParser.parse(row.read<String>('body')).effectiveKey;
+      } on Object {
+        // A song the parser can't read keeps no key; the upgrade (and
+        // with it the whole songbook) must not fail over one song.
+        continue;
+      }
       if (key == null) continue;
       await customUpdate(
         'UPDATE songs SET song_key = ? WHERE id = ?',

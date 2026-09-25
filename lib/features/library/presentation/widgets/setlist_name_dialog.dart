@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 /// Asks for a setlist name. Returns the trimmed name, or null if cancelled.
@@ -62,6 +64,9 @@ class _SetlistNameDialogState extends State<_SetlistNameDialog> {
       title: Text(renaming ? l10n.renameSetlist : l10n.newSetlist),
       content: TextField(
         controller: _name,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(SongFiles.maxNameChars),
+        ],
         autofocus: true,
         textCapitalization: TextCapitalization.sentences,
         textInputAction: TextInputAction.done,

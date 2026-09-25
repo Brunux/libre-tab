@@ -51,9 +51,13 @@ final class ScannedSheet {
 /// matched to the lyric character under it, and the chord line is written
 /// with the chord at that character's column.
 abstract final class OcrLayout {
+  /// More words than any song sheet has (a page is a few hundred): the
+  /// rest of a photo that busy is left out rather than slowing the phone.
+  static const maxWords = 5000;
+
   static ScannedSheet read(List<RecognizedWord> words) {
     final lines = _lines([
-      for (final w in words)
+      for (final w in words.take(maxWords))
         if (w.text.trim().isNotEmpty && w.width > 0 && w.height > 0) w,
     ]);
     if (lines.isEmpty) return const ScannedSheet(text: '');
@@ -188,7 +192,10 @@ abstract final class OcrLayout {
     for (final word in byHeight) {
       _Line? best;
       var bestOverlap = 0.5;
-      for (final line in lines) {
+      // Words come top to bottom, so only the last few lines can hold this
+      // one: stop at the first line well above it (keeps this linear).
+      for (final line in lines.reversed) {
+        if (line.bottom < word.top - 2 * word.height) break;
         final overlap = line.verticalOverlap(word);
         // A word sharing nearly all its height with a line is in it, even
         // if its box runs into a neighbour's (Tesseract boxes a "1" after

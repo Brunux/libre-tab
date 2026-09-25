@@ -1321,6 +1321,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Or type or paste chords over lyrics, or ChordPro'**
   String get contentHintOr;
+
+  /// No description provided for @pasteTooBig.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s too much text for one song.'**
+  String get pasteTooBig;
 }
 
 class _AppLocalizationsDelegate

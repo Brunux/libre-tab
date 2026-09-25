@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:libre_tab/app/router.dart';
 import 'package:libre_tab/core/files/photo_picker.dart';
+import 'package:libre_tab/core/files/song_files.dart';
 import 'package:libre_tab/core/ocr/ocr_layout.dart';
 import 'package:libre_tab/core/ocr/text_recognizer.dart';
 import 'package:libre_tab/features/editor/presentation/song_editor_screen.dart';
@@ -106,6 +107,15 @@ void main() {
       );
     });
 
+    testWidgets('more than a song could be is refused', (tester) async {
+      await openEditor(tester);
+      clipboard(tester, 'la ' * SongFiles.maxSongBytes);
+      await tester.tap(find.text('Paste'));
+      await tester.pumpAndSettle();
+      expect(find.text("That's too much text for one song."), findsOneWidget);
+      expect(tester.widget<TextField>(contentField).controller!.text, isEmpty);
+    });
+
     testWidgets('an empty clipboard says so', (tester) async {
       await openEditor(tester);
       clipboard(tester, null);
@@ -113,6 +123,21 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Nothing to paste. Copy a song first.'), findsOneWidget);
     });
+  });
+
+  testWidgets('title and artist stop at a sensible length', (tester) async {
+    await openEditor(tester);
+    await tester.enterText(titleField, 'x' * 1000);
+    await tester.enterText(artistField, 'y' * 1000);
+    await tester.pump();
+    expect(
+      tester.widget<TextField>(titleField).controller!.text,
+      hasLength(SongFiles.maxNameChars),
+    );
+    expect(
+      tester.widget<TextField>(artistField).controller!.text,
+      hasLength(SongFiles.maxNameChars),
+    );
   });
 
   testWidgets('the ChordPro tab shows exactly what will be saved', (

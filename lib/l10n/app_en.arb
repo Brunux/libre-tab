@@ -398,5 +398,6 @@
   "scanPhotoHint": "A printed chord sheet, from the camera or photos",
   "openFileHint": "A .cho, .chordpro or .txt file",
   "clipboardEmpty": "Nothing to paste. Copy a song first.",
-  "contentHintOr": "Or type or paste chords over lyrics, or ChordPro"
+  "contentHintOr": "Or type or paste chords over lyrics, or ChordPro",
+  "pasteTooBig": "That's too much text for one song."
 }

@@ -765,4 +765,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get contentHintOr =>
       'Or type or paste chords over lyrics, or ChordPro';
+
+  @override
+  String get pasteTooBig => 'That\'s too much text for one song.';
 }

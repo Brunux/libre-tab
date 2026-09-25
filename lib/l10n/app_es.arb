@@ -203,5 +203,6 @@
   "scanPhotoHint": "Una hoja impresa, con la cámara o de tus fotos",
   "openFileHint": "Un archivo .cho, .chordpro o .txt",
   "clipboardEmpty": "No hay nada que pegar. Copia una canción primero.",
-  "contentHintOr": "O escribe o pega acordes sobre la letra, o ChordPro"
+  "contentHintOr": "O escribe o pega acordes sobre la letra, o ChordPro",
+  "pasteTooBig": "Es demasiado texto para una canción."
 }

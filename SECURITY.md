@@ -15,19 +15,70 @@ Libre Tab is an offline app with no account and no server.
   permission (only `RECORD_AUDIO`); iOS has no App Transport Security
   exceptions and no URL schemes. There is no analytics, crash reporting or
   ad SDK.
-- **Data stays in the app's sandbox:** a SQLite database (songs, setlists)
-  and preferences. Nothing is secret, so it isn't encrypted beyond the
+- **Data stays in the app's sandbox:** a SQLite database (songs, setlists,
+  play history: when each song was last opened and how often) and
+  preferences. Nothing is secret, so it isn't encrypted beyond the
   operating system's own storage protection; the phone's own backups
   (iCloud, Google) may include it, as described in [PRIVACY.md](PRIVACY.md).
 - **Untrusted input** is anything that comes from outside: song files and
   `.zip` exports opened from other apps or picked with Open file/Import,
-  text shared from other apps, and photos for camera import. Every path is
+  text shared from other apps or pasted from the clipboard (read only when
+  Paste is tapped), and photos for camera import. Every path is
   size-limited before parsing and every parser has been timed against
-  crafted input (below).
+  crafted input (below). Opening a file never navigates the app: Flutter's
+  deep linking is off on both platforms and unknown routes go home.
 - **Permissions:** microphone (tuner only, while the tuner is on screen),
   camera (only for "Take a photo"). Photos are chosen through the system
   picker, which needs no permission and only shares the photos picked; the
   app deletes its copy after reading it.
+
+## Audit — 24 September 2026 (after the UI round)
+
+A second full pass, focused on what changed since the first: the paste
+button and other text entry, camera-import layout, the schema 4 upgrade
+(play history, key backfill), the Setlists tab and auto-advance, the theme
+and logo work, and the Android build now run on an emulator.
+
+### Fixed
+
+| Issue | Risk | Fix |
+|---|---|---|
+| Paste read the whole clipboard, and the text box, title, artist and setlist name had no length limit | A huge paste (tens of MB) froze the editor, which re-imports the text on every change | Paste refuses more than a song file may be (256 K characters) with a message; the text box stops at that, title / artist / setlist name at 200 characters |
+| File names for Share and Export came from the title uncut | A very long title made the file name too long for the file system, so sharing failed | Cut to 100 characters (after removing `/ \ : * ? " < > \|` and control characters, so no path can leave the share folder) |
+| Grouping photo words into lines compared each word with every line so far | A busy photo (thousands of words) slowed the layout with the square of the words | Compares only with the lines just above (linear); at most 5,000 words per photo are laid out |
+| The schema 4 upgrade parsed every saved song to fill in its key in one step | If any song made the parser throw, the upgrade — and the songbook — would fail to open | Each song is read on its own; one that can't be read keeps no key |
+
+`test/security/hostile_input_test.dart` now also lays out crafted photos
+(20,000 words: one per line, one long line, all on one spot) within 2 s.
+
+### Checked, no issue
+
+- Android release manifest (merged): permissions `RECORD_AUDIO` only (plus
+  the system's own `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`); exported:
+  `MainActivity` and the `DUMP`-protected profile installer receiver, as
+  before. File providers not exported. Flutter deep linking off
+  (`flutter_deeplinking_enabled = false`).
+- iOS `Info.plist`: no URL schemes, no App Transport Security exceptions,
+  no iTunes file sharing, no background modes, deep linking off; purpose
+  strings for microphone, camera and photos. Privacy manifest: no tracking;
+  file timestamps `C617.1`, UserDefaults `CA92.1` (the clipboard isn't a
+  required-reason API).
+- SQL: every statement is a typed Drift query or uses bound parameters,
+  including the upgrade's; the setlist search filters in Dart.
+- No logging of song text, OCR words or file contents (a temporary OCR log
+  used while tuning the Tesseract layout was removed before commit).
+- No secrets, keystores or provisioning profiles tracked.
+- Dart packages: no advisories or retracted versions from `pub`; the
+  available updates are minor patches.
+- Play history never leaves the database: not in exports or shares.
+- Auto-advance and countdown timers are cancelled when the song view
+  closes; nothing runs in the background.
+
+### Noted
+
+- Android `allowBackup` is on (the default), so the songbook and play
+  history are in the phone's own backups, like the iPhone's iCloud backup;
+  PRIVACY.md says so. Nothing in them is secret.
 
 ## Audit — September 2026
 
@@ -84,4 +135,5 @@ up to the maximum song size and fails if any takes over 2 seconds;
   unpacked one entry at a time before its real size is checked; the 32 MB
   input limit bounds the damage to a failed import, not data loss (imports
   run in one transaction).
-- The Android build has not yet been run on a device.
+- The Android build has been run on an emulator (Android 13), not yet on a
+  phone.

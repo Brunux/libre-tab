@@ -15,6 +15,13 @@ class SongFiles {
   /// huge or crafted file from freezing the app (docs/SONG_FORMAT.md § Files).
   static const int maxSongBytes = 256 * 1024;
 
+  /// Longest title, artist or setlist name typed in: plenty for any real
+  /// one, and keeps lists and file names sane.
+  static const int maxNameChars = 200;
+
+  /// File names made from titles are cut to this (systems allow 255 bytes).
+  static const int maxFileNameChars = 100;
+
   /// The biggest file Import songs reads (a songbook .zip).
   static const int maxImportBytes = 32 * 1024 * 1024;
 
@@ -78,11 +85,14 @@ class SongFiles {
       );
 
   /// A file name made from a song title: characters that file systems
-  /// reject are removed.
+  /// reject are removed, and it's cut short enough for any of them.
   static String fileNameFor(String title) {
-    final cleaned = title
-        .replaceAll(RegExp(r'[\\/:*?"<>|\x00-\x1F]'), '')
-        .trim();
+    var cleaned = title.replaceAll(RegExp(r'[\\/:*?"<>|\x00-\x1F]'), '').trim();
+    if (cleaned.runes.length > maxFileNameChars) {
+      cleaned = String.fromCharCodes(
+        cleaned.runes.take(maxFileNameChars),
+      ).trim();
+    }
     return cleaned.isEmpty ? 'song' : cleaned;
   }
 }

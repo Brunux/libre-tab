@@ -154,6 +154,10 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       _snack(context.l10n.clipboardEmpty);
       return;
     }
+    if (text.length > SongFiles.maxSongBytes) {
+      _snack(context.l10n.pasteTooBig);
+      return;
+    }
     _fill(SongHeader.split(text));
   }
 
@@ -410,6 +414,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       children: [
         TextField(
           controller: _title,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(SongFiles.maxNameChars),
+          ],
           textCapitalization: TextCapitalization.words,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
@@ -422,6 +429,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
         const SizedBox(height: 12),
         TextField(
           controller: _artist,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(SongFiles.maxNameChars),
+          ],
           textCapitalization: TextCapitalization.words,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(labelText: l10n.artistLabel),
@@ -543,6 +553,11 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       const SizedBox(height: 12),
       TextField(
         controller: _content,
+        // No bigger than a song file may be, however it gets in (typing,
+        // the system's paste): the importer runs on it at every change.
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(SongFiles.maxSongBytes),
+        ],
         minLines: 8,
         maxLines: 16,
         keyboardType: TextInputType.multiline,

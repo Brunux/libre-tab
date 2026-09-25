@@ -125,6 +125,11 @@ void main() {
       expect(SongFiles.fileNameFor('AC/DC: "Hits"?'), 'ACDC Hits');
       expect(SongFiles.fileNameFor('Canción <de> cuna|*'), 'Canción de cuna');
       expect(SongFiles.fileNameFor(' ? '), 'song');
+      // No way out of the folder the file is written to.
+      expect(SongFiles.fileNameFor('../../etc/passwd'), '....etcpasswd');
+      // Short enough for any file system (255 bytes), even in emoji.
+      final long = SongFiles.fileNameFor('🎸' * 500);
+      expect(long.runes.length, SongFiles.maxFileNameChars);
       expect(SongFiles.fileNameFor('Tab\there'), 'Tabhere');
     });
   });
