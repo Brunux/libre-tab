@@ -91,7 +91,7 @@ See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
 ## Platforms
 
-iOS 14+ (iPhone and iPad) and Android 7.0+ (API 24).
+iOS 15+ (iPhone and iPad) and Android 7.0+ (API 24).
 
 ## Development
 

@@ -17,7 +17,7 @@ with the phone's microphone.
 ## 2. Toolchain
 
 - **Flutter 3.47 (stable) / Dart 3.13** — installed locally. Android: Gradle 9.8, Android Gradle plugin 9.4, Kotlin 2.4.
-- **Targets:** iOS 14+ and Android phones (tablets supported by responsive layout). Desktop/web are out of scope for v1 (tuner mic APIs differ). iOS 14 is required by `file_picker`.
+- **Targets:** iOS 15+ and Android phones (tablets supported by responsive layout). Desktop/web are out of scope for v1 (tuner mic APIs differ). iOS 15 is required by Flutter 3.47.
 - **Xcode 26.5** + Android SDK — installed.
 
 ## 3. Packages

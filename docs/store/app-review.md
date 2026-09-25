@@ -9,7 +9,7 @@ to enter in App Store Connect, and the notes for the reviewer.
 | Requirement | Status |
 |---|---|
 | Built with Xcode 26 / iOS 26 SDK (required since 28 April 2026) | Xcode 26.5 ✅ |
-| Minimum iOS 13 or later (since 9 September 2026) | iOS 14.0 ✅ |
+| Minimum iOS 13 or later (since 9 September 2026) | iOS 15.0 ✅ (Flutter 3.47) |
 | Universal: iPhone and iPad, all iPad orientations (2.4.1) | ✅ |
 | Version 1.0.0, build 1 (`pubspec.yaml`) | ✅ |
 | `ITSAppUsesNonExemptEncryption = NO` (no export-compliance prompt) | ✅ |
