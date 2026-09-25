@@ -19,10 +19,7 @@ Iterable<String> messageKeys(Map<String, dynamic> arb) =>
 
 void main() {
   test('Spanish has exactly the same messages as English', () {
-    expect(
-      messageKeys(arb('es')).toSet(),
-      messageKeys(arb('en')).toSet(),
-    );
+    expect(messageKeys(arb('es')).toSet(), messageKeys(arb('en')).toSet());
   });
 
   test('no message is empty', () {
@@ -45,9 +42,7 @@ void main() {
     ]);
   });
 
-  testWidgets('every screen shows Spanish on a Spanish device', (
-    tester,
-  ) async {
+  testWidgets('every screen shows Spanish on a Spanish device', (tester) async {
     tester.platformDispatcher.localesTestValue = [const Locale('es', 'MX')];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
     final container = await pumpApp(tester);

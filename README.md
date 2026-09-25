@@ -95,7 +95,7 @@ iOS 14+ (iPhone and iPad) and Android 7.0+ (API 24).
 
 ## Development
 
-Requirements: Flutter 3.44+ (Dart 3.12+), Xcode for iOS, Android SDK for
+Requirements: Flutter 3.47+ (Dart 3.13+), Xcode for iOS, Android SDK for
 Android.
 
 ```bash

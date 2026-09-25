@@ -9,7 +9,6 @@ final appSettingsProvider = Provider<AppSettings>(
 );
 
 // An interface, not a function, so tests can override the provider.
-// ignore: one_member_abstracts
 abstract interface class AppSettings {
   /// Whether the settings page opened.
   Future<bool> open();

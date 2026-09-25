@@ -58,10 +58,7 @@ void main() {
     expect(name, matches(RegExp(r'^libre-tab-songs-\d{4}-\d{2}-\d{2}\.zip$')));
     expect(
       [for (final f in ZipDecoder().decodeBytes(zip)) f.name],
-      [
-        'Amazing Grace.cho',
-        'Canción de cuna.cho',
-      ],
+      ['Amazing Grace.cho', 'Canción de cuna.cho'],
     );
   });
 
@@ -125,10 +122,7 @@ void main() {
   });
 
   testWidgets('Add starter songs adds only the missing ones', (tester) async {
-    final container = await pumpApp(
-      tester,
-      songs: [SampleSongs.amazingGrace],
-    );
+    final container = await pumpApp(tester, songs: [SampleSongs.amazingGrace]);
     await openSettings(tester, container);
 
     await tester.tap(find.text('Add starter songs'));

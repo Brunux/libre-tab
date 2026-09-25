@@ -31,9 +31,7 @@ void main() {
     expect(find.textContaining('Your songbook is empty'), findsOneWidget);
   });
 
-  testWidgets('lists songs by title with key, artist and capo', (
-    tester,
-  ) async {
+  testWidgets('lists songs by title with key, artist and capo', (tester) async {
     await pumpApp(tester, songs: _all);
 
     expect(find.text('3 SONGS'), findsOneWidget);
@@ -56,9 +54,7 @@ void main() {
     expect(find.byIcon(Icons.music_note), findsOneWidget);
   });
 
-  testWidgets('search filters as you type and ignores accents', (
-    tester,
-  ) async {
+  testWidgets('search filters as you type and ignores accents', (tester) async {
     await pumpApp(tester, songs: _all);
 
     await tester.enterText(find.byType(TextField), 'cancion');
@@ -189,9 +185,7 @@ void main() {
       expect(find.text('A–Z'), findsNothing);
     });
 
-    testWidgets('a long songbook gets an A–Z index that jumps', (
-      tester,
-    ) async {
+    testWidgets('a long songbook gets an A–Z index that jumps', (tester) async {
       final many = [
         for (final letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''))
           for (var n = 1; n <= 2; n++) '{title: $letter song $n}\n[G]La',
@@ -229,9 +223,7 @@ void main() {
   });
 
   group('motion', () {
-    testWidgets('a deleted row folds away; Undo grows it back', (
-      tester,
-    ) async {
+    testWidgets('a deleted row folds away; Undo grows it back', (tester) async {
       final container = await pumpApp(tester, songs: _all);
       await tester.drag(find.text('Amazing Grace'), const Offset(-500, 0));
       await tester.pumpAndSettle();
@@ -265,10 +257,8 @@ void main() {
     testWidgets('songs added together cascade in', (tester) async {
       final container = await pumpApp(tester);
       await container.read(songRepositoryProvider).importSongs(_all);
-      Finder row(String title) => find.ancestor(
-        of: find.text(title),
-        matching: find.byType(Appearing),
-      );
+      Finder row(String title) =>
+          find.ancestor(of: find.text(title), matching: find.byType(Appearing));
       var cascaded = false;
       for (var i = 0; i < 40 && !cascaded; i++) {
         await tester.pump(const Duration(milliseconds: 16));

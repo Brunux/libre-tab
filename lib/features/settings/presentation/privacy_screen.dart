@@ -16,9 +16,9 @@ class PrivacyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
-    final heading = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w700,
-    );
+    final heading = Theme.of(
+      context,
+    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700);
     final body = TextStyle(fontSize: 16, height: 1.45, color: colors.text);
 
     Widget section(String title, String text) => Padding(

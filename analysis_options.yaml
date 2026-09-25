@@ -4,6 +4,9 @@ analyzer:
   exclude:
     - lib/l10n/app_localizations*.dart
     - "**/*.g.dart"
+    - build/**
+    - android/**
+    - ios/**
 
 linter:
   rules:

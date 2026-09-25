@@ -285,9 +285,7 @@ void main() {
       expect(twice, '$once\n\n$once');
     });
 
-    testWidgets('several photos are read in the order picked', (
-      tester,
-    ) async {
+    testWidgets('several photos are read in the order picked', (tester) async {
       RecognizedWord w(String t, double l, double top) =>
           RecognizedWord(t, left: l, top: top, right: l + 60, bottom: top + 20);
       final photos = FakePhotoPicker(paths: ['/p/1.jpg', '/p/2.jpg']);
@@ -324,9 +322,7 @@ void main() {
       expect(tester.widget<TextField>(contentField).controller!.text, isEmpty);
     });
 
-    testWidgets('a photo without text, or unreadable, says so', (
-      tester,
-    ) async {
+    testWidgets('a photo without text, or unreadable, says so', (tester) async {
       final recognizer = FakeTextRecognizer();
       await pumpApp(tester, recognizer: recognizer);
       await tester.tap(find.text('Add song'));
@@ -462,10 +458,7 @@ void main() {
   });
 
   testWidgets('editing a song loads it and saves changes', (tester) async {
-    final container = await pumpApp(
-      tester,
-      songs: [SampleSongs.amazingGrace],
-    );
+    final container = await pumpApp(tester, songs: [SampleSongs.amazingGrace]);
     container.read(routerProvider).go(Routes.editSong(1));
     await tester.pumpAndSettle();
 

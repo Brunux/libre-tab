@@ -82,9 +82,7 @@ void main() {
     expect(find.text('0 songs'), findsOneWidget);
   });
 
-  testWidgets('Add songs ticks songs; new ones go to the end', (
-    tester,
-  ) async {
+  testWidgets('Add songs ticks songs; new ones go to the end', (tester) async {
     final (container, id) = await openSetlist(tester, [2]);
 
     await tester.tap(find.text('Add songs'));

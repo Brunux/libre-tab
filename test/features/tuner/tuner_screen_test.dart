@@ -108,9 +108,7 @@ void main() {
       expect(settings.getInt(SettingsKeys.micAsked), 1);
     });
 
-    testWidgets('refused: opens Settings, and can try again', (
-      tester,
-    ) async {
+    testWidgets('refused: opens Settings, and can try again', (tester) async {
       final settings = FakeAppSettings();
       final (_, pitch) = await openTuner(
         tester,
@@ -297,9 +295,7 @@ void main() {
       await hear(tester, pitch, null, times: 2);
     }
 
-    testWidgets('before a note, a ring shows the tuner hears', (
-      tester,
-    ) async {
+    testWidgets('before a note, a ring shows the tuner hears', (tester) async {
       final (container, pitch) = await openTuner(tester);
       expect(find.byIcon(Icons.mic_none_rounded), findsOneWidget);
 

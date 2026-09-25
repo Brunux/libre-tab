@@ -21,13 +21,8 @@ Future<void> main() async {
   );
   // First launch: fill the empty songbook with the starter songs. Not in
   // LibreTabApp, so widget tests start from an empty songbook.
-  unawaited(
-    container.read(starterSongsProvider).addOnFirstLaunch(settings),
-  );
+  unawaited(container.read(starterSongsProvider).addOnFirstLaunch(settings));
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const LibreTabApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const LibreTabApp()),
   );
 }

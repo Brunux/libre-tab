@@ -84,7 +84,7 @@ class SongRepository {
   /// Saves a new song and returns its id. [body] must have a `{title}`.
   Future<int> addSong(String body) async {
     final meta = _SongMeta.fromBody(body);
-    return _db.transaction(() async {
+    return await _db.transaction(() async {
       final id = await _db
           .into(_db.songs)
           .insert(
@@ -104,7 +104,7 @@ class SongRepository {
   /// Replaces a song's text. [body] must have a `{title}`.
   Future<void> updateSong(int id, String body) async {
     final meta = _SongMeta.fromBody(body);
-    return _db.transaction(() async {
+    return await _db.transaction(() async {
       await (_db.update(_db.songs)..where((s) => s.id.equals(id))).write(
         SongsCompanion(
           title: Value(meta.title),
@@ -125,7 +125,7 @@ class SongRepository {
 
   /// Deletes every song. The result can be passed to [restore] to undo it.
   Future<DeletedSongs> deleteAllSongs() async =>
-      deleteSongs([for (final song in await allSongs()) song.id]);
+      await deleteSongs([for (final song in await allSongs()) song.id]);
 
   Future<DeletedSongs> deleteSongs(List<int> ids) => _db.transaction(() async {
     final songs = await (_db.select(

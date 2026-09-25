@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:libre_tab/core/widgets/motion.dart';
@@ -41,12 +39,10 @@ class _SetlistPlayerScreenState extends ConsumerState<SetlistPlayerScreen> {
       _pages.jumpToPage(page);
       return;
     }
-    unawaited(
-      _pages.animateToPage(
-        page,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeOutCubic,
-      ),
+    _pages.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
     );
   }
 

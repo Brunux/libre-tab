@@ -65,10 +65,10 @@ class _AppearingState extends State<Appearing>
       if (_controller.duration == Duration.zero) {
         _controller.value = 1;
       } else if (widget.delay == Duration.zero) {
-        unawaited(_controller.forward());
+        _controller.forward();
       } else {
         _wait = Timer(widget.delay, () {
-          if (mounted) unawaited(_controller.forward());
+          if (mounted) _controller.forward();
         });
       }
     }

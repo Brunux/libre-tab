@@ -309,7 +309,7 @@ class _SongListState extends ConsumerState<_SongList> {
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final row = _rowKeys[list[index].id]?.currentContext;
-      if (row != null && row.mounted) unawaited(Scrollable.ensureVisible(row));
+      if (row != null && row.mounted) Scrollable.ensureVisible(row);
     });
   }
 }

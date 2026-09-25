@@ -307,15 +307,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String stringNumber(String number) {
-    String _temp0 = intl.Intl.selectLogic(
-      number,
-      {
-        '1': '1st',
-        '2': '2nd',
-        '3': '3rd',
-        'other': '${number}th',
-      },
-    );
+    String _temp0 = intl.Intl.selectLogic(number, {
+      '1': '1st',
+      '2': '2nd',
+      '3': '3rd',
+      'other': '${number}th',
+    });
     return '$_temp0';
   }
 

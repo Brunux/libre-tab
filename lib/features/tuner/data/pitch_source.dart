@@ -23,10 +23,7 @@ abstract interface class PitchSource {
   /// the tuner can show it's listening). With [ask], asks for the
   /// microphone if needed; without it only checks, so nothing pops up
   /// (used for the automatic restarts, e.g. coming back to the app).
-  Future<MicAccess> start(
-    OnPitch onPitch, {
-    bool ask = true,
-  });
+  Future<MicAccess> start(OnPitch onPitch, {bool ask = true});
 
   Future<void> stop();
 }
@@ -51,10 +48,7 @@ class MicPitchSource implements PitchSource {
   var _busy = false;
 
   @override
-  Future<MicAccess> start(
-    OnPitch onPitch, {
-    bool ask = true,
-  }) async {
+  Future<MicAccess> start(OnPitch onPitch, {bool ask = true}) async {
     if (_audio != null) return MicAccess.granted;
     if (!await _recorder.hasPermission(request: ask)) return MicAccess.denied;
     _worker ??= await PitchWorker.start(sampleRate: sampleRate.toDouble());

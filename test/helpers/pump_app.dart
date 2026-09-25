@@ -48,9 +48,7 @@ Future<ProviderContainer> pumpApp(
       ),
       // Never the real microphone in tests.
       pitchSourceProvider.overrideWithValue(pitch ?? FakePitchSource()),
-      incomingFilesProvider.overrideWithValue(
-        incoming ?? FakeIncomingFiles(),
-      ),
+      incomingFilesProvider.overrideWithValue(incoming ?? FakeIncomingFiles()),
       photoPickerProvider.overrideWithValue(photos ?? FakePhotoPicker()),
       appSettingsProvider.overrideWithValue(appSettings ?? FakeAppSettings()),
       textRecognizerProvider.overrideWithValue(
@@ -68,10 +66,7 @@ Future<ProviderContainer> pumpApp(
     await repository.addSong(song);
   }
   await tester.pumpWidget(
-    UncontrolledProviderScope(
-      container: container,
-      child: const LibreTabApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const LibreTabApp()),
   );
   await tester.pumpAndSettle();
   return container;
@@ -235,10 +230,7 @@ class FakePitchSource implements PitchSource {
   int asks = 0;
 
   @override
-  Future<MicAccess> start(
-    OnPitch onPitch, {
-    bool ask = true,
-  }) async {
+  Future<MicAccess> start(OnPitch onPitch, {bool ask = true}) async {
     if (ask) asks++;
     if (access == MicAccess.granted) _onPitch = onPitch;
     return access;

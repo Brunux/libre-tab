@@ -194,7 +194,7 @@ class _SongViewState extends ConsumerState<_SongView>
     if (_moving == _ticker.isActive) return;
     if (_moving) {
       _lastTick = Duration.zero;
-      unawaited(_ticker.start());
+      _ticker.start();
     } else {
       _ticker.stop();
     }
@@ -670,11 +670,7 @@ class _UpNextCard extends StatelessWidget {
                               backgroundColor: colors.line,
                             ),
                       ),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 20,
-                      color: colors.accent,
-                    ),
+                    Icon(Icons.arrow_forward, size: 20, color: colors.accent),
                   ],
                 ),
               ),
@@ -728,7 +724,7 @@ class _FavoriteStarState extends State<_FavoriteStar>
   void didUpdateWidget(_FavoriteStar old) {
     super.didUpdateWidget(old);
     if (widget.favorite && !old.favorite && !context.calm) {
-      unawaited(_burst.forward(from: 0));
+      _burst.forward(from: 0);
     }
   }
 

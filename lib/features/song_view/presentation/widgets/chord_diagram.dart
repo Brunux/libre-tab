@@ -19,11 +19,7 @@ class ChordDiagram extends StatelessWidget {
     final l10n = context.l10n;
     final frets = [
       for (final f in voicing.frets)
-        f < 0
-            ? l10n.fretMuted
-            : f == 0
-            ? l10n.fretOpen
-            : '$f',
+        if (f < 0) l10n.fretMuted else if (f == 0) l10n.fretOpen else '$f',
     ].join(', ');
     return Semantics(
       image: true,

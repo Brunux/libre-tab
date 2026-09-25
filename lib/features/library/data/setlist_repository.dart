@@ -85,12 +85,12 @@ class SetlistRepository {
           .map((rows) => {for (final row in rows) row.setlistId});
 
   /// Makes an empty setlist and returns its id.
-  Future<int> create(String name) async => _db
+  Future<int> create(String name) async => await _db
       .into(_db.setlists)
       .insert(SetlistsCompanion.insert(name: _checked(name)));
 
   Future<void> rename(int id, String name) async =>
-      (_db.update(_db.setlists)..where((s) => s.id.equals(id))).write(
+      await (_db.update(_db.setlists)..where((s) => s.id.equals(id))).write(
         SetlistsCompanion(name: Value(_checked(name))),
       );
 

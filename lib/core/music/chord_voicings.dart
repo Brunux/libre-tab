@@ -30,9 +30,9 @@ final class Voicing {
       other is Voicing &&
       other.barre == barre &&
       other.frets.length == frets.length &&
-      Iterable<int>.generate(frets.length).every(
-        (i) => other.frets[i] == frets[i],
-      );
+      Iterable<int>.generate(
+        frets.length,
+      ).every((i) => other.frets[i] == frets[i]);
 
   @override
   int get hashCode => Object.hash(Object.hashAll(frets), barre);
@@ -137,8 +137,8 @@ abstract final class ChordVoicings {
     return null;
   }
 
-  static Voicing _moved(List<int> shape, int fret) => Voicing(
-    [for (final f in shape) f < 0 ? f : f + fret],
-    barre: fret == 0 ? null : fret,
-  );
+  static Voicing _moved(List<int> shape, int fret) => Voicing([
+    for (final f in shape)
+      if (f < 0) f else f + fret,
+  ], barre: fret == 0 ? null : fret);
 }

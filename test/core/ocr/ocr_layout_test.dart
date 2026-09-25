@@ -69,10 +69,7 @@ void main() {
       ...chordsOver(grace, {2: 'G', 8: 'G7', 19: 'C', 29: 'G'}, y: 100),
       ...printed(grace, y: 122),
     ];
-    expect(
-      chordPro(words),
-      'Am[G]azing [G7]grace, how [C]sweet the [G]sound',
-    );
+    expect(chordPro(words), 'Am[G]azing [G7]grace, how [C]sweet the [G]sound');
   });
 
   test("narrow and wide letters don't throw the columns off", () {
@@ -186,9 +183,7 @@ void main() {
   test('nothing found, nothing to import', () {
     expect(sheet([]), '');
     expect(
-      sheet([
-        const RecognizedWord(' ', left: 0, top: 0, right: 5, bottom: 5),
-      ]),
+      sheet([const RecognizedWord(' ', left: 0, top: 0, right: 5, bottom: 5)]),
       '',
     );
   });

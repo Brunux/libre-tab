@@ -55,9 +55,7 @@ void main() {
     expect(save.onPressed, isNull);
   });
 
-  testWidgets('a theme picked in Settings applies everywhere', (
-    tester,
-  ) async {
+  testWidgets('a theme picked in Settings applies everywhere', (tester) async {
     await pumpApp(tester);
 
     await tester.tap(find.byTooltip('Settings'));
@@ -180,10 +178,7 @@ void main() {
   testWidgets('song view theme button cycles Dark → Red night → Light', (
     tester,
   ) async {
-    final container = await pumpApp(
-      tester,
-      songs: [SampleSongs.amazingGrace],
-    );
+    final container = await pumpApp(tester, songs: [SampleSongs.amazingGrace]);
 
     container.read(routerProvider).go(Routes.song(1));
     await tester.pumpAndSettle();

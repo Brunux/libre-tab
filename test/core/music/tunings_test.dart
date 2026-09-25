@@ -15,10 +15,14 @@ void main() {
 
     test('standard tuning frequencies at A4 = 440', () {
       final hz = Tuning.standard.strings.map((s) => s.frequency());
-      expect(
-        hz.map((f) => f.toStringAsFixed(2)),
-        ['82.41', '110.00', '146.83', '196.00', '246.94', '329.63'],
-      );
+      expect(hz.map((f) => f.toStringAsFixed(2)), [
+        '82.41',
+        '110.00',
+        '146.83',
+        '196.00',
+        '246.94',
+        '329.63',
+      ]);
     });
 
     test('octaves', () {
@@ -43,11 +47,7 @@ void main() {
     });
 
     test('a locked string is always the target, even far away', () {
-      final r = TunerReading.of(
-        108,
-        tuning: Tuning.standard,
-        lockedString: 0,
-      );
+      final r = TunerReading.of(108, tuning: Tuning.standard, lockedString: 0);
       expect(r.target.name, 'E');
       expect(r.cents, greaterThan(400)); // A2 is far above E2
       expect(r.tooHigh, isTrue);

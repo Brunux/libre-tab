@@ -10,7 +10,6 @@ final textRecognizerProvider = Provider<TextRecognizer>(
 );
 
 // An interface, not a function, so tests can override the provider.
-// ignore: one_member_abstracts
 abstract interface class TextRecognizer {
   /// Every word in the image at [imagePath], with its box in pixels of the
   /// upright image. Throws [TextRecognitionException] if it can't be read.

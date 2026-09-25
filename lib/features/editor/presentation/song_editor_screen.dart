@@ -261,21 +261,14 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     );
   }
 
-  bool get _isBlank => [
-    _title,
-    _artist,
-    _content,
-  ].every((c) => c.text.trim().isEmpty);
+  bool get _isBlank =>
+      [_title, _artist, _content].every((c) => c.text.trim().isEmpty);
 
   /// Add song only: empties title, artist and text to begin another song,
   /// with Undo in case it was tapped by mistake.
   void _startOver() {
     final l10n = context.l10n;
-    final (title, artist, content) = (
-      _title.text,
-      _artist.text,
-      _content.text,
-    );
+    final (title, artist, content) = (_title.text, _artist.text, _content.text);
     _title.clear();
     _artist.clear();
     _content.clear();

@@ -35,11 +35,7 @@ void main() {
     final back = SongbookArchive.songsFrom('songs.zip', zip);
     expect(
       [for (final b in back) ChordProParser.parse(b).title],
-      [
-        'Amazing Grace',
-        'Oh! Susanna',
-        'Canción de cuna',
-      ],
+      ['Amazing Grace', 'Oh! Susanna', 'Canción de cuna'],
     );
     expect(back.first, contains('[G]mazing'));
   });
@@ -52,11 +48,7 @@ void main() {
     ]);
     expect(
       [for (final f in ZipDecoder().decodeBytes(zip)) f.name],
-      [
-        'Hymn.cho',
-        'hymn (2).cho',
-        'AB C.cho',
-      ],
+      ['Hymn.cho', 'hymn (2).cho', 'AB C.cho'],
     );
   });
 
@@ -71,10 +63,7 @@ void main() {
     final songs = SongbookArchive.songsFrom('Export.ZIP', zip);
     expect(
       [for (final s in songs) ChordProParser.parse(s).title],
-      [
-        'Amazing Grace',
-        'campfire',
-      ],
+      ['Amazing Grace', 'campfire'],
     );
     expect(songs.last, contains('[G]Hello ca[C]mpfire'));
   });
@@ -116,9 +105,7 @@ void main() {
       final songs = SongbookArchive.songsFrom('backup.zip', zip);
       expect(
         [for (final s in songs) ChordProParser.parse(s).title],
-        [
-          'Amazing Grace',
-        ],
+        ['Amazing Grace'],
       );
     });
 

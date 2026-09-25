@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   archive: ^4.3.0
+  cupertino_icons: ^1.0.9
   drift: ^2.35.0
   drift_flutter: ^0.3.1
   file_picker: ^13.1.0
@@ -37,7 +38,7 @@ dev_dependencies:
     sdk: flutter
   share_plus_platform_interface: ^7.2.0
   shared_preferences_platform_interface: ^2.4.2
-  very_good_analysis: ^10.3.0
+  very_good_analysis: ^11.0.0
 
 flutter:
   uses-material-design: true

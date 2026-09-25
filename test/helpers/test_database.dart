@@ -5,10 +5,7 @@ import 'package:libre_tab/core/database/app_database.dart';
 /// A fresh in-memory database. Streams close synchronously so widget tests
 /// don't end with pending timers.
 AppDatabase testDatabase() => AppDatabase(
-  DatabaseConnection(
-    NativeDatabase.memory(),
-    closeStreamsSynchronously: true,
-  ),
+  DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
 );
 
 /// Public-domain songs used across tests.

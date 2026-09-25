@@ -7,10 +7,7 @@ void main() {
   test('every bundled font has its SIL Open Font License', () async {
     final entries = await fontLicenses().toList();
 
-    expect(
-      entries.map((e) => e.packages.single),
-      bundledFonts.keys.toList(),
-    );
+    expect(entries.map((e) => e.packages.single), bundledFonts.keys.toList());
     for (final entry in entries) {
       final text = entry.paragraphs.map((p) => p.text).join('\n');
       expect(text, contains('SIL OPEN FONT LICENSE'));

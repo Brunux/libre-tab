@@ -222,12 +222,7 @@ class _RollingChord extends StatelessWidget {
         ),
       );
     },
-    child: Text(
-      label,
-      key: ValueKey(label),
-      style: style,
-      softWrap: false,
-    ),
+    child: Text(label, key: ValueKey(label), style: style, softWrap: false),
   );
 }
 
@@ -314,11 +309,7 @@ class _LyricLine extends StatelessWidget {
             child: u.chord == null ? null : chord(u.chord!),
           ),
         // Non-breaking spaces keep the space width at the end of a word.
-        Text(
-          u.text.replaceAll(' ', ' '),
-          style: lyricStyle,
-          softWrap: false,
-        ),
+        Text(u.text.replaceAll(' ', ' '), style: lyricStyle, softWrap: false),
       ],
     );
 

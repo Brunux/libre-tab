@@ -141,11 +141,7 @@ class TunerController extends Notifier<TunerState> {
   set tuning(Tuning tuning) {
     _store.setString(SettingsKeys.tuning, tuning.name);
     _changeTarget(
-      state.copyWith(
-        tuning: tuning,
-        lockedString: () => null,
-        tuned: const {},
-      ),
+      state.copyWith(tuning: tuning, lockedString: () => null, tuned: const {}),
     );
   }
 

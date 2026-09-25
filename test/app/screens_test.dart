@@ -65,31 +65,20 @@ void main() {
     }
   });
 
-  testWidgets(
-    'screen titles are left-aligned on every screen',
-    (tester) async {
-      final container = await pumpApp(
-        tester,
-        songs: [SampleSongs.amazingGrace],
+  testWidgets('screen titles are left-aligned on every screen', (tester) async {
+    final container = await pumpApp(tester, songs: [SampleSongs.amazingGrace]);
+    for (final MapEntry(key: screen, value: path) in screenPaths.entries) {
+      container.read(routerProvider).go(path);
+      await tester.pumpAndSettle();
+      final title = find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byType(Text),
       );
-      for (final MapEntry(key: screen, value: path) in screenPaths.entries) {
-        container.read(routerProvider).go(path);
-        await tester.pumpAndSettle();
-        final title = find.descendant(
-          of: find.byType(AppBar),
-          matching: find.byType(Text),
-        );
-        if (title.evaluate().isEmpty) continue; // e.g. "song not found"
-        // Left edge of the title, allowing for a back/close button.
-        expect(
-          tester.getTopLeft(title.first).dx,
-          lessThan(80),
-          reason: screen,
-        );
-      }
-    },
-    variant: TargetPlatformVariant.mobile(),
-  );
+      if (title.evaluate().isEmpty) continue; // e.g. "song not found"
+      // Left edge of the title, allowing for a back/close button.
+      expect(tester.getTopLeft(title.first).dx, lessThan(80), reason: screen);
+    }
+  }, variant: TargetPlatformVariant.mobile());
 
   group('accessibility guidelines on every screen', () {
     for (final variant in AppThemeVariant.values) {

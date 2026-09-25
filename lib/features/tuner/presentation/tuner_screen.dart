@@ -225,10 +225,7 @@ class _TunerBody extends ConsumerWidget {
             const SizedBox(height: 8),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 360),
-              child: TunerGauge(
-                cents: reading?.cents,
-                inTune: state.inTune,
-              ),
+              child: TunerGauge(cents: reading?.cents, inTune: state.inTune),
             ),
             const SizedBox(height: 8),
             Text(
