@@ -72,6 +72,12 @@ abstract final class SettingsKeys {
   /// 1 once the tuner has asked for the microphone.
   static const micAsked = 'micAsked';
 
+  /// How many songs have been opened, for the one-time thank-you.
+  static const songsOpened = 'songsOpened';
+
+  /// 1 once the thank-you nudge has been shown (it never comes back).
+  static const supportNudged = 'supportNudged';
+
   /// 1 once the first launch has offered the starter songs.
   static const starterSongs = 'starterSongs';
 }

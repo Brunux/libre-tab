@@ -8,6 +8,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:libre_tab/app/router.dart';
+import 'package:libre_tab/app/settings/settings_store.dart';
+import 'package:libre_tab/app/theme/app_theme.dart';
 import 'package:libre_tab/app/theme/libre_colors.dart';
 import 'package:libre_tab/app/widgets/app_logo.dart';
 import 'package:libre_tab/core/database/app_database.dart';
@@ -19,6 +21,7 @@ import 'package:libre_tab/features/library/application/library_providers.dart';
 import 'package:libre_tab/features/library/application/song_order.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
 import 'package:libre_tab/features/settings/presentation/settings_screen.dart';
+import 'package:libre_tab/features/settings/presentation/support_options.dart';
 import 'package:libre_tab/features/song_view/presentation/widgets/song_title_hero.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
@@ -242,6 +245,8 @@ class _SongListState extends ConsumerState<_SongList> {
                 list.length >= _indexFrom &&
                 (sort == SongSort.title || sort == SongSort.artist);
             final leading = <Widget>[
+              if (browsing && filter.view == LibraryView.all)
+                const _SupportNudge(),
               if (recent.isNotEmpty) _RecentStrip(recent),
               _ListHeader(count: list.length, sort: browsing ? sort : null),
             ];
@@ -372,6 +377,93 @@ class _ListHeader extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Once, after the 10th song opened: a thank-you with a way to support the
+/// project. Either answer puts it away for good.
+class _SupportNudge extends ConsumerStatefulWidget {
+  const _SupportNudge();
+
+  static const after = 10;
+
+  @override
+  ConsumerState<_SupportNudge> createState() => _SupportNudgeState();
+}
+
+class _SupportNudgeState extends ConsumerState<_SupportNudge> {
+  SettingsStore get _store => ref.read(settingsStoreProvider);
+
+  bool get _due =>
+      _store.getInt(SettingsKeys.supportNudged) != 1 &&
+      (_store.getInt(SettingsKeys.songsOpened) ?? 0) >= _SupportNudge.after;
+
+  void _done() {
+    _store.setInt(SettingsKeys.supportNudged, 1);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_due) return const SizedBox.shrink();
+    final l10n = context.l10n;
+    final colors = context.colors;
+    return Appearing(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+        child: Material(
+          color: colors.surface2,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 8, 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const BrandMark(size: 32),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        l10n.nudgeTitle,
+                        style: AppFonts.displayStyle(18, colors.text),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(l10n.nudgeBody, style: TextStyle(color: colors.muted)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(onPressed: _done, child: Text(l10n.nudgeLater)),
+                    FilledButton(
+                      onPressed: () {
+                        _done();
+                        unawaited(
+                          showModalBottomSheet<void>(
+                            context: context,
+                            showDragHandle: true,
+                            isScrollControlled: true,
+                            builder: (_) => const SafeArea(
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                child: SupportOptions(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(l10n.nudgeYes),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

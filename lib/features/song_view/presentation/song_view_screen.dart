@@ -149,6 +149,12 @@ class _SongViewState extends ConsumerState<_SongView>
     unawaited(_keepAwake.enable());
     // For "Recently played" and "Played 12×" in the songbook.
     unawaited(ref.read(songRepositoryProvider).recordOpened(widget.entry.id));
+    // For the one-time thank-you after the 10th song.
+    final store = ref.read(settingsStoreProvider);
+    store.setInt(
+      SettingsKeys.songsOpened,
+      (store.getInt(SettingsKeys.songsOpened) ?? 0) + 1,
+    );
     if (widget.autoPlay) {
       // A moment at the top first, to see where the song starts.
       _countdownTimer = Timer(const Duration(seconds: 1), () {

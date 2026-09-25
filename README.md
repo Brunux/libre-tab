@@ -74,6 +74,12 @@ offline: no account, no ads, no tracking.
 - Reference pitch from 432 to 446 Hz.
 - Only listens while the tuner is on screen; nothing is recorded.
 
+**Support**
+- A "Support Libre Tab" card in Settings — rate it, share it, star it on
+  GitHub, or (on iPhone in the US) buy me a coffee — and one thank-you after
+  your 10th song, never repeated. Or right here:
+  [buymeacoffee.com/brunux](https://buymeacoffee.com/brunux) ☕
+
 **Feel**
 - Small, quick animations where they mean something: a string that locks in
   tune springs, a starred song throws sparks, chords roll to their new names

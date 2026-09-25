@@ -50,6 +50,13 @@ system (iCloud, Google) keeps its copy until you delete that backup. To
 withdraw the microphone or camera permission, turn it off in your phone's
 settings; Libre Tab stops using it at once.
 
+## Links
+
+"Support Libre Tab" in Settings can open links in your browser (the
+project on GitHub, and on iPhone in the US also Buy Me a Coffee) and the
+App Store's rating prompt. Those sites and services have their own privacy
+policies; Libre Tab sends them nothing, and opening them is always your tap.
+
 ## Children
 
 Libre Tab collects no data from anyone, children included.
@@ -114,6 +121,14 @@ respaldo de tu teléfono hecho por el sistema (iCloud, Google) conserva su
 copia hasta que borres ese respaldo. Para retirar el permiso del micrófono o
 de la cámara, desactívalo en los ajustes de tu teléfono; Libre Tab deja de
 usarlo de inmediato.
+
+## Enlaces
+
+"Apoya Libre Tab" en Ajustes puede abrir enlaces en tu navegador (el
+proyecto en GitHub y, en iPhone en EE. UU., Buy Me a Coffee) y la ventana
+para calificar la app en la App Store. Esos sitios tienen sus propias
+políticas de privacidad; Libre Tab no les envía nada, y abrirlos siempre
+es decisión tuya.
 
 ## Niños
 

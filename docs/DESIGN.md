@@ -275,6 +275,21 @@ GPL-3.0 note, "Version 1.0.0 (1)" (`lib/app/app_version.dart`, checked
 against pubspec.yaml by a test), Privacy and the licenses page. · **Danger zone** (last, in the
 error color): Delete all songs.
 
+**Support Libre Tab** (between Songbook and About): a card with the flame,
+"Keep the campfire burning" and a short thank-you (free, no ads, no
+tracking, made by one person), then the ways to help: **Buy me a coffee**
+(buymeacoffee.com/brunux; shown only on iPhone/iPad from the **US App
+Store**, the only storefront whose rules allow a link to outside payment —
+guideline 3.1.1(a) — and never on Android, where Google Play requires its
+own programs), **Rate Libre Tab** (the system's review prompt on iOS; the
+Play listing on Android), **Share with a friend** (the share sheet, with the
+project's link) and **Star it on GitHub**. Links open in the browser through
+a fixed allow-list in native code (`libre_tab/support`); the app itself still
+makes no network calls.
+**The thank-you, once:** after the 10th song opened, a card at the top of the
+Songbook — "10 songs by the fire!" — with *How can I help?* (the same
+options in a sheet) and *Maybe later*. Either answer puts it away for good.
+
 **Find duplicates** (Songbook section, needs 2+ songs) groups songs whose title
 and artist match once case, accents, spacing and punctuation are ignored, then
 compares their text with line endings, trailing spaces, runs of blank lines

@@ -769,4 +769,56 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get privacyDeleteBody =>
       'Todo se queda en este dispositivo hasta que lo borres: una canción (deslízala a la izquierda), todas (Ajustes → Borrar todas las canciones), o todo desinstalando la app. No hay una copia en ningún otro lugar. Desactiva el micrófono o la cámara en los ajustes de tu teléfono cuando quieras.';
+
+  @override
+  String get supportSection => 'Apoya Libre Tab';
+
+  @override
+  String get supportHeadline => 'Mantén viva la fogata';
+
+  @override
+  String get supportBody =>
+      'Libre Tab es gratis, sin anuncios ni rastreo, hecha por una persona a la que le encanta cantar alrededor de la fogata. Si se ganó un lugar en tu estuche, así puedes ayudar.';
+
+  @override
+  String get supportCoffee => 'Invítame un café';
+
+  @override
+  String get supportCoffeeHint =>
+      'Una pequeña propina trae más canciones y mejoras';
+
+  @override
+  String get supportRate => 'Califica Libre Tab';
+
+  @override
+  String get supportRateHint => 'Ayuda a que otros guitarristas la encuentren';
+
+  @override
+  String get supportShare => 'Compártela con un amigo';
+
+  @override
+  String get supportShareHint => 'Todos cantan mejor con los acordes';
+
+  @override
+  String get supportGithub => 'Dale una estrella en GitHub';
+
+  @override
+  String get supportGithubHint => 'Software libre: ve el código, sugiere ideas';
+
+  @override
+  String get shareAppText =>
+      'Libre Tab: un cancionero y afinador gratis para la fogata. Sin internet, sin anuncios, sin rastreo. https://github.com/Brunux/libre-tab';
+
+  @override
+  String get nudgeTitle => '¡10 canciones junto a la fogata!';
+
+  @override
+  String get nudgeBody =>
+      'Qué gusto que Libre Tab acompañe tus noches. ¿Quieres ayudar a que siga siendo gratis?';
+
+  @override
+  String get nudgeYes => '¿Cómo ayudo?';
+
+  @override
+  String get nudgeLater => 'Quizás luego';
 }

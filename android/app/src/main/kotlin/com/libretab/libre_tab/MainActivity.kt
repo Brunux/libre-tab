@@ -16,6 +16,19 @@ import io.flutter.plugin.common.MethodChannel
  * that arrives while Flutter is still starting isn't lost.
  */
 class MainActivity : FlutterActivity() {
+    /** The only links the support channel opens, by name. */
+    private val supportLinks = mapOf(
+        "github" to "https://github.com/Brunux/libre-tab",
+    )
+
+    /** Opens [uri] in the app that handles it; false when none does. */
+    private fun view(uri: Uri): Boolean = try {
+        startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        true
+    } catch (e: Exception) {
+        false
+    }
+
     private var channel: MethodChannel? = null
     private val pending = mutableListOf<Map<String, Any>>()
 
@@ -38,6 +51,26 @@ class MainActivity : FlutterActivity() {
                     false
                 }
                 result.success(opened)
+            }
+        // "Support Libre Tab" (lib/core/device/support_channel.dart). No
+        // tip link here: Google Play only allows linking to outside payment
+        // through its own programs, so the coffee link isn't offered.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "libre_tab/support")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "storefront" -> result.success(null)
+                    "open" -> {
+                        val url = supportLinks[call.arguments as? String]
+                        result.success(url != null && view(Uri.parse(url)))
+                    }
+                    "rate" -> {
+                        if (!view(Uri.parse("market://details?id=$packageName"))) {
+                            view(Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
+                        }
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
             }
         channel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

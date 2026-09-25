@@ -206,5 +206,21 @@
   "contentHintOr": "O escribe o pega acordes sobre la letra, o ChordPro",
   "pasteTooBig": "Es demasiado texto para una canción.",
   "privacyDeleteTitle": "Guardar y borrar",
-  "privacyDeleteBody": "Todo se queda en este dispositivo hasta que lo borres: una canción (deslízala a la izquierda), todas (Ajustes → Borrar todas las canciones), o todo desinstalando la app. No hay una copia en ningún otro lugar. Desactiva el micrófono o la cámara en los ajustes de tu teléfono cuando quieras."
+  "privacyDeleteBody": "Todo se queda en este dispositivo hasta que lo borres: una canción (deslízala a la izquierda), todas (Ajustes → Borrar todas las canciones), o todo desinstalando la app. No hay una copia en ningún otro lugar. Desactiva el micrófono o la cámara en los ajustes de tu teléfono cuando quieras.",
+  "supportSection": "Apoya Libre Tab",
+  "supportHeadline": "Mantén viva la fogata",
+  "supportBody": "Libre Tab es gratis, sin anuncios ni rastreo, hecha por una persona a la que le encanta cantar alrededor de la fogata. Si se ganó un lugar en tu estuche, así puedes ayudar.",
+  "supportCoffee": "Invítame un café",
+  "supportCoffeeHint": "Una pequeña propina trae más canciones y mejoras",
+  "supportRate": "Califica Libre Tab",
+  "supportRateHint": "Ayuda a que otros guitarristas la encuentren",
+  "supportShare": "Compártela con un amigo",
+  "supportShareHint": "Todos cantan mejor con los acordes",
+  "supportGithub": "Dale una estrella en GitHub",
+  "supportGithubHint": "Software libre: ve el código, sugiere ideas",
+  "shareAppText": "Libre Tab: un cancionero y afinador gratis para la fogata. Sin internet, sin anuncios, sin rastreo. https://github.com/Brunux/libre-tab",
+  "nudgeTitle": "¡10 canciones junto a la fogata!",
+  "nudgeBody": "Qué gusto que Libre Tab acompañe tus noches. ¿Quieres ayudar a que siga siendo gratis?",
+  "nudgeYes": "¿Cómo ayudo?",
+  "nudgeLater": "Quizás luego"
 }

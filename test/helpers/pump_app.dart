@@ -11,6 +11,7 @@ import 'package:libre_tab/app/settings/settings_store.dart';
 import 'package:libre_tab/core/database/database_provider.dart';
 import 'package:libre_tab/core/device/app_settings.dart';
 import 'package:libre_tab/core/device/keep_awake.dart';
+import 'package:libre_tab/core/device/support_channel.dart';
 import 'package:libre_tab/core/files/incoming_files.dart';
 import 'package:libre_tab/core/files/photo_picker.dart';
 import 'package:libre_tab/core/files/song_files.dart';
@@ -35,6 +36,7 @@ Future<ProviderContainer> pumpApp(
   FakePhotoPicker? photos,
   FakeTextRecognizer? recognizer,
   FakeAppSettings? appSettings,
+  FakeSupport? support,
   List<Override> overrides = const [],
 }) async {
   final db = testDatabase();
@@ -51,6 +53,8 @@ Future<ProviderContainer> pumpApp(
       incomingFilesProvider.overrideWithValue(incoming ?? FakeIncomingFiles()),
       photoPickerProvider.overrideWithValue(photos ?? FakePhotoPicker()),
       appSettingsProvider.overrideWithValue(appSettings ?? FakeAppSettings()),
+      // Never the real browser, store or share sheet in tests.
+      supportChannelProvider.overrideWithValue(support ?? FakeSupport()),
       textRecognizerProvider.overrideWithValue(
         recognizer ?? FakeTextRecognizer(),
       ),
@@ -170,6 +174,32 @@ class FakeAppSettings implements AppSettings {
     opened++;
     return true;
   }
+}
+
+/// Records what "Support Libre Tab" asked for; [storefront] is the App
+/// Store country it reports ("USA" allows the coffee link on iOS).
+class FakeSupport implements SupportChannel {
+  FakeSupport({this.country});
+
+  final String? country;
+  final opened = <SupportLink>[];
+  final shared = <String>[];
+  int rated = 0;
+
+  @override
+  Future<String?> storefront() async => country;
+
+  @override
+  Future<bool> open(SupportLink link) async {
+    opened.add(link);
+    return true;
+  }
+
+  @override
+  Future<void> rate() async => rated++;
+
+  @override
+  Future<void> share(String text) async => shared.add(text);
 }
 
 /// A camera and photo library that return preset photo paths.

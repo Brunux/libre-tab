@@ -401,5 +401,21 @@
   "contentHintOr": "Or type or paste chords over lyrics, or ChordPro",
   "pasteTooBig": "That's too much text for one song.",
   "privacyDeleteTitle": "Keeping and deleting",
-  "privacyDeleteBody": "Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone's settings whenever you like."
+  "privacyDeleteBody": "Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone's settings whenever you like.",
+  "supportSection": "Support Libre Tab",
+  "supportHeadline": "Keep the campfire burning",
+  "supportBody": "Libre Tab is free, with no ads and no tracking, made by one person who loves singing around the fire. If it has earned a place in your guitar case, here's how you can help.",
+  "supportCoffee": "Buy me a coffee",
+  "supportCoffeeHint": "A small tip keeps new songs and features coming",
+  "supportRate": "Rate Libre Tab",
+  "supportRateHint": "It helps other guitarists find it",
+  "supportShare": "Share with a friend",
+  "supportShareHint": "Everyone sings better with the chords",
+  "supportGithub": "Star it on GitHub",
+  "supportGithubHint": "Free software: see the code, suggest ideas",
+  "shareAppText": "Libre Tab: a free campfire songbook and guitar tuner. Offline, no ads, no tracking. https://github.com/Brunux/libre-tab",
+  "nudgeTitle": "10 songs by the fire!",
+  "nudgeBody": "Glad Libre Tab is part of your nights. Want to help keep it free?",
+  "nudgeYes": "How can I help?",
+  "nudgeLater": "Maybe later"
 }

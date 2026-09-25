@@ -1,4 +1,5 @@
 import Flutter
+import StoreKit
 import UIKit
 import Vision
 
@@ -30,6 +31,65 @@ import Vision
           }
           UIApplication.shared.open(url) { opened in result(opened) }
         }
+    }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "Support") {
+      FlutterMethodChannel(name: "libre_tab/support", binaryMessenger: registrar.messenger())
+        .setMethodCallHandler(Support.handle)
+    }
+  }
+}
+
+/// "Support Libre Tab" (lib/core/device/support_channel.dart): the App
+/// Store storefront (a tip link is only allowed in the US one), the
+/// system's rating prompt, and a fixed allow-list of links to open.
+enum Support {
+  /// The only places this channel opens, by name.
+  static let links: [String: String] = [
+    "coffee": "https://buymeacoffee.com/brunux",
+    "github": "https://github.com/Brunux/libre-tab",
+  ]
+
+  /// Once the app exists in App Store Connect, its numeric Apple ID: "Rate"
+  /// then opens the review page directly (the system prompt may not show
+  /// when asked from a button, as it's limited to a few times a year).
+  static let appStoreId = ""
+
+  static func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    switch call.method {
+    case "storefront":
+      Task {
+        let code = await Storefront.current?.countryCode
+        await MainActor.run { result(code) }
+      }
+    case "open":
+      guard let name = call.arguments as? String, let link = links[name],
+        let url = URL(string: link)
+      else {
+        result(false)
+        return
+      }
+      UIApplication.shared.open(url) { opened in result(opened) }
+    case "rate":
+      if !appStoreId.isEmpty,
+        let url = URL(string: "https://apps.apple.com/app/id\(appStoreId)?action=write-review")
+      {
+        UIApplication.shared.open(url) { _ in result(nil) }
+        return
+      }
+      Task { @MainActor in
+        if let scene = UIApplication.shared.connectedScenes
+          .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        {
+          if #available(iOS 16.0, *) {
+            AppStore.requestReview(in: scene)
+          } else {
+            SKStoreReviewController.requestReview(in: scene)
+          }
+        }
+        result(nil)
+      }
+    default:
+      result(FlutterMethodNotImplemented)
     }
   }
 }

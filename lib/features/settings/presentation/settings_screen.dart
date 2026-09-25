@@ -15,6 +15,7 @@ import 'package:libre_tab/features/library/data/song_repository.dart';
 import 'package:libre_tab/features/library/data/songbook_archive.dart';
 import 'package:libre_tab/features/library/data/starter_songs.dart';
 import 'package:libre_tab/features/library/presentation/widgets/song_actions.dart';
+import 'package:libre_tab/features/settings/presentation/support_options.dart';
 import 'package:libre_tab/l10n/l10n.dart';
 
 /// Theme, songbook export/import/starter songs, and About
@@ -85,6 +86,12 @@ class SettingsScreen extends ConsumerWidget {
               title: Text(l10n.addStarterSongs),
               subtitle: Text(l10n.addStarterSongsHint),
               onTap: () => addStarterSongs(context, ref),
+            ),
+            const SizedBox(height: 28),
+            _SectionLabel(l10n.supportSection),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: SupportOptions(),
             ),
             const SizedBox(height: 28),
             _SectionLabel(l10n.aboutSection),

@@ -1339,6 +1339,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone\'s settings whenever you like.'**
   String get privacyDeleteBody;
+
+  /// No description provided for @supportSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Libre Tab'**
+  String get supportSection;
+
+  /// No description provided for @supportHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the campfire burning'**
+  String get supportHeadline;
+
+  /// No description provided for @supportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre Tab is free, with no ads and no tracking, made by one person who loves singing around the fire. If it has earned a place in your guitar case, here\'s how you can help.'**
+  String get supportBody;
+
+  /// No description provided for @supportCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy me a coffee'**
+  String get supportCoffee;
+
+  /// No description provided for @supportCoffeeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A small tip keeps new songs and features coming'**
+  String get supportCoffeeHint;
+
+  /// No description provided for @supportRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Libre Tab'**
+  String get supportRate;
+
+  /// No description provided for @supportRateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'It helps other guitarists find it'**
+  String get supportRateHint;
+
+  /// No description provided for @supportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with a friend'**
+  String get supportShare;
+
+  /// No description provided for @supportShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone sings better with the chords'**
+  String get supportShareHint;
+
+  /// No description provided for @supportGithub.
+  ///
+  /// In en, this message translates to:
+  /// **'Star it on GitHub'**
+  String get supportGithub;
+
+  /// No description provided for @supportGithubHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Free software: see the code, suggest ideas'**
+  String get supportGithubHint;
+
+  /// No description provided for @shareAppText.
+  ///
+  /// In en, this message translates to:
+  /// **'Libre Tab: a free campfire songbook and guitar tuner. Offline, no ads, no tracking. https://github.com/Brunux/libre-tab'**
+  String get shareAppText;
+
+  /// No description provided for @nudgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'10 songs by the fire!'**
+  String get nudgeTitle;
+
+  /// No description provided for @nudgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Glad Libre Tab is part of your nights. Want to help keep it free?'**
+  String get nudgeBody;
+
+  /// No description provided for @nudgeYes.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I help?'**
+  String get nudgeYes;
+
+  /// No description provided for @nudgeLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe later'**
+  String get nudgeLater;
 }
 
 class _AppLocalizationsDelegate

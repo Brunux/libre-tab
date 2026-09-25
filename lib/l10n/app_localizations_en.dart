@@ -772,4 +772,56 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacyDeleteBody =>
       'Everything stays on this device until you delete it: a song (swipe it left), every song (Settings → Delete all songs), or all of it by uninstalling the app. There is no copy anywhere else. Turn the microphone or camera off in your phone\'s settings whenever you like.';
+
+  @override
+  String get supportSection => 'Support Libre Tab';
+
+  @override
+  String get supportHeadline => 'Keep the campfire burning';
+
+  @override
+  String get supportBody =>
+      'Libre Tab is free, with no ads and no tracking, made by one person who loves singing around the fire. If it has earned a place in your guitar case, here\'s how you can help.';
+
+  @override
+  String get supportCoffee => 'Buy me a coffee';
+
+  @override
+  String get supportCoffeeHint =>
+      'A small tip keeps new songs and features coming';
+
+  @override
+  String get supportRate => 'Rate Libre Tab';
+
+  @override
+  String get supportRateHint => 'It helps other guitarists find it';
+
+  @override
+  String get supportShare => 'Share with a friend';
+
+  @override
+  String get supportShareHint => 'Everyone sings better with the chords';
+
+  @override
+  String get supportGithub => 'Star it on GitHub';
+
+  @override
+  String get supportGithubHint => 'Free software: see the code, suggest ideas';
+
+  @override
+  String get shareAppText =>
+      'Libre Tab: a free campfire songbook and guitar tuner. Offline, no ads, no tracking. https://github.com/Brunux/libre-tab';
+
+  @override
+  String get nudgeTitle => '10 songs by the fire!';
+
+  @override
+  String get nudgeBody =>
+      'Glad Libre Tab is part of your nights. Want to help keep it free?';
+
+  @override
+  String get nudgeYes => 'How can I help?';
+
+  @override
+  String get nudgeLater => 'Maybe later';
 }
