@@ -169,7 +169,7 @@
   "privacyTitle": "Privacidad",
   "privacySummary": "Libre Tab no recopila datos. No tiene cuenta, anuncios ni analíticas, y nunca se conecta a internet.",
   "privacySongsTitle": "Tus canciones",
-  "privacySongsBody": "Tus canciones, repertorios y ajustes se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.",
+  "privacySongsBody": "Tus canciones, repertorios, ajustes e historial (qué canciones abriste y cuántas veces) se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.",
   "privacyMicTitle": "Micrófono",
   "privacyMicBody": "El afinador solo escucha mientras la pestaña Afinador está en pantalla. El sonido se analiza en el dispositivo y se descarta al instante: nada se graba, guarda ni envía.",
   "privacyPhotosTitle": "Cámara y fotos",

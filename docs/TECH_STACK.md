@@ -218,10 +218,11 @@ so it's fast to unit test.
 ## 10. Milestones
 
 0. **Screen design** ✅ — done 2026-09-22, see [DESIGN.md](DESIGN.md).
-1. **Scaffold** ✅ — lints, themes and fonts from DESIGN.md, go_router with the two-tab shell, l10n (ES + EN), feature folders, tests running.
+1. **Scaffold** ✅ — lints, themes and fonts from DESIGN.md, go_router with the tab shell (two tabs then, three since the UI round), l10n (ES + EN), feature folders, tests running.
 2. **Music core** ✅ — Note/Chord/Key model, ChordPro parser, transposer (+ tests).
 3. **Songbook** ✅ — Drift schema + FTS5 search, library list, add/edit song with chords-over-lyrics importer, open file, share `.cho`, delete. (Whole-songbook `.zip` export moved to milestone 6.)
 4. **Campfire mode** ✅ — dock (transpose, capo, text size, auto-scroll speed), tap-to-pause auto-scroll, chord diagrams, screen kept awake, theme and text size remembered. (Pinch-to-zoom replaced by A−/A+; setlist swipe moves to milestone 6.)
 5. **Tuner** ✅ — explanation screen then mic permission, `record` PCM stream, MPM on a background isolate, needle UI, six tunings, string lock, A4 432–446, haptic when in tune, listens only while the tab is visible and the app is in front.
 6. **Polish** ✅ — setlists (swipe between songs), seven public-domain starter songs, whole-songbook `.zip` export/import, song files opened from other apps go to Add song, Settings (songbook, about, licenses), app icon and brand (`branding/`), store listing and privacy statement (`docs/store/`, `PRIVACY.md`).
 7. **Camera import** ✅ — camera or photo library (`image_picker`) → on-device OCR with word boxes (Apple Vision on iOS, Tesseract on Android) → layout by pixel position (`lib/core/ocr/`) → same chords-over-lyrics importer → ChordPro, reviewed in the editor. Verified with Vision on a proportional-font sheet (12/12 chords) and with Tesseract on the Android 13 emulator (the review sample reads back exactly; its boxes are a test).
+8. **UI round** ✅ — from a design review (2026-09-24): dock folds away while playing, progress line, empty states with actions, haptics; play history (schema 4: last opened, play count) with Recently played, sorting and an A–Z index; key badge from the first chord when there's no `{key}`; Setlists tab, Up next and hands-free auto-advance; tuner listening ring, tuned checks and "All tuned"; paste-first editor with Edit / Preview / ChordPro tabs; red-night toggle; motion; logo in the tab headers.

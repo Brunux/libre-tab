@@ -639,7 +639,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySongsBody =>
-      'Your songs, setlists and settings stay on this device. They leave it only when you share or export them. Your device\'s own backup includes them, like any app\'s data.';
+      'Your songs, setlists, settings and play history (which songs you opened, and how often) stay on this device. They leave it only when you share or export them. Your device\'s own backup includes them, like any app\'s data.';
 
   @override
   String get privacyMicTitle => 'Microphone';

@@ -633,7 +633,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get privacySongsBody =>
-      'Tus canciones, repertorios y ajustes se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.';
+      'Tus canciones, repertorios, ajustes e historial (qué canciones abriste y cuántas veces) se quedan en este dispositivo. Solo salen cuando los compartes o exportas. El respaldo de tu dispositivo los incluye, como los datos de cualquier app.';
 
   @override
   String get privacyMicTitle => 'Micrófono';

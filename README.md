@@ -19,24 +19,32 @@ offline: no account, no ads, no tracking.
 **Songbook**
 - Chords above the lyrics, big enough to read at night.
 - Hands-free auto-scroll: tap the lyrics to pause; the speed is remembered
-  per song.
+  per song. While it plays, the controls fold away so the song gets the
+  screen, and a thin line shows how far through it you are.
 - Transpose, capo ("Sounds in A · Capo 2 · G shapes"), and a chord diagram
   for any chord you tap.
 - Search by title, artist or a line of the lyrics (accents and apostrophes
   don't matter).
-- Favorites and **setlists**: reorder by dragging, and swipe from one song to
-  the next while playing.
+- **Recently played** at the top, and sort by title, artist, recent or most
+  played ("Played 12×"); an A–Z index for long songbooks. All of it stays
+  on your phone.
+- Favorites, and **setlists** in their own tab: reorder by dragging, swipe
+  from one song to the next while playing, and "Up next" at the end of each
+  song. Let auto-scroll run and it moves on to the next song by itself
+  (with "Stay" to hold on).
 - Swipe a song left for quick actions: add to a setlist, share, or delete
   (with Undo).
-- Dark, **red night** and light themes. The screen stays on while a song is
+- Dark, **red night** and light themes: one tap on the moon for red night
+  and back, a long press for all three. The screen stays on while a song is
   open.
 
 **Adding songs**
 - **Scan a song sheet** with the camera or from your photos. Text is read on
   the phone (Apple Vision on iPhone, Tesseract on Android) and each chord is
   placed over the syllable under it, even in proportional printed fonts.
-- Paste chords-over-lyrics from anywhere; it's converted to ChordPro, with a
-  live preview.
+- **Paste** a song copied from a website or a note in one tap;
+  chords-over-lyrics is converted to ChordPro, with Edit / Preview / ChordPro
+  tabs.
 - Open `.cho`, `.chopro`, `.chordpro`, `.crd` or `.txt` files, including
   straight from Files, Mail, Safari or a chat app ("Open in Libre Tab" /
   "Share to").
@@ -54,6 +62,9 @@ offline: no account, no ads, no tracking.
 - Standard, half step down, Drop D, DADGAD, Open G and Open D.
 - Auto-detects the string, or lock onto one string. A needle with a ±5 cent
   "in tune" zone, and a haptic tap when a string is in tune.
+- Shows it's listening before a note is found, ticks each string once it's
+  in tune, and when all six are: "All tuned — let's play!" with your last
+  song a tap away.
 - Reference pitch from 432 to 446 Hz.
 - Only listens while the tuner is on screen; nothing is recorded.
 
@@ -65,8 +76,10 @@ Spanish.
 
 All seven milestones are done: screen design, scaffold, music core, songbook,
 campfire mode, tuner, polish (setlists, starter songs, export/import, app icon
-and brand, store listing), and camera import. It runs on iPhone; the Android
-build compiles but hasn't been tried on a device yet. 460+ tests pass.
+and brand, store listing), and camera import; since then, a UI round (play
+history and sorting, a Setlists tab, auto-advance, tuner feedback, a
+paste-first editor, motion and the in-app logo). It runs on iPhone and iPad
+and has been tested on Android 13 (emulator). 520+ tests pass.
 
 See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
@@ -113,7 +126,7 @@ lib/
   features/    library (songbook, setlists, import/export, duplicates),
                song_view, editor, tuner, settings
   l10n/        English and Spanish strings
-assets/        fonts, starter songs
+assets/        fonts, starter songs, the flame mark
 branding/      logo generator and outputs
 docs/          design docs, store listing, screenshots
 test/          mirrors lib/

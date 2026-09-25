@@ -12,6 +12,9 @@ no crash reporting, and it never connects to the internet.
   exporting your songbook sends the file to the app or person you pick in the
   system share sheet. If you back up your phone (for example to iCloud),
   that backup includes them, like any app's data; Libre Tab never sees it.
+- **Play history**: when you last opened each song and how many times, for
+  "Recently played" and the sorts. It stays in the same storage, is never
+  sent anywhere, and isn't part of an export.
 - **Files you open in Libre Tab** (from Files, Mail, a browser or a chat app)
   are read once to add the song. On iPhone, the copy the system hands over is
   then removed.
