@@ -95,6 +95,78 @@ Paste into *App Review Information → Notes*, and attach
 >    storefront also an optional "Buy me a coffee" tip link (guideline
 >    3.1.1(a)); it's hidden in other storefronts.
 
+## Reply to Guideline 2.1 – Information Needed (28 Sep 2026)
+
+Apple asked new developer accounts for a device recording and six
+answers. Reply in App Store Connect with the text below, attach the
+recording, and add the same text to *App Review Information → Notes*.
+
+**Recording** (iPhone, iOS 26; Control Center → Screen Recording, start on
+the Home Screen): tap the icon to launch → songbook list → open "Amazing
+Grace", transpose, capo, auto-scroll, tap a chord → add to Favorites and a
+setlist, play the setlist → Add song → Paste, then Scan photo with
+`review-sample.png` → edit, save → Tuner tab → Start tuner → allow the
+microphone, tune a string → Settings → Privacy, Support Libre Tab. No
+account, UGC or paid content to show.
+
+> **1. Screen recording** — attached. It starts by launching the app from
+> the Home Screen and shows the songbook, the song view (transpose, capo,
+> auto-scroll, chord diagrams), setlists, adding a song (paste and scan a
+> photo), the tuner and Settings. Libre Tab has no accounts, no sign-in,
+> no user-generated content shared with others and no paid content, so
+> there are no registration, deletion, reporting or purchase flows.
+>
+> **2. Purpose and audience** — Libre Tab is a songbook and guitar tuner
+> for people who play acoustic guitar for fun: around a campfire, at
+> home, with family or at church. Chord-sheet websites need a connection
+> and are full of ads, and paper songbooks can't change key. Libre Tab
+> keeps your songs on your phone, shows the chords above the lyrics,
+> transposes, sets a capo, scrolls by itself while you play, groups
+> songs into setlists, reads chord sheets from photos, and tunes the
+> guitar, all with no connection, account or ads.
+>
+> **3. How to use it** — No login needed. The app opens with seven
+> public-domain songs.
+> - Songbook: open "Amazing Grace". Use the bar at the bottom to
+>   transpose, set a capo, change the text size and start auto-scroll;
+>   tap a chord for its diagram.
+> - Setlists tab: create a setlist, add songs, press Play.
+> - Add song (+): Paste chords and lyrics, Open file (.cho or .txt), or
+>   Scan photo → Choose from photos and pick the attached sample chord
+>   sheet (`review-sample.png`).
+> - Tuner tab: Start tuner, allow the microphone, play a string or a
+>   tone (e.g. 110 Hz for A).
+> - Settings: theme, export/import all songs, privacy policy, and
+>   Support Libre Tab. The app follows the device language (English or
+>   Spanish).
+>
+> **4. External services** — None. The app makes no network requests and
+> has no backend, analytics, ads, authentication, payment processor or
+> AI service. Text in photos is read on the device with Apple's Vision
+> framework, and the tuner analyzes audio on the device with
+> AVFoundation; nothing is recorded or sent anywhere. The only links
+> leaving the app are opened in Safari when the user taps them: the
+> project's GitHub page, the App Store review page, and (US only, see 5)
+> Buy Me a Coffee.
+>
+> **5. Regional differences** — The app works the same in every region,
+> in English and Spanish. The one difference: in Settings → Support Libre
+> Tab, an optional "Buy me a coffee" tip link (buymeacoffee.com, opens in
+> Safari, unlocks nothing) is shown only when the App Store storefront is
+> the United States, following guideline 3.1.1(a). It is hidden in every
+> other storefront.
+>
+> **6. Regulated industry / third-party material** — Not a regulated
+> industry. The seven songs bundled with the app are in the public domain
+> everywhere: traditional songs (Red River Valley, Clementine, She'll Be
+> Coming 'Round the Mountain, De Colores, La Cucaracha) and songs by
+> authors who died long ago (Amazing Grace, John Newton, d. 1807;
+> Oh! Susanna, Stephen Foster, d. 1864). The chord arrangements are our
+> own. The app doesn't offer a catalog, search or download of songs;
+> anything users add comes from their own files, clipboard or photos and
+> stays private on their device. The app is open source (GPL-3.0) by the
+> same developer: https://github.com/Brunux/libre-tab
+
 ## Guideline check
 
 | Guideline | How Libre Tab meets it |
