@@ -554,6 +554,18 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get tryAgain;
 
+  /// No description provided for @micBusyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone is busy'**
+  String get micBusyTitle;
+
+  /// No description provided for @micBusyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app is using it, like a call or a voice recording. The tuner starts again as soon as it\'s free.'**
+  String get micBusyBody;
+
   /// No description provided for @playAString.
   ///
   /// In en, this message translates to:

@@ -263,6 +263,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tryAgain => 'Reintentar';
 
   @override
+  String get micBusyTitle => 'El micrófono está ocupado';
+
+  @override
+  String get micBusyBody =>
+      'Otra app lo está usando, como una llamada o una grabación de voz. El afinador vuelve a empezar en cuanto quede libre.';
+
+  @override
   String get playAString => 'Toca una cuerda';
 
   @override

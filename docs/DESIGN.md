@@ -235,7 +235,11 @@ Before a note is found, the note's place shows a microphone in a soft ring
 that grows with the input level (RMS, −70 to −20 dBFS; up at once, down
 gently), so it's plain the tuner hears. First visit shows
 "Tune your guitar" and a Start button before the OS microphone prompt; if the
-microphone is refused, the screen says where to allow it. Tapping "A4 = 440 Hz"
+microphone is refused, the screen says where to allow it. If another app has
+the microphone (a call, a voice recording: iOS pauses the recording, Android
+feeds a second of exact zeros), the screen says "The microphone is busy"
+instead of freezing on the last note, picks up again by itself when it's free,
+and offers Try again. Tapping "A4 = 440 Hz"
 opens a slider (432–446 Hz) with "Back to 440". The tuner only listens while
 its tab is on screen and the app is in front, and keeps the screen on.
 The string buttons sit at the bottom and the note, gauge and status fill the

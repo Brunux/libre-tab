@@ -262,6 +262,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAgain => 'Try again';
 
   @override
+  String get micBusyTitle => 'The microphone is busy';
+
+  @override
+  String get micBusyBody =>
+      'Another app is using it, like a call or a voice recording. The tuner starts again as soon as it\'s free.';
+
+  @override
   String get playAString => 'Play a string';
 
   @override

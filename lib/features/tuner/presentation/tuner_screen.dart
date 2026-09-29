@@ -121,6 +121,15 @@ class _TunerScreenState extends ConsumerState<TunerScreen> {
             secondary: l10n.tryAgain,
             onSecondary: _tuner.start,
           ),
+          // A call or another app's recording has the microphone; the
+          // tuner picks up again by itself once it's free.
+          TunerStatus.busy => _Message(
+            icon: Icons.mic_off_outlined,
+            title: l10n.micBusyTitle,
+            body: l10n.micBusyBody,
+            action: l10n.tryAgain,
+            onAction: () => _tuner.start(ask: false),
+          ),
           _ when firstTime => _Message(
             icon: Icons.mic_none_outlined,
             title: l10n.tunerIntroTitle,

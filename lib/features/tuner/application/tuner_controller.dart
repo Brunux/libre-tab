@@ -14,6 +14,10 @@ enum TunerStatus {
 
   /// The microphone permission was refused.
   denied,
+
+  /// Another app has the microphone (a phone call, a voice recording);
+  /// listening carries on when it's free again.
+  busy,
 }
 
 final class TunerState {
@@ -116,16 +120,23 @@ class TunerController extends Notifier<TunerState> {
   Future<void> start({bool ask = true}) async {
     if (state.status == TunerStatus.listening) return;
     if (ask) _store.setInt(SettingsKeys.micAsked, 1);
-    final access = await _source.start(_onPitch, ask: ask);
+    // Trying again while busy: let go of the microphone first.
+    if (state.status == TunerStatus.busy) await _source.stop();
+    final access = await _source.start(_onPitch, ask: ask, onBusy: _onBusy);
     state = state.copyWith(
-      status: access == MicAccess.granted
-          ? TunerStatus.listening
-          : TunerStatus.denied,
+      status: switch (access) {
+        MicAccess.granted => TunerStatus.listening,
+        MicAccess.denied => TunerStatus.denied,
+        MicAccess.busy => TunerStatus.busy,
+      },
     );
   }
 
   Future<void> stop() async {
-    if (state.status != TunerStatus.listening) return;
+    if (state.status != TunerStatus.listening &&
+        state.status != TunerStatus.busy) {
+      return;
+    }
     await _source.stop();
     _smoother.reset();
     state = state.copyWith(
@@ -177,6 +188,21 @@ class TunerController extends Notifier<TunerState> {
     lockedString: s.lockedString,
     a4: s.a4.toDouble(),
   );
+
+  void _onBusy({required bool busy}) {
+    if (busy && state.status == TunerStatus.listening) {
+      // Nothing is heard meanwhile: don't leave the last note showing.
+      _smoother.reset();
+      state = state.copyWith(
+        status: TunerStatus.busy,
+        reading: () => null,
+        inTune: false,
+        level: 0,
+      );
+    } else if (!busy && state.status == TunerStatus.busy) {
+      state = state.copyWith(status: TunerStatus.listening);
+    }
+  }
 
   void _onPitch(double? frequency, double level) {
     if (state.status != TunerStatus.listening) return;

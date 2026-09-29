@@ -88,6 +88,20 @@ Future<void> scrollToStrings(WidgetTester tester, String chipLabel) async {
   );
 }
 
+/// Sends the app to the background and back (another app, a call).
+Future<void> leaveAndComeBack(WidgetTester tester) async {
+  tester.binding
+    ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+    ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+    ..handleAppLifecycleStateChanged(AppLifecycleState.paused);
+  await tester.pump();
+  tester.binding
+    ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
+    ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
+    ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('microphone permission', () {
     testWidgets('the first visit explains before asking', (tester) async {
@@ -132,19 +146,6 @@ void main() {
   });
 
   group('after a refusal', () {
-    Future<void> leaveAndComeBack(WidgetTester tester) async {
-      tester.binding
-        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
-        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
-        ..handleAppLifecycleStateChanged(AppLifecycleState.paused);
-      await tester.pump();
-      tester.binding
-        ..handleAppLifecycleStateChanged(AppLifecycleState.hidden)
-        ..handleAppLifecycleStateChanged(AppLifecycleState.inactive)
-        ..handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      await tester.pumpAndSettle();
-    }
-
     testWidgets('coming back never asks again (no prompt loop)', (
       tester,
     ) async {
@@ -168,6 +169,81 @@ void main() {
       expect(pitch.listening, isTrue);
       expect(pitch.asks, asked, reason: 'checked, not asked');
       expect(find.text('Play a string'), findsOneWidget);
+    });
+  });
+
+  group('another app has the microphone', () {
+    testWidgets('busy when starting: says so, and can try again', (
+      tester,
+    ) async {
+      final (_, pitch) = await openTuner(tester, access: MicAccess.busy);
+      expect(find.text('The microphone is busy'), findsOneWidget);
+      expect(find.textContaining('like a call'), findsOneWidget);
+
+      pitch.access = MicAccess.granted; // the call ended
+      await tester.tap(find.text('Try again'));
+      await tester.pumpAndSettle();
+      expect(pitch.listening, isTrue);
+      expect(pitch.asks, 0, reason: 'checked, not asked');
+      expect(find.text('Play a string'), findsOneWidget);
+    });
+
+    testWidgets('a call while tuning: no frozen note, then carries on', (
+      tester,
+    ) async {
+      final (container, pitch) = await openTuner(tester);
+      await hear(tester, pitch, 110, times: 8);
+      expect(container.read(tunerProvider).reading, isNotNull);
+
+      pitch.takeMic();
+      await tester.pumpAndSettle();
+      expect(find.text('The microphone is busy'), findsOneWidget);
+      final state = container.read(tunerProvider);
+      expect(state.reading, isNull);
+      expect(state.level, 0);
+
+      pitch.takeMic(busy: false);
+      await tester.pumpAndSettle();
+      expect(container.read(tunerProvider).status, TunerStatus.listening);
+      expect(find.text('Play a string'), findsOneWidget);
+      await hear(tester, pitch, 110, times: 8);
+      expect(container.read(tunerProvider).reading, isNotNull);
+    });
+
+    testWidgets('coming back to the app tries again by itself', (tester) async {
+      final (_, pitch) = await openTuner(tester, access: MicAccess.busy);
+      final tries = pitch.starts;
+      pitch.access = MicAccess.granted;
+      await leaveAndComeBack(tester);
+      expect(pitch.starts, tries + 1);
+      expect(pitch.listening, isTrue);
+      expect(find.text('Play a string'), findsOneWidget);
+    });
+
+    testWidgets('Try again lets go of the microphone first', (tester) async {
+      final (_, pitch) = await openTuner(tester);
+      pitch
+        ..takeMic()
+        ..access = MicAccess.busy;
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Try again'));
+      await tester.pumpAndSettle();
+      expect(pitch.listening, isFalse);
+      expect(find.text('The microphone is busy'), findsOneWidget);
+    });
+
+    testWidgets('Spanish', (tester) async {
+      tester.platformDispatcher.localesTestValue = const [Locale('es')];
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+      await pumpApp(
+        tester,
+        pitch: FakePitchSource(access: MicAccess.busy),
+        settings: MemorySettingsStore({SettingsKeys.micAsked: 1}),
+      );
+      await tester.tap(navItem('Afinador'));
+      await tester.pumpAndSettle();
+      expect(find.text('El micrófono está ocupado'), findsOneWidget);
+      expect(find.text('Reintentar'), findsOneWidget);
     });
   });
 

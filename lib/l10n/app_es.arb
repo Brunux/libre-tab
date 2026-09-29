@@ -76,6 +76,8 @@
   "micDeniedTitle": "El micrófono está desactivado",
   "micDeniedBody": "Para afinar, Libre Tab necesita el micrófono. Permítelo para Libre Tab en Ajustes y vuelve aquí.",
   "tryAgain": "Reintentar",
+  "micBusyTitle": "El micrófono está ocupado",
+  "micBusyBody": "Otra app lo está usando, como una llamada o una grabación de voz. El afinador vuelve a empezar en cuanto quede libre.",
   "playAString": "Toca una cuerda",
   "inTune": "Afinada",
   "tooLow": "Muy baja · aprieta",

@@ -254,20 +254,38 @@ class FakePitchSource implements PitchSource {
 
   MicAccess access;
   OnPitch? _onPitch;
+  OnBusy? _onBusy;
   bool get listening => _onPitch != null;
 
   /// How many times the microphone was asked for (a prompt on a phone).
   int asks = 0;
 
+  /// How many times listening was started or tried.
+  int starts = 0;
+
   @override
-  Future<MicAccess> start(OnPitch onPitch, {bool ask = true}) async {
+  Future<MicAccess> start(
+    OnPitch onPitch, {
+    bool ask = true,
+    OnBusy? onBusy,
+  }) async {
+    starts++;
     if (ask) asks++;
-    if (access == MicAccess.granted) _onPitch = onPitch;
+    if (access == MicAccess.granted) {
+      _onPitch = onPitch;
+      _onBusy = onBusy;
+    }
     return access;
   }
 
   @override
-  Future<void> stop() async => _onPitch = null;
+  Future<void> stop() async {
+    _onPitch = null;
+    _onBusy = null;
+  }
+
+  /// Another app takes the microphone ([busy]), or gives it back.
+  void takeMic({bool busy = true}) => _onBusy?.call(busy: busy);
 
   /// Delivers one detected frequency (null = silence), as the mic would,
   /// with the input [level] (by default: a played string, or a quiet room).

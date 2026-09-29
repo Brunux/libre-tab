@@ -134,6 +134,8 @@
   "micDeniedTitle": "The microphone is off",
   "micDeniedBody": "To tune, Libre Tab needs the microphone. Allow it for Libre Tab in Settings, then come back here.",
   "tryAgain": "Try again",
+  "micBusyTitle": "The microphone is busy",
+  "micBusyBody": "Another app is using it, like a call or a voice recording. The tuner starts again as soon as it's free.",
   "playAString": "Play a string",
   "inTune": "In tune",
   "tooLow": "Too low · tighten",
