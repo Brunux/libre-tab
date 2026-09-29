@@ -11,7 +11,7 @@ to enter in App Store Connect, and the notes for the reviewer.
 | Built with Xcode 26 / iOS 26 SDK (required since 28 April 2026) | Xcode 26.5 ✅ |
 | Minimum iOS 13 or later (since 9 September 2026) | iOS 15.0 ✅ (Flutter 3.47) |
 | Universal: iPhone and iPad, all iPad orientations (2.4.1) | ✅ |
-| Version 1.0.0, build 1 (`pubspec.yaml`) | ✅ |
+| Version 1.0.0, build 3 (`pubspec.yaml`; build 2 was the first submission) | ✅ |
 | `ITSAppUsesNonExemptEncryption = NO` (no export-compliance prompt) | ✅ |
 | App privacy manifest (`ios/Runner/PrivacyInfo.xcprivacy`): no tracking, no data collected; required-reason APIs: file timestamps `C617.1` (SQLite, own container), UserDefaults `CA92.1`, disk space `E174.1` (SQLite checks free space before writing its files; found by scanning the built binaries for `statfs`). Every plugin ships its own manifest; the SQLite and Objective-C frameworks built from source have none, so the app's declares what they use. | ✅ |
 | Launch screen: dark, with the logo (no white flash) | ✅ |
