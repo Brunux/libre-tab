@@ -106,11 +106,11 @@ up-to-date libraries, a second security audit).
 
 Tested on a real iPhone (tuning a guitar, a setlist with auto-advance,
 opening `.cho` files from Files, pasting from a website), on the iPad
-simulator, and on Android 13 (emulator). 540+ tests pass.
+simulator, and on Android 13 (emulator). 550+ tests pass.
 
-Left before release: the App Store Connect submission, Android release
-signing and the Play Console listing
-([docs/store/app-review.md](docs/store/app-review.md)).
+**On the App Store** (iPhone and iPad). Google Play is next: release
+signing is set up, and the Play Console steps are in
+[docs/store/google-play.md](docs/store/google-play.md).
 
 See the [roadmap](docs/TECH_STACK.md#10-milestones).
 
@@ -143,6 +143,7 @@ Brand and app icon: see [branding/README.md](branding/README.md) (runs
 | [docs/DESIGN.md](docs/DESIGN.md) | Navigation, themes, fonts, and every screen: songbook, song view, editor, tuner, setlists, settings |
 | [docs/store/listing.md](docs/store/listing.md) | App Store / Google Play text (EN + ES), privacy answers, screenshots |
 | [docs/store/app-review.md](docs/store/app-review.md) | App Store submission: build checks, App Store Connect answers, reviewer notes, guideline check |
+| [docs/store/google-play.md](docs/store/google-play.md) | Google Play submission: upload key, build checks, Play Console answers, closed test and release |
 | [PRIVACY.md](PRIVACY.md) | Privacy statement: no data collected |
 | [SECURITY.md](SECURITY.md) | Reporting vulnerabilities, security model, audit results |
 | [branding/README.md](branding/README.md) | Logo, app icon, social media versions, colors, taglines |
